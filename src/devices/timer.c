@@ -20,6 +20,9 @@
 /* Number of timer ticks since OS booted. */
 static int64_t ticks;
 
+/* List of waiting thread */
+static struct list waiting_list;
+
 /* Number of loops per timer tick.
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
@@ -37,6 +40,8 @@ timer_init (void)
 {
   pit_configure_channel (0, 2, TIMER_FREQ);
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
+  /* project #1 */
+  list_init (&waiting_list);
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -89,11 +94,35 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
+  size_t i;
+  int deleted = 0;
   int64_t start = timer_ticks ();
+  struct thread *cur = thread_current();
+  intr_set_level (INTR_OFF);
+     printf("1");
+  thread_block();
+     printf("2");
+  cur->ticks = ticks;
+  list_push_back(&waiting_list, &cur->elem);
 
   ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+  while (!deleted) {
+     printf("3");
+     struct list_elem *start_elem = list_head(&waiting_list);
+     struct thread *t_ele = list_entry(start_elem->next, struct thread, elem);
+     for (i=0; i<list_size(&waiting_list); i++) {
+         if (timer_elapsed(start) >= t_ele->ticks) {
+             list_remove(&t_ele->elem);
+             deleted = 1;
+             thread_unblock(t_ele);
+             intr_set_level (INTR_ON);
+             break;
+         }
+         start_elem = list_next(start_elem);
+     }
+  }
+  /* while (timer_elapsed (start) < ticks) */ 
+  /*   thread_yield (); */
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
