@@ -94,10 +94,6 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-<<<<<<< HEAD
-  int64_t start = timer_ticks (); /*read the Current time */ 
-  ASSERT (intr_get_level () == INTR_ON); /*To make "Timer Interrupt" */
-  
   /*Give up to another thread during the ticks */
   size_t i;
   int deleted = 0;
