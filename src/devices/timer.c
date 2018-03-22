@@ -96,9 +96,11 @@ timer_sleep (int64_t ticks)
 {
   /*Give up to another thread during the ticks */
   int64_t start = timer_ticks();
+  int deleted = 0;
+  int i;
 
   ASSERT (intr_get_level () == INTR_ON);
- 
+
   struct thread* cur = thread_current();
   enum intr_level prev_level;
   prev_level = intr_disable();
@@ -106,30 +108,36 @@ timer_sleep (int64_t ticks)
   list_push_back(&waiting_list, &cur->elem);
 
   printf("1");
-  
+
   thread_block();
-  
+
   intr_set_level(prev_level);
 
   printf("2");
- 
-/*
+
+  /*
   while (!deleted) {
      printf("3");
      struct list_elem *start_elem = list_head(&waiting_list);
-     struct thread *t_ele = list_entry(start_elem->next, struct thread, elem);
+     // struct thread *t_ele = list_entry(start_elem->next, struct thread, elem); //
+     struct thread *t_ele = list_entry(start_elem, struct thread, elem);
+       printf("t_ele tid\n", t_ele->tid);
      for (i=0; i<list_size(&waiting_list); i++) {
-         if (timer_elapsed(start) >= t_ele->ticks) {
-             list_remove(&t_ele->elem);
-             deleted = 1;
-             thread_unblock(t_ele);
-             intr_set_level (INTR_ON);
-             break;
-         }
-         start_elem = list_next(start_elem);
+       printf("cur tid\n", cur->tid);
+       if (t_ele->tid != cur->tid) {
+         continue;
+       }
+       if (timer_elapsed(start) >= t_ele->added_ticks) {
+         list_remove(&t_ele->elem);
+         deleted = 1;
+         thread_unblock(t_ele);
+         intr_set_level (INTR_ON);
+         break;
+       }
+       start_elem = list_next(start_elem);
      }
   }
-*/
+  */
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
