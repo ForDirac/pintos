@@ -206,8 +206,16 @@ thread_create (const char *name, int priority,
 
   intr_set_level (old_level);
 
-  /* Add to run queue. */
-  thread_unblock (t);
+  /* (Proj.#1) Compare between current thread's priority and create one's */
+  struct thread *t_cur = running_thread();
+
+  if (t_cur->priority <= t->priority)
+    thread_yield();
+  else
+    thread_unblock (t);
+
+  /* (Original code) Add to run queue. */
+  /* thread_unblock (t); */
 
   return tid;
 }
@@ -485,6 +493,12 @@ alloc_frame (struct thread *t, size_t size)
   return t->stack;
 }
 
+static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->priority > t_b->priority;
+}
+
 /* Chooses and returns the next thread to be scheduled.  Should
    return a thread from the run queue, unless the run queue is
    empty.  (If the running thread can continue running, then it
@@ -493,10 +507,13 @@ alloc_frame (struct thread *t, size_t size)
 static struct thread *
 next_thread_to_run (void) 
 {
+  /* list_less_func *less = &compare; */
+
   if (list_empty (&ready_list))
     return idle_thread;
   else
-    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+    return list_entry(list_max(&ready_list, &compare, NULL), struct thread, elem);
+    /* return list_entry (list_pop_front (&ready_list), struct thread, elem); */
 }
 
 /* Completes a thread switch by activating the new thread's page
@@ -581,7 +598,7 @@ allocate_tid (void)
 
   return tid;
 }
-
+
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);

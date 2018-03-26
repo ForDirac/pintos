@@ -89,6 +89,15 @@ timer_elapsed (int64_t then)
   return timer_ticks () - then;
 }
 
+static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  if (t_a->added_ticks < t_b->added_ticks)
+    return 1;
+  if (t_a->added_ticks == t_b->added_ticks)
+    return t_a->priority >= t_b->priority;
+  return 0;
+}
 /* Sleeps for approximately TICKS timer ticks.  Interrupts must
    be turned on. */
 void
@@ -96,17 +105,7 @@ timer_sleep (int64_t ticks)
 {
   /*Give up to another thread during the ticks */
   int64_t start = timer_ticks();
-  /* int deleted = 0; */
-  /* int i; */
-  bool compare(const struct list_elem *a, const struct list_elem *b, void *aux) {
-    struct thread *t_a = list_entry(a, struct thread, elem);
-    struct thread *t_b = list_entry(b, struct thread, elem);
-    if (t_a->added_ticks < t_b->added_ticks)
-      return 1;
-    if (t_a->added_ticks == t_b->added_ticks)
-      return t_a->priority >= t_b->priority;
-    return 0;
-  }
+  /* list_less_func *less = &compare; */
 
   ASSERT (intr_get_level () == INTR_ON);
 
