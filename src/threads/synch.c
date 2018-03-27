@@ -32,6 +32,14 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 
+/* For Proj.#1 */
+static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->priority > t_b->priority;
+}
+
+
 /* Initializes semaphore SEMA to VALUE.  A semaphore is a
    nonnegative integer along with two atomic operators for
    manipulating it:
@@ -58,12 +66,6 @@ sema_init (struct semaphore *sema, unsigned value)
    interrupts disabled, but if it sleeps then the next scheduled
    thread will probably turn interrupts back on. */
 
-static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
-  struct thread *t_a = list_entry(a, struct thread, elem);
-  struct thread *t_b = list_entry(b, struct thread, elem);
-  return t_a->priority > t_b->priority;
-}
-
 void
 sema_down (struct semaphore *sema) 
 {
@@ -74,10 +76,11 @@ sema_down (struct semaphore *sema)
   ASSERT (!intr_context ());
 
   old_level = intr_disable ();
-  while (sema->value == 0) 
+  while (sema->value == 0)
     {
       /* Project #1 */
       list_insert_ordered (&sema->waiters, &thread_current ()->elem, &compare, NULL);
+      /* list_push_back(&sema->waiters, &thread_current()->elem); */
       thread_block ();
     }
   sema->value--;
@@ -118,14 +121,23 @@ void
 sema_up (struct semaphore *sema) 
 {
   enum intr_level old_level;
+  struct thread *t = NULL;
 
   ASSERT (sema != NULL);
 
   old_level = intr_disable ();
-  if (!list_empty (&sema->waiters)) 
-    thread_unblock (list_entry (list_pop_front (&sema->waiters),
-                                struct thread, elem));
+  if (!list_empty (&sema->waiters)){
+    /* list_sort(&sema->waiters, &compare, NULL); */
+    t = list_entry(list_pop_front(&sema->waiters), struct thread, elem);
+    /* thread_unblock (list_entry (list_pop_front (&sema->waiters), */
+                                /* struct thread, elem)); */
+    thread_unblock(t);
+      }
+    /* thread_unblock(list_entry(list_max(&sema->waiters, &compare, NULL), struct thread, elem)); */
   sema->value++;
+  if((t != NULL) && (t->priority > thread_current()->priority)){
+      thread_yield();
+   }
   intr_set_level (old_level);
 }
 

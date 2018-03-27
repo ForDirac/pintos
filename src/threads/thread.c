@@ -70,6 +70,21 @@ static void *alloc_frame (struct thread *, size_t size);
 static void schedule (void);
 void thread_schedule_tail (struct thread *prev);
 static tid_t allocate_tid (void);
+static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
+
+/* Project #1 */
+static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->priority > t_b->priority;
+}
+
+static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->priority <= t_b->priority;
+}
+
 
 /* Initializes the threading system by transforming the code
    that's currently running into a thread.  This can't work in
@@ -207,12 +222,13 @@ thread_create (const char *name, int priority,
   intr_set_level (old_level);
 
   /* (Proj.#1) Compare between current thread's priority and create one's */
-  struct thread *t_cur = running_thread();
+  struct thread *t_cur = thread_current();
 
-  if (t_cur->priority <= t->priority)
+  thread_unblock(t);
+  if (t_cur->priority < t->priority)
     thread_yield();
-  else
-    thread_unblock (t);
+  /* else */
+  /*   thread_unblock (t); */
 
   /* (Original code) Add to run queue. */
   /* thread_unblock (t); */
@@ -253,7 +269,9 @@ thread_unblock (struct thread *t)
 
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
-  list_push_back (&ready_list, &t->elem);
+  /* list_push_back (&ready_list, &t->elem); */
+  /* Project #1 */
+  list_insert_ordered(&ready_list, &t->elem, &compare, NULL);
   t->status = THREAD_READY;
   intr_set_level (old_level);
 }
@@ -324,7 +342,9 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    list_push_back (&ready_list, &cur->elem);
+    /* list_push_back (&ready_list, &cur->elem); */
+    /* Project #1 */
+    list_insert_ordered(&ready_list, &cur->elem, &compare, NULL);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
@@ -349,28 +369,40 @@ thread_foreach (thread_action_func *func, void *aux)
 
 /* Sets the current thread's priority to NEW_PRIORITY. */
 void
-thread_set_priority (int new_priority) 
+thread_set_priority (int new_priority)
 {
-  thread_current ()->priority = new_priority;
+  struct thread *cur = thread_current();
+  int old_priority = cur->priority;
+
+  //thread_current ()->priority = new_priority;
+
+  /* For Proj.#1 */
+  cur->priority = new_priority;
+  if(new_priority < old_priority){
+    thread_yield();
+  }
+  else{
+    list_sort(&ready_list, &compare, NULL);
+  }
 }
 
 /* Returns the current thread's priority. */
 int
-thread_get_priority (void) 
+thread_get_priority (void)
 {
   return thread_current ()->priority;
 }
 
 /* Sets the current thread's nice value to NICE. */
 void
-thread_set_nice (int nice UNUSED) 
+thread_set_nice (int nice UNUSED)
 {
   /* Not yet implemented. */
 }
 
 /* Returns the current thread's nice value. */
 int
-thread_get_nice (void) 
+thread_get_nice (void)
 {
   /* Not yet implemented. */
   return 0;
@@ -493,12 +525,6 @@ alloc_frame (struct thread *t, size_t size)
   return t->stack;
 }
 
-static bool compare(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
-  struct thread *t_a = list_entry(a, struct thread, elem);
-  struct thread *t_b = list_entry(b, struct thread, elem);
-  return t_a->priority > t_b->priority;
-}
-
 /* Chooses and returns the next thread to be scheduled.  Should
    return a thread from the run queue, unless the run queue is
    empty.  (If the running thread can continue running, then it
@@ -512,8 +538,8 @@ next_thread_to_run (void)
   if (list_empty (&ready_list))
     return idle_thread;
   else
-    return list_entry(list_max(&ready_list, &compare, NULL), struct thread, elem);
-    /* return list_entry (list_pop_front (&ready_list), struct thread, elem); */
+    /* return list_entry(list_max(&ready_list, &compare_m, NULL), struct thread, elem); */
+    return list_entry (list_pop_front (&ready_list), struct thread, elem);
 }
 
 /* Completes a thread switch by activating the new thread's page

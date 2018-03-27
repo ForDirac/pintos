@@ -70,7 +70,6 @@ typedef int tid_t;
          instead.
 
    The first symptom of either of these problems will probably be
-   an assertion failure in thread_current(), which checks that
    the `magic' member of the running thread's `struct thread' is
    set to THREAD_MAGIC.  Stack overflow will normally change this
    value, triggering the assertion. */
