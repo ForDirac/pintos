@@ -79,11 +79,11 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   return t_a->priority > t_b->priority;
 }
 
-static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
-  struct thread *t_a = list_entry(a, struct thread, elem);
-  struct thread *t_b = list_entry(b, struct thread, elem);
-  return t_a->priority <= t_b->priority;
-}
+/* static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) { */
+/*   struct thread *t_a = list_entry(a, struct thread, elem); */
+/*   struct thread *t_b = list_entry(b, struct thread, elem); */
+/*   return t_a->priority <= t_b->priority; */
+/* } */
 
 
 /* Initializes the threading system by transforming the code
@@ -120,7 +120,7 @@ thread_init (void)
 void
 thread_start (void) 
 {
-  /* Create the idle thread. */
+  /* Create the idle thread. */;
   struct semaphore idle_started;
   sema_init (&idle_started, 0);
   thread_create ("idle", PRI_MIN, idle, &idle_started);
@@ -169,7 +169,7 @@ thread_print_stats (void)
 
    If thread_start() has been called, then the new thread may be
    scheduled before thread_create() returns.  It could even exit
-   before thread_create() returns.  Contrariwise, the original
+   before thread_create() returns.  Contrariwise, the original;
    thread may run for any amount of time before the new thread is
    scheduled.  Use a semaphore or some other form of
    synchronization if you need to ensure ordering.
@@ -508,6 +508,10 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
+  /* Proj. #1 */
+  t->origin_priority = 0;
+  list_init(&t->donated_priorities);
+
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
 }

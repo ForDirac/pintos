@@ -81,8 +81,11 @@ typedef int tid_t;
    blocked state is on a semaphore wait list. */
 struct thread
   {
-    /* To store the added_ticks  */
+    /* To store the added_ticks Proj1 */
     int64_t added_ticks;
+    int origin_priority;
+    struct list donated_priorities;
+    struct thread *donated_thread;
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */
