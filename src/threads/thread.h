@@ -85,7 +85,7 @@ struct thread
     int64_t added_ticks;
     int origin_priority;
     struct list donated_priorities;
-    struct thread *donated_thread;
+    struct list donation_list;
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */

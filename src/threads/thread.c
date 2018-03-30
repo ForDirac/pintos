@@ -511,6 +511,7 @@ init_thread (struct thread *t, const char *name, int priority)
   /* Proj. #1 */
   t->origin_priority = 0;
   list_init(&t->donated_priorities);
+  list_init(&t->donation_list);
 
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
