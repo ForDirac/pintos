@@ -234,7 +234,8 @@ lock_acquire (struct lock *lock)
       lock->holder->origin_priority = lock->holder->priority;
     /* receive the donation */
     lock->holder->priority = cur->priority;
-    list_push_back(donation_list, &lock->holder->elem);
+    list_push_back(&cur->donation_list, &lock->holder->elem);
+    /* list_push_back(donation_list, &lock->holder->elem); */
     if(!list_empty(target_list)){
       struct list_elem *e;
       for(e = list_begin(target_list); e != list_end(target_list); e = list_next(e)){
