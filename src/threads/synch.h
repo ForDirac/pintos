@@ -3,7 +3,6 @@
 
 #include <list.h>
 #include <stdbool.h>
-#include <thread.h>
 
 /* A counting semaphore. */
 struct semaphore 
@@ -46,7 +45,7 @@ void lock_release (struct lock *);
 bool lock_held_by_current_thread (const struct lock *);
 
 /* For proj.#1 */
-void chain_donation(struct list *list, struct thread *holder, struct thread *cur);
+void chain_donation(struct list *list, struct thread *holder, struct thread *cur, struct lock *lock);
 
 /* Condition variable. */
 struct condition 
