@@ -509,7 +509,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   /* Proj. #1 */
-  t->origin_priority = 0;
+  t->origin_priority = -1;
   list_init(&t->donated_priorities);
   list_init(&t->donation_list);
   t->temp = NULL;
