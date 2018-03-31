@@ -33,6 +33,7 @@ struct lock
 
 /* For Proj. #1 */
 struct priority {
+  struct thread *t;
   struct lock *lock_p;
   int priority;
   struct list_elem elem;
@@ -46,6 +47,7 @@ bool lock_held_by_current_thread (const struct lock *);
 
 /* For proj.#1 */
 void chain_donation(struct list *list, struct thread *holder, struct thread *cur, struct lock *lock);
+void chain_release(struct list *donate_list, struct list *donate_priority_list, struct thread *holder, struct lock *lock);
 
 /* Condition variable. */
 struct condition 
