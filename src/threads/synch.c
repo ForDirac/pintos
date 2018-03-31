@@ -40,6 +40,7 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
 }
 
 /* For Proj.#1 */
+/* Define the donator, donatee and that locks */
 static struct list donate_list;
 
 /* Initializes semaphore SEMA to VALUE.  A semaphore is a
@@ -82,6 +83,7 @@ sema_down (struct semaphore *sema)
     {
       /* Project #1 */
       list_insert_ordered (&sema->waiters, &thread_current ()->elem, &compare, NULL);
+      /* original */
       /* list_push_back(&sema->waiters, &thread_current()->elem); */
       thread_block ();
     }
@@ -131,8 +133,8 @@ sema_up (struct semaphore *sema)
   if (!list_empty (&sema->waiters)){
     list_sort(&sema->waiters, &compare, NULL);
     t = list_entry(list_pop_front(&sema->waiters), struct thread, elem);
-    /* thread_unblock (list_entry (list_pop_front (&sema->waiters), */
-                                /* struct thread, elem)); */
+    /* original */
+    /* thread_unblock (list_entry (list_pop_front (&sema->waiters), struct thread, elem)); */
     thread_unblock(t);
   }
   sema->value++;
@@ -208,11 +210,14 @@ lock_init (struct lock *lock)
 void chain_donation(struct list *list, struct thread *holder, struct thread *cur, struct lock *lock){
   if(!list_empty(list)){
     struct list_elem *e;
+
     for(e = list_begin(list); e != list_end(list); e = list_next(e)){
       struct donate_pair *temp_pair = list_entry(e, struct donate_pair, elem);
+
       if(temp_pair->donator == holder){
         struct list *temp_list = &temp_pair->donatee->donated_priorities;
         struct list_elem *l;
+        /* To change the nested donation in the donated_priorities in that thread */
         if(!list_empty(temp_list)){
           for(l = list_begin(temp_list); l != list_end(temp_list); l = list_next(l)){
             struct priority *temp_pr = list_entry(l, struct priority, elem);
@@ -269,23 +274,9 @@ lock_acquire (struct lock *lock)
     donated_priority.priority = cur->priority;
     list_push_back(&lock->holder->donated_priorities, &donated_priority.elem);
   }
+
   sema_down (&lock->semaphore);
   lock->holder = cur;
-
-  /* up to donate-multiple2 */
-  /* struct thread *cur = thread_current(); */
-  /* if (lock->holder && lock->holder->priority < cur->priority) { */
-  /*   struct priority donated_priority; */
-  /*   // donation */
-  /*   if (!lock->holder->origin_priority) */
-  /*     lock->holder->origin_priority = lock->holder->priority; */
-  /*   lock->holder->priority = cur->priority; */
-  /*   donated_priority.lock_p = lock; */
-  /*   donated_priority.priority = cur->priority; */
-  /*   list_push_back(&lock->holder->donated_priorities, &donated_priority.elem); */
-  /* } */
-  /* sema_down (&lock->semaphore); */
-  /* lock->holder = cur; */
 
   /* Original */
   /* sema_down (&lock->semaphore); */
@@ -323,7 +314,6 @@ lock_release (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
 
-  /* First trial */
   if (lock->holder->origin_priority != -1) {
     struct list_elem *e;
     struct list *list = &lock->holder->donated_priorities;
