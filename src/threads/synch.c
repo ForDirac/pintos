@@ -341,7 +341,7 @@ lock_release (struct lock *lock)
         list_remove(e);
       }
     }
-    if (list_empty(list)) {
+    if ((list_empty(list))) {
       lock->holder->priority = lock->holder->origin_priority;
       lock->holder->origin_priority = 0;
     } else {
