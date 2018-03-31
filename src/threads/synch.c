@@ -39,6 +39,8 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   return t_a->priority > t_b->priority;
 }
 
+static struct list donate_list;
+
 /* For Proj.#1 */
 /* static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) { */
 /*   struct thread *t_a = list_entry(a, struct thread, elem); */
@@ -207,6 +209,8 @@ lock_init (struct lock *lock)
 
   lock->holder = NULL;
   sema_init (&lock->semaphore, 1);
+  /* For proj.#1 */
+  list_init(&donate_list);
 }
 
 /* Acquires LOCK, sleeping until it becomes available if
@@ -217,6 +221,21 @@ lock_init (struct lock *lock)
    interrupt handler.  This function may be called with
    interrupts disabled, but interrupts will be turned back on if
    we need to sleep. */
+
+void chain_donation(struct list *list, struct thread *holder, struct thread *cur){
+  if(!list_empty(list)){
+      struct list_elem *e;
+      for(e = list_begin(list); e != list_end(list); e = list_next(e)){
+        struct donate_pair *temp_pair = list_entry(e, struct donate_pair, elem);
+        if(temp_pair->donator == holder){
+          temp_pair->donatee->priority = cur->priority;
+          chain_donation(list, temp_pair->donatee, cur);
+        }
+      }
+    }
+}
+
+
 void
 lock_acquire (struct lock *lock)
 {
@@ -225,31 +244,35 @@ lock_acquire (struct lock *lock)
   ASSERT (!lock_held_by_current_thread (lock));
 
   struct thread *cur = thread_current();
-  struct list *donation_list = &cur->donation_list;
+
   if (lock->holder && lock->holder->priority < cur->priority) {
+
     struct priority donated_priority;
     struct list *target_list = &lock->holder->donation_list;
+
     // donation
     if (!lock->holder->origin_priority)
       lock->holder->origin_priority = lock->holder->priority;
+
     /* receive the donation */
     lock->holder->priority = cur->priority;
-    list_push_back(&cur->donation_list, &lock->holder->elem);
-    /* list_push_back(donation_list, &lock->holder->elem); */
-    if(!list_empty(target_list)){
-      struct list_elem *e;
-      for(e = list_begin(target_list); e != list_end(target_list); e = list_next(e)){
-        /* option1 : difference of priority */
-        /* option2 : set the current(higher) value */
-        struct thread *target_t = list_entry(e, struct thread, elem);
-        struct priority new_donated_priority;
-        target_t->priority = cur->priority;
-        new_donated_priority.priority = cur->priority;
-        new_donated_priority.lock_p = NULL;
-        list_push_back(&target_t->donated_priorities, &new_donated_priority.elem);
-      }
-    }
 
+    struct donate_pair new_donate_pair;
+    new_donate_pair.donatee = lock->holder;
+    new_donate_pair.donator = cur;
+
+    list_push_back(&donate_list, &new_donate_pair.elem);
+
+    chain_donation(&donate_list, lock->holder, cur);
+    /* if(!list_empty(&donate_list)){ */
+    /*   struct list_elem *e; */
+    /*   for(e = list_begin(&donate_list); e != list_end(&donate_list); e = list_next(e)){ */
+    /*     struct donate_pair *temp_pair = list_entry(e, struct donate_pair, elem); */
+    /*     if(temp_pair->donator == lock->holder){ */
+    /*       temp_pair->donatee->priority = cur->priority; */
+    /*     } */
+    /*   } */
+    /* } */
     donated_priority.lock_p = lock;
     donated_priority.priority = cur->priority;
     list_push_back(&lock->holder->donated_priorities, &donated_priority.elem);

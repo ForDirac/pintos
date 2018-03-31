@@ -3,6 +3,7 @@
 
 #include <list.h>
 #include <stdbool.h>
+#include <thread.h>
 
 /* A counting semaphore. */
 struct semaphore 
@@ -16,6 +17,13 @@ void sema_down (struct semaphore *);
 bool sema_try_down (struct semaphore *);
 void sema_up (struct semaphore *);
 void sema_self_test (void);
+
+/* For proj.#1 and donate-nest */
+struct donate_pair {
+  struct thread *donatee;
+  struct thread *donator;
+  struct list_elem elem;
+};
 
 /* Lock. */
 struct lock 
@@ -36,6 +44,9 @@ void lock_acquire (struct lock *);
 bool lock_try_acquire (struct lock *);
 void lock_release (struct lock *);
 bool lock_held_by_current_thread (const struct lock *);
+
+/* For proj.#1 */
+void chain_donation(struct list *list, struct thread *holder, struct thread *cur);
 
 /* Condition variable. */
 struct condition 
