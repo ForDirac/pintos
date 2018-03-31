@@ -39,9 +39,13 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   return t_a->priority > t_b->priority;
 }
 
+<<<<<<< HEAD
 /* For Proj.#1 */
 static struct list donate_list;
 static struct list donate_priority_list;
+=======
+static struct list donate_list;
+>>>>>>> 38a8d52f2a57922932b640a902dda9797f54d9d9
 
 /* Initializes semaphore SEMA to VALUE.  A semaphore is a
    nonnegative integer along with two atomic operators for
@@ -209,21 +213,28 @@ lock_init (struct lock *lock)
 
 void chain_donation(struct list *list, struct thread *holder, struct thread *cur, struct lock *lock){
   if(!list_empty(list)){
-    struct list_elem *e;
-    for(e = list_begin(list); e != list_end(list); e = list_next(e)){
-      struct donate_pair *temp_pair = list_entry(e, struct donate_pair, elem);
-      if(temp_pair->donator == holder){
-        struct priority new_donated_priority;
-        temp_pair->donatee->priority = cur->priority;
-        new_donated_priority.t = temp_pair->donatee;
-        new_donated_priority.lock_p = lock;
-        new_donated_priority.priority = cur->priority;
-        chain_donation(list, temp_pair->donatee, cur, lock);
-        list_push_back(&donate_priority_list, &new_donated_priority.elem);
+      struct list_elem *e;
+      for(e = list_begin(list); e != list_end(list); e = list_next(e)){
+        struct donate_pair *temp_pair = list_entry(e, struct donate_pair, elem);
+        if(temp_pair->donator == holder){
+          struct list *temp_list = &temp_pair->donatee->donated_priorities;
+          struct list_elem *l;
+          if(!list_empty(temp_list)){
+            for(l = list_begin(temp_list); l != list_end(temp_list); l = list_next(l)){
+              struct priority *temp_pr = list_entry(l, struct priority, elem);
+              if(temp_pair->lock_p == temp_pr->lock_p){
+                temp_pr->priority = cur->priority;
+              }
+            }
+          }
+          temp_pair->donatee->priority = cur->priority;
+          chain_donation(list, temp_pair->donatee, cur, lock);
+        }
       }
     }
   }
 }
+
 /* Acquires LOCK, sleeping until it becomes available if
    necessary.  The lock must not already be held by the current
    thread.
@@ -256,10 +267,12 @@ lock_acquire (struct lock *lock)
     struct donate_pair new_donate_pair;
     new_donate_pair.donatee = lock->holder;
     new_donate_pair.donator = cur;
+    new_donate_pair.lock_p = lock;
     list_push_back(&donate_list, &new_donate_pair.elem);
 
     /* donate to donated threads */
     chain_donation(&donate_list, lock->holder, cur, lock);
+<<<<<<< HEAD
     /* if(!list_empty(&donate_list)){ */
     /*   struct list_elem *e; */
     /*   for(e = list_begin(&donate_list); e != list_end(&donate_list); e = list_next(e)){ */
@@ -270,6 +283,9 @@ lock_acquire (struct lock *lock)
     /*   } */
     /* } */
     donated_priority.t = lock->holder;
+=======
+
+>>>>>>> 38a8d52f2a57922932b640a902dda9797f54d9d9
     donated_priority.lock_p = lock;
     donated_priority.priority = cur->priority;
     list_push_back(&donate_priority_list, &donated_priority.elem);
