@@ -377,8 +377,11 @@ thread_set_priority (int new_priority)
   //thread_current ()->priority = new_priority;
 
   /* For Proj.#1 */
-  cur->priority = new_priority;
-  if(new_priority < old_priority){
+  if (cur->origin_priority != -1)
+    cur->origin_priority = new_priority;
+  else
+    cur->priority = new_priority;
+  if(cur->priority < old_priority){
     thread_yield();
   }
   else{

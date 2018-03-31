@@ -38,6 +38,12 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   struct thread *t_b = list_entry(b, struct thread, elem);
   return t_a->priority > t_b->priority;
 }
+static bool reverse(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct thread *t_a = list_entry(a, struct thread, elem);
+  struct thread *t_b = list_entry(b, struct thread, elem);
+  return t_a->priority < t_b->priority;
+}
+
 
 /* For Proj.#1 */
 /* Define the donator, donatee and that locks */
@@ -405,6 +411,14 @@ cond_wait (struct condition *cond, struct lock *lock)
   lock_acquire (lock);
 }
 
+static bool compare_cond(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct semaphore_elem *sema_a = list_entry(a, struct semaphore_elem, elem);
+  struct semaphore_elem *sema_b = list_entry(b, struct semaphore_elem, elem);
+  struct thread *t_a = list_entry(list_max(&sema_a->semaphore.waiters, &reverse, NULL), struct thread, elem);
+  struct thread *t_b = list_entry(list_max(&sema_b->semaphore.waiters, &reverse, NULL), struct thread, elem);
+  return t_a->priority > t_b->priority;
+}
+
 /* If any threads are waiting on COND (protected by LOCK), then
    this function signals one of them to wake up from its wait.
    LOCK must be held before calling this function.
@@ -420,9 +434,11 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (!intr_context ());
   ASSERT (lock_held_by_current_thread (lock));
 
-  if (!list_empty (&cond->waiters)) 
+  if (!list_empty (&cond->waiters)) {
+    list_sort(&cond->waiters, &compare_cond, NULL);
     sema_up (&list_entry (list_pop_front (&cond->waiters),
                           struct semaphore_elem, elem)->semaphore);
+  }
 }
 
 /* Wakes up all threads, if any, waiting on COND (protected by
