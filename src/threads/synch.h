@@ -21,6 +21,9 @@ void sema_self_test (void);
 struct donate_pair {
   struct thread *donatee;
   struct thread *donator;
+ 
+  struct lock *lock_p;
+ 
   struct list_elem elem;
 };
 
