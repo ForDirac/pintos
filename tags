@@ -607,7 +607,7 @@ bad_action	src/examples/insult.c	/^char *bad_action[] =$/;"	v
 bad_actionLoc	src/examples/insult.c	/^char bad_actionLoc[] =$/;"	v
 bad_place	src/examples/insult.c	/^char *bad_place[] =$/;"	v
 bad_placeLoc	src/examples/insult.c	/^char bad_placeLoc[] = { 6, 0, 2, 3, 5, 7, 8, 9 };$/;"	v
-barrier	src/threads/synch.h	49;"	d
+barrier	src/threads/synch.h	71;"	d
 base	src/lib/stdio.c	/^    int base;                   \/* Base. *\/$/;"	m	struct:integer_base	file:
 base	src/threads/palloc.c	/^    uint8_t *base;                      \/* Base of pool. *\/$/;"	m	struct:pool	file:
 base_X	src/lib/stdio.c	/^static const struct integer_base base_X = {16, "0123456789ABCDEF", 'X', 4};$/;"	v	typeref:struct:integer_base	file:
@@ -719,6 +719,7 @@ calculate_chksum	src/lib/ustar.c	/^calculate_chksum (const struct ustar_header *
 calloc	src/threads/malloc.c	/^calloc (size_t a, size_t b) $/;"	f
 caps_lock	src/devices/kbd.c	/^static bool caps_lock;$/;"	v	file:
 cat_SRC	src/examples/Makefile	/^cat_SRC = cat.c$/;"	m
+chain_donation	src/threads/synch.c	/^void chain_donation(struct list *list, struct thread *holder, struct thread *cur, struct lock *lock){$/;"	f
 changing_thread	src/tests/threads/priority-change.c	/^changing_thread (void *aux UNUSED) $/;"	f	file:
 changing_thread	src/tests/threads/priority-change.c	/^static thread_func changing_thread;$/;"	v	file:
 channel	src/devices/ide.c	/^    struct channel *channel;    \/* Channel that disk is attached to. *\/$/;"	m	struct:ata_disk	typeref:struct:ata_disk::channel	file:
@@ -761,7 +762,6 @@ compare	src/threads/thread.c	/^static bool compare(const struct list_elem *a, co
 compare_bytes	src/tests/lib.c	/^compare_bytes (const void *read_data_, const void *expected_data_, size_t size,$/;"	f
 compare_files	src/tests/tests.pm	/^sub compare_files {$/;"	s
 compare_ints	src/tests/internal/stdlib.c	/^compare_ints (const void *a_, const void *b_) $/;"	f	file:
-compare_m	src/threads/thread.c	/^static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {$/;"	f	file:
 compare_output	src/tests/tests.pm	/^sub compare_output {$/;"	s
 compare_thunk	src/lib/stdlib.c	/^compare_thunk (const void *a, const void *b, void *aux) $/;"	f	file:
 completion_wait	src/devices/ide.c	/^    struct semaphore completion_wait;   \/* Up'd by interrupt handler. *\/$/;"	m	struct:channel	typeref:struct:channel::semaphore	file:
@@ -841,6 +841,12 @@ do_set_part	src/utils/Pintos.pm	/^sub do_set_part {$/;"	s
 do_swap	src/lib/stdlib.c	/^do_swap (unsigned char *array, size_t a_idx, size_t b_idx, size_t size)$/;"	f	file:
 do_touch	src/tests/filesys/extended/mk-tree.c	/^do_touch (const char *format, ...)$/;"	f	file:
 do_write	src/tests/filesys/extended/tar.c	/^do_write (int fd, const char *buffer, int size, bool *write_error) $/;"	f	file:
+donate_list	src/threads/synch.c	/^static struct list donate_list;$/;"	v	typeref:struct:list	file:
+donate_pair	src/threads/synch.h	/^struct donate_pair {$/;"	s
+donated_priorities	src/threads/thread.h	/^    struct list donated_priorities;$/;"	m	struct:thread	typeref:struct:thread::list
+donatee	src/threads/synch.h	/^  struct thread *donatee;$/;"	m	struct:donate_pair	typeref:struct:donate_pair::thread
+donation_list	src/threads/thread.h	/^    struct list donation_list;$/;"	m	struct:thread	typeref:struct:thread::list
+donator	src/threads/synch.h	/^  struct thread *donator;$/;"	m	struct:donate_pair	typeref:struct:donate_pair::thread
 donor_thread_func	src/tests/threads/priority-donate-chain.c	/^donor_thread_func (void *locks_) $/;"	f	file:
 donor_thread_func	src/tests/threads/priority-donate-chain.c	/^static thread_func donor_thread_func;$/;"	v	file:
 ds	src/threads/interrupt.h	/^    uint16_t ds, :16;           \/* Saved DS segment register. *\/$/;"	m	struct:intr_frame
@@ -888,6 +894,8 @@ elem	src/filesys/inode.c	/^    struct list_elem elem;              \/* Element i
 elem	src/lib/kernel/hash.h	/^    struct hash_elem *elem;     \/* Current hash element in current bucket. *\/$/;"	m	struct:hash_iterator	typeref:struct:hash_iterator::hash_elem
 elem	src/tests/internal/list.c	/^    struct list_elem elem;      \/* List element. *\/$/;"	m	struct:value	typeref:struct:value::list_elem	file:
 elem	src/threads/synch.c	/^    struct list_elem elem;              \/* List element. *\/$/;"	m	struct:semaphore_elem	typeref:struct:semaphore_elem::list_elem	file:
+elem	src/threads/synch.h	/^  struct list_elem elem;$/;"	m	struct:donate_pair	typeref:struct:donate_pair::list_elem
+elem	src/threads/synch.h	/^  struct list_elem elem;$/;"	m	struct:priority	typeref:struct:priority::list_elem
 elem	src/threads/thread.h	/^    struct list_elem elem;              \/* List element. *\/$/;"	m	struct:thread	typeref:struct:thread::list_elem
 elem_cnt	src/lib/kernel/bitmap.c	/^elem_cnt (size_t bit_cnt)$/;"	f	file:
 elem_cnt	src/lib/kernel/hash.h	/^    size_t elem_cnt;            \/* Number of elements in table. *\/$/;"	m	struct:hash
@@ -1272,6 +1280,8 @@ lock_acquire	src/threads/synch.c	/^lock_acquire (struct lock *lock)$/;"	f
 lock_and_sema	src/tests/threads/priority-donate-sema.c	/^struct lock_and_sema $/;"	s	file:
 lock_held_by_current_thread	src/threads/synch.c	/^lock_held_by_current_thread (const struct lock *lock) $/;"	f
 lock_init	src/threads/synch.c	/^lock_init (struct lock *lock)$/;"	f
+lock_p	src/threads/synch.h	/^  struct lock *lock_p;$/;"	m	struct:donate_pair	typeref:struct:donate_pair::lock
+lock_p	src/threads/synch.h	/^  struct lock *lock_p;$/;"	m	struct:priority	typeref:struct:priority::lock
 lock_pair	src/tests/threads/priority-donate-chain.c	/^struct lock_pair$/;"	s	file:
 lock_release	src/threads/synch.c	/^lock_release (struct lock *lock) $/;"	f
 lock_try_acquire	src/threads/synch.c	/^lock_try_acquire (struct lock *lock)$/;"	f
@@ -1420,6 +1430,7 @@ open_inodes	src/filesys/inode.c	/^static struct list open_inodes;$/;"	v	typeref:
 ops	src/devices/block.c	/^    const struct block_operations *ops;  \/* Driver operations. *\/$/;"	m	struct:block	typeref:struct:block::block_operations	file:
 organics	src/examples/insult.c	/^char *organics[] =$/;"	v
 organicsLoc	src/examples/insult.c	/^char organicsLoc[] =$/;"	v
+origin_priority	src/threads/thread.h	/^    int origin_priority;$/;"	m	struct:thread
 outb	src/threads/io.h	/^outb (uint16_t port, uint8_t data)$/;"	f
 outl	src/threads/io.h	/^outl (uint16_t port, uint32_t data)$/;"	f
 output_dup	src/lib/stdio.c	/^output_dup (char ch, size_t cnt, void (*output) (char, void *), void *aux) $/;"	f	file:
@@ -1512,6 +1523,8 @@ print_stacktrace	src/lib/kernel/debug.c	/^print_stacktrace(struct thread *t, voi
 print_stats	src/devices/shutdown.c	/^print_stats (void)$/;"	f	file:
 printf	src/lib/stdio.c	/^printf (const char *format, ...) $/;"	f
 printf_conversion	src/lib/stdio.c	/^struct printf_conversion $/;"	s	file:
+priority	src/threads/synch.h	/^  int priority;$/;"	m	struct:priority
+priority	src/threads/synch.h	/^struct priority {$/;"	s
 priority	src/threads/thread.h	/^    int priority;                       \/* Priority. *\/$/;"	m	struct:thread
 priority_condvar_thread	src/tests/threads/priority-condvar.c	/^priority_condvar_thread (void *aux UNUSED) $/;"	f	file:
 priority_condvar_thread	src/tests/threads/priority-condvar.c	/^static thread_func priority_condvar_thread;$/;"	v	file:
@@ -1755,9 +1768,11 @@ syscall2	src/lib/user/syscall.c	33;"	d	file:
 syscall3	src/lib/user/syscall.c	49;"	d	file:
 syscall_handler	src/userprog/syscall.c	/^syscall_handler (struct intr_frame *f UNUSED) $/;"	f	file:
 syscall_init	src/userprog/syscall.c	/^syscall_init (void) $/;"	f
+t	src/threads/synch.h	/^  struct thread *t;$/;"	m	struct:priority	typeref:struct:priority::thread
 tail	src/devices/intq.h	/^    int tail;                   \/* Old data is read here. *\/$/;"	m	struct:intq
 tail	src/lib/kernel/list.h	/^    struct list_elem tail;      \/* List tail. *\/$/;"	m	struct:list	typeref:struct:list::list_elem
 tell	src/lib/user/syscall.c	/^tell (int fd) $/;"	f
+temp	src/threads/thread.h	/^    struct thread *temp;$/;"	m	struct:thread	typeref:struct:thread::thread
 test	src/tests/internal/list.c	/^test (void) $/;"	f
 test	src/tests/internal/stdio.c	/^test (void) $/;"	f
 test	src/tests/internal/stdlib.c	/^test (void) $/;"	f

@@ -38,31 +38,7 @@ perl -I../.. ../../tests/threads/priority-donate-sema.ck tests/threads/priority-
 pass tests/threads/priority-donate-sema
 pintos -v -k -T 60 --bochs  -- -q  run priority-donate-lower < /dev/null 2> tests/threads/priority-donate-lower.errors > tests/threads/priority-donate-lower.output
 perl -I../.. ../../tests/threads/priority-donate-lower.ck tests/threads/priority-donate-lower tests/threads/priority-donate-lower.result
-FAIL tests/threads/priority-donate-lower
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (priority-donate-lower) begin
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) Lowering base priority...
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) acquire: got the lock
-  (priority-donate-lower) acquire: done
-  (priority-donate-lower) acquire must already have finished.
-  (priority-donate-lower) Main thread should have priority 21.  Actual priority: 21.
-  (priority-donate-lower) end
-Differences in `diff -u' format:
-  (priority-donate-lower) begin
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) Lowering base priority...
-- (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-+ (priority-donate-lower) Main thread should have priority 41.  Actual priority: 21.
-  (priority-donate-lower) acquire: got the lock
-  (priority-donate-lower) acquire: done
-  (priority-donate-lower) acquire must already have finished.
-- (priority-donate-lower) Main thread should have priority 21.  Actual priority: 21.
-+ (priority-donate-lower) Main thread should have priority 21.  Actual priority: 31.
-  (priority-donate-lower) end
+pass tests/threads/priority-donate-lower
 pintos -v -k -T 60 --bochs  -- -q  run priority-fifo < /dev/null 2> tests/threads/priority-fifo.errors > tests/threads/priority-fifo.output
 perl -I../.. ../../tests/threads/priority-fifo.ck tests/threads/priority-fifo tests/threads/priority-fifo.result
 pass tests/threads/priority-fifo
@@ -153,7 +129,7 @@ pintos -v -k -T 60 --bochs  -- -q  run priority-donate-chain < /dev/null 2> test
 perl -I../.. ../../tests/threads/priority-donate-chain.ck tests/threads/priority-donate-chain tests/threads/priority-donate-chain.result
 pass tests/threads/priority-donate-chain
 ../../tests/make-grade ../.. results ../../tests/threads/Grading | tee grade
-TOTAL TESTING SCORE: 53.7%
+TOTAL TESTING SCORE: 56.8%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -162,9 +138,9 @@ SUMMARY BY TEST SET
 Test Set                                      Pts Max  % Ttl  % Max
 --------------------------------------------- --- --- ------ ------
 tests/threads/Rubric.alarm                     18/ 18  20.0%/ 20.0%
-tests/threads/Rubric.priority                  32/ 38  33.7%/ 40.0%
+tests/threads/Rubric.priority                  35/ 38  36.8%/ 40.0%
 --------------------------------------------- --- --- ------ ------
-Total                                                  53.7%/ 60.0%
+Total                                                  56.8%/ 60.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -197,11 +173,11 @@ Functionality of priority scheduler (tests/threads/Rubric.priority):
 	     3/ 3 tests/threads/priority-donate-nest
 	     5/ 5 tests/threads/priority-donate-chain
 	     3/ 3 tests/threads/priority-donate-sema
-	  ** 0/ 3 tests/threads/priority-donate-lower
+	     3/ 3 tests/threads/priority-donate-lower
 
 	- Section summary.
-	     10/ 12 tests passed
-	     32/ 38 points subtotal
+	     11/ 12 tests passed
+	     35/ 38 points subtotal
 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -328,66 +304,9 @@ Executing 'priority-condvar':
 (priority-condvar) Thread priority 24 woke up.
 (priority-condvar) end
 Execution of 'priority-condvar' complete.
-Timer: 242 ticks
+Timer: 241 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 Console: 1663 characters output
-Keyboard: 0 keys pressed
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/threads/priority-donate-lower FAILURE:
-
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (priority-donate-lower) begin
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) Lowering base priority...
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) acquire: got the lock
-  (priority-donate-lower) acquire: done
-  (priority-donate-lower) acquire must already have finished.
-  (priority-donate-lower) Main thread should have priority 21.  Actual priority: 21.
-  (priority-donate-lower) end
-Differences in `diff -u' format:
-  (priority-donate-lower) begin
-  (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-  (priority-donate-lower) Lowering base priority...
-- (priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-+ (priority-donate-lower) Main thread should have priority 41.  Actual priority: 21.
-  (priority-donate-lower) acquire: got the lock
-  (priority-donate-lower) acquire: done
-  (priority-donate-lower) acquire must already have finished.
-- (priority-donate-lower) Main thread should have priority 21.  Actual priority: 21.
-+ (priority-donate-lower) Main thread should have priority 21.  Actual priority: 31.
-  (priority-donate-lower) end
-
-OUTPUT FROM tests/threads/priority-donate-lower:
-
-squish-pty bochs -q
-PiLo hda1
-Loading.........
-Kernel command line: -q run priority-donate-lower
-Pintos booting with 4,096 kB RAM...
-383 pages available in kernel pool.
-383 pages available in user pool.
-Calibrating timer...  204,600 loops/s.
-Boot complete.
-Executing 'priority-donate-lower':
-(priority-donate-lower) begin
-(priority-donate-lower) Main thread should have priority 41.  Actual priority: 41.
-(priority-donate-lower) Lowering base priority...
-(priority-donate-lower) Main thread should have priority 41.  Actual priority: 21.
-(priority-donate-lower) acquire: got the lock
-(priority-donate-lower) acquire: done
-(priority-donate-lower) acquire must already have finished.
-(priority-donate-lower) Main thread should have priority 21.  Actual priority: 31.
-(priority-donate-lower) end
-Execution of 'priority-donate-lower' complete.
-Timer: 98 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-Console: 860 characters output
 Keyboard: 0 keys pressed
 Powering off...
 make[1]: Leaving directory '/home/team46b/pintos/src/threads/build'
