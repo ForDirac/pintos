@@ -225,7 +225,7 @@ thread_create (const char *name, int priority,
   struct thread *t_cur = thread_current();
 
   thread_unblock(t);
-  if (t_cur->priority < t->priority)
+  if (t_cur->priority <= t->priority)
     thread_yield();
   /* else */
   /*   thread_unblock (t); */

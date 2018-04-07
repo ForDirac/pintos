@@ -31,12 +31,6 @@ process_execute (const char *file_name)
   char *fn_copy;
   tid_t tid;
 
-  /* For proj.#2 */
-  char *argv[0];
-  char *arg_p;
-  char *next_p;
-  char space[2] = " ";
-
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
@@ -44,17 +38,123 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
 
-  /* For proj.#2 */
-  arg_p = strtok_r(file_name, space, &next_p);
-  argv[0] = arg_p;
+  /* /1* For proj.#2 *1/ */
 
-  file_name = argv[0];
+  /* int argc = 0; */
+  /* char *argv[100]; */
+  /* char *arg_p; */
+  /* size_t str_len = 0; */
+  /* char *next_p; */
+  /* char *s = fn_copy; */
+  /* char space[2] = " "; */
+  /* int i; */
+
+  /* arg_p = strtok_r(s, space, &next_p); */
+  /* if (arg_p != NULL) { */
+  /*   str_len += strlen(arg_p) + 1; */
+  /*   argv[argc] = arg_p; */
+  /*   printf("%s\n", argv[argc]); */
+  /*   argc++; */
+  /* } */
+
+  /* while(arg_p) { */
+  /*   arg_p = strtok_r(NULL, space, &next_p); */
+  /*   if (arg_p != NULL) { */
+  /*     str_len += strlen(arg_p) + 1; */
+  /*     argv[argc] = arg_p; */
+  /*     /1* printf("%s\n", argv[argc]); *1/ */
+  /*     argc++; */
+  /*   } */
+  /* } */
+
+  /* file_name = argv[0]; */
+  /* int total = (8 + (argc+2)*4 + (str_len%4 != 0)*(4-(str_len%4)) + str_len); */
+  /* /1* printf("total: %d\n", total); *1/ */
+  /* /1* printf("argc: %d\n", argc); *1/ */
+  /* /1* printf("str_len: %d\n", str_len); *1/ */
+
+  /* int esp[100]; */
+  /* /1* printf("esp: %d\n", esp); *1/ */
+  /* memset(esp, 0, 400); */
+
+  /* char *current = (char *)esp + total - str_len; */
+  /* esp[1] = argc; */
+  /* esp[2] = (int)&esp[3]; */
+  /* for (i=0; i<argc; i++) { */
+  /*   if (argv[i] == NULL) */
+  /*     break; */
+  /*   strlcpy(current, argv[i], strlen(argv[i]) + 1); */
+  /*   esp[i+3] = current; */
+  /*   /1* printf("current: %d\n", current); *1/ */
+  /*   current += strlen(argv[i]) + 1; */
+  /* } */
+  /* for (i=0; i<100; i++) { */
+  /*   /1* printf("esp %d: %s\n", i, &esp[i]); *1/ */
+  /* } */
+
+  /* off_t file_ofs; */
+  /* hex_dump(file_ofs, esp, 150, 1); */
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
-    palloc_free_page (fn_copy); 
-  return tid;
+    palloc_free_page (fn_copy);
+ return tid;
+}
+
+
+static char *
+argument_passing (void *file_name)
+{
+
+  int argc = 0;
+  char *argv[100];
+  char *arg_p;
+  size_t str_len = 0;
+  char *next_p;
+  char *s = file_name;
+  char space[2] = " ";
+  int i;
+
+  arg_p = strtok_r(s, space, &next_p);
+  if (arg_p != NULL) {
+    str_len += strlen(arg_p) + 1;
+    argv[argc] = arg_p;
+    argc++;
+  }
+
+  while(arg_p) {
+    arg_p = strtok_r(NULL, space, &next_p);
+    if (arg_p != NULL) {
+      str_len += strlen(arg_p) + 1;
+      argv[argc] = arg_p;
+      argc++;
+    }
+  }
+  char *file_rename = argv[0];
+
+  int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len;
+  int esp[100];
+  memset(esp, 0, 400);
+
+  char *current = (char *)esp + total - str_len;
+
+  esp[1] = argc;
+  esp[2] = (int)&esp[3];
+
+  for (i=0; i<argc; i++){
+    if(argv[i] == NULL)
+      break;
+    strlcpy(current, argv[i], strlen(argv[i]) + 1);
+    esp[i+3] = (int)current;
+    current += strlen(argv[i]) + 1;
+  }
+
+  printf("Before STRLC\n");
+  strlcpy(PHYS_BASE-total, (char *)esp, total);
+  printf("After STRLC\n");
+
+  return file_rename;
 }
 
 /* A thread function that loads a user process and starts it
@@ -67,29 +167,53 @@ start_process (void *file_name_)
   bool success;
 
   /* For proj.#2 */
-  int argc = 0;
-  char *argv[100];
-  char *arg_p;
-  char *next_p;
-  char space[2] = " ";
-  char **arg_array;
-  size_t str_len = 0;
+  /* int argc = 0; */
+  /* char *argv[100]; */
+  /* char *arg_p; */
+  /* size_t str_len = 0; */
+  /* char *next_p; */
+  /* char *s = file_name; */
+  /* char space[2] = " "; */
+  /* int i; */
 
-  int i;
+  /* arg_p = strtok_r(s, space, &next_p); */
+  /* if (arg_p != NULL) { */
+  /*   str_len += strlen(arg_p) + 1; */
+  /*   argv[argc] = arg_p; */
+  /*   argc++; */
+  /* } */
 
-  arg_p = strtok_r(file_name, space, &next_p);
+  /* while(arg_p) { */
+  /*   arg_p = strtok_r(NULL, space, &next_p); */
+  /*   if (arg_p != NULL) { */
+  /*     str_len += strlen(arg_p) + 1; */
+  /*     argv[argc] = arg_p; */
+  /*     argc++; */
+  /*   } */
+  /* } */
+  /* char *file_rename = argv[0]; */
 
-  while(*arg_p) {
-    argv[argc] = arg_p;
-    str_len += strlen(*arg_p);
-    arg_p = strtok_r(NULL, space, &next_p);
-    if (*arg_p != NULL){
-      argc++;
-    }
-  }
-  file_name = argv[0];
+  /* int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len; */
+  /* int esp[100]; */
+  /* memset(esp, 0, 400); */
 
-  int total = 8 + (argc+2)*4 + (4-(str_len%4)) + str_len;
+  /* char *current = (char *)esp + total - str_len; */
+
+  /* esp[1] = argc; */
+  /* esp[2] = (int)&esp[3]; */
+
+  /* for (i=0; i<argc; i++){ */
+  /*   if(argv[i] == NULL) */
+  /*     break; */
+  /*   strlcpy(current, argv[i], strlen(argv[i]) + 1); */
+  /*   esp[i+3] = (int)current; */
+  /*   current += strlen(argv[i]) + 1; */
+  /* } */
+  
+  /* off_t file_ofs; */
+  /* hex_dump(file_ofs, esp, 150, 1); */
+  /* printf("PHYS : %.8x\n",PHYS_BASE-total); */
+
 
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
@@ -97,28 +221,11 @@ start_process (void *file_name_)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
 
-  /* For proj.#2 */
-  for(i=0; i<argc; i++){
-
-    *(&if_.esp + total - i*4) = 0;
-
-    if(i==0){
-      *(&if_.esp + total) = argv[argc-i];
-      *(&if_.esp + (argc+2)*4 + 12) = 0;
-      *(&if_.esp + (argc+2)*4 + 8) = &if_.esp + total;
-    }
-    else{
-      *(&if_.esp + total - strlen(argv[argc-i+1])) = argv[argc-i];
-      *(&if_.esp + (argc+2)*4 + 8 - 4*i) = &if_.esp + total - strlen(argv[argc-i+1]);
-    }
-  }
-  *(&if_.esp + 4) = argc;
-  if_.esp = 0;
-
   success = load (file_name, &if_.eip, &if_.esp);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
+
   if (!success)
     thread_exit ();
 
@@ -144,7 +251,12 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
+  struct thread *cur = thread_current();
+
+  /* if (!cur->tid) */
+  /* while(1); */
   return -1;
+  /* return cur->tid; */
 }
 
 /* Free the current process's resources. */
@@ -271,20 +383,26 @@ load (const char *file_name, void (**eip) (void), void **esp)
   bool success = false;
   int i;
 
-  /* for proj #2 */
-  hex_dump(file_ofs, esp, 150, 0);
-
   /* Allocate and activate page directory. */
   t->pagedir = pagedir_create ();
   if (t->pagedir == NULL) 
     goto done;
   process_activate ();
 
+  printf("0\n");
+
+  char *file_rename = argument_passing(file_name);
+
+  printf("1\n");
+
   /* Open executable file. */
-  file = filesys_open (file_name);
+  file = filesys_open (file_rename);
+
+  printf("2\n");
+
   if (file == NULL) 
     {
-      printf ("load: %s: open failed\n", file_name);
+      printf ("load: %s: open failed\n", file_rename);
       goto done; 
     }
 
@@ -297,7 +415,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       || ehdr.e_phentsize != sizeof (struct Elf32_Phdr)
       || ehdr.e_phnum > 1024) 
     {
-      printf ("load: %s: error loading executable\n", file_name);
+      printf ("load: %s: error loading executable\n", file_rename);
       goto done; 
     }
 
