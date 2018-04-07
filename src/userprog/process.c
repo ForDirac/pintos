@@ -31,12 +31,24 @@ process_execute (const char *file_name)
   char *fn_copy;
   tid_t tid;
 
+  /* For proj.#2 */
+  char *argv[0];
+  char *arg_p;
+  char *next_p;
+  char space[2] = " ";
+
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
+
+  /* For proj.#2 */
+  arg_p = strtok_r(file_name, space, &next_p);
+  argv[0] = arg_p;
+
+  file_name = argv[0];
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
@@ -54,16 +66,60 @@ start_process (void *file_name_)
   struct intr_frame if_;
   bool success;
 
+  /* For proj.#2 */
+  int argc = 0;
+  char *argv[100];
+  char *arg_p;
+  char *next_p;
+  char space[2] = " ";
+  char **arg_array;
+  size_t str_len = 0;
+
+  int i;
+
+  arg_p = strtok_r(file_name, space, &next_p);
+
+  while(*arg_p) {
+    argv[argc] = arg_p;
+    str_len += strlen(*arg_p);
+    arg_p = strtok_r(NULL, space, &next_p);
+    if (*arg_p != NULL){
+      argc++;
+    }
+  }
+  file_name = argv[0];
+
+  int total = 8 + (argc+2)*4 + (4-(str_len%4)) + str_len;
+
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
+
+  /* For proj.#2 */
+  for(i=0; i<argc; i++){
+
+    *(&if_.esp + total - i*4) = 0;
+
+    if(i==0){
+      *(&if_.esp + total) = argv[argc-i];
+      *(&if_.esp + (argc+2)*4 + 12) = 0;
+      *(&if_.esp + (argc+2)*4 + 8) = &if_.esp + total;
+    }
+    else{
+      *(&if_.esp + total - strlen(argv[argc-i+1])) = argv[argc-i];
+      *(&if_.esp + (argc+2)*4 + 8 - 4*i) = &if_.esp + total - strlen(argv[argc-i+1]);
+    }
+  }
+  *(&if_.esp + 4) = argc;
+  if_.esp = 0;
+
   success = load (file_name, &if_.eip, &if_.esp);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
-  if (!success) 
+  if (!success)
     thread_exit ();
 
   /* Start the user process by simulating a return from an
@@ -214,6 +270,9 @@ load (const char *file_name, void (**eip) (void), void **esp)
   off_t file_ofs;
   bool success = false;
   int i;
+
+  /* for proj #2 */
+  hex_dump(file_ofs, esp, 150, 0);
 
   /* Allocate and activate page directory. */
   t->pagedir = pagedir_create ();
