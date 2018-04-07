@@ -21,6 +21,9 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
+/* For proj #2 */
+struct list *pid_list;
+
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
@@ -37,63 +40,6 @@ process_execute (const char *file_name)
   if (fn_copy == NULL)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
-
-  /* /1* For proj.#2 *1/ */
-
-  /* int argc = 0; */
-  /* char *argv[100]; */
-  /* char *arg_p; */
-  /* size_t str_len = 0; */
-  /* char *next_p; */
-  /* char *s = fn_copy; */
-  /* char space[2] = " "; */
-  /* int i; */
-
-  /* arg_p = strtok_r(s, space, &next_p); */
-  /* if (arg_p != NULL) { */
-  /*   str_len += strlen(arg_p) + 1; */
-  /*   argv[argc] = arg_p; */
-  /*   printf("%s\n", argv[argc]); */
-  /*   argc++; */
-  /* } */
-
-  /* while(arg_p) { */
-  /*   arg_p = strtok_r(NULL, space, &next_p); */
-  /*   if (arg_p != NULL) { */
-  /*     str_len += strlen(arg_p) + 1; */
-  /*     argv[argc] = arg_p; */
-  /*     /1* printf("%s\n", argv[argc]); *1/ */
-  /*     argc++; */
-  /*   } */
-  /* } */
-
-  /* file_name = argv[0]; */
-  /* int total = (8 + (argc+2)*4 + (str_len%4 != 0)*(4-(str_len%4)) + str_len); */
-  /* /1* printf("total: %d\n", total); *1/ */
-  /* /1* printf("argc: %d\n", argc); *1/ */
-  /* /1* printf("str_len: %d\n", str_len); *1/ */
-
-  /* int esp[100]; */
-  /* /1* printf("esp: %d\n", esp); *1/ */
-  /* memset(esp, 0, 400); */
-
-  /* char *current = (char *)esp + total - str_len; */
-  /* esp[1] = argc; */
-  /* esp[2] = (int)&esp[3]; */
-  /* for (i=0; i<argc; i++) { */
-  /*   if (argv[i] == NULL) */
-  /*     break; */
-  /*   strlcpy(current, argv[i], strlen(argv[i]) + 1); */
-  /*   esp[i+3] = current; */
-  /*   /1* printf("current: %d\n", current); *1/ */
-  /*   current += strlen(argv[i]) + 1; */
-  /* } */
-  /* for (i=0; i<100; i++) { */
-  /*   /1* printf("esp %d: %s\n", i, &esp[i]); *1/ */
-  /* } */
-
-  /* off_t file_ofs; */
-  /* hex_dump(file_ofs, esp, 150, 1); */
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
@@ -170,7 +116,6 @@ start_process (void *file_name_)
   if (!success)
     thread_exit ();
 
-  off_t file_ofs;
   memcpy((char *)(PHYS_BASE-(void *)total), (char *)esp, (size_t)total);
   if_.esp = PHYS_BASE - total;
 
