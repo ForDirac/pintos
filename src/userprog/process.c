@@ -102,11 +102,16 @@ process_execute (const char *file_name)
  return tid;
 }
 
-
-static char *
-argument_passing (void *file_name)
+/* A thread function that loads a user process and starts it
+   running. */
+static void
+start_process (void *file_name_)
 {
+  char *file_name = file_name_;
+  struct intr_frame if_;
+  bool success;
 
+  /* For Proj.#2 */
   int argc = 0;
   char *argv[100];
   char *arg_p;
@@ -138,96 +143,36 @@ argument_passing (void *file_name)
   memset(esp, 0, 400);
 
   char *current = (char *)esp + total - str_len;
+  int virtual_current = (int)PHYS_BASE - str_len;
 
   esp[1] = argc;
-  esp[2] = (int)&esp[3];
+  esp[2] = (int)PHYS_BASE - total + 12;
 
   for (i=0; i<argc; i++){
     if(argv[i] == NULL)
       break;
     strlcpy(current, argv[i], strlen(argv[i]) + 1);
-    esp[i+3] = (int)current;
+    esp[i+3] = virtual_current;
     current += strlen(argv[i]) + 1;
+    virtual_current += strlen(argv[i]) + 1;
   }
-
-  printf("Before STRLC\n");
-  strlcpy(PHYS_BASE-total, (char *)esp, total);
-  printf("After STRLC\n");
-
-  return file_rename;
-}
-
-/* A thread function that loads a user process and starts it
-   running. */
-static void
-start_process (void *file_name_)
-{
-  char *file_name = file_name_;
-  struct intr_frame if_;
-  bool success;
-
-  /* For proj.#2 */
-  /* int argc = 0; */
-  /* char *argv[100]; */
-  /* char *arg_p; */
-  /* size_t str_len = 0; */
-  /* char *next_p; */
-  /* char *s = file_name; */
-  /* char space[2] = " "; */
-  /* int i; */
-
-  /* arg_p = strtok_r(s, space, &next_p); */
-  /* if (arg_p != NULL) { */
-  /*   str_len += strlen(arg_p) + 1; */
-  /*   argv[argc] = arg_p; */
-  /*   argc++; */
-  /* } */
-
-  /* while(arg_p) { */
-  /*   arg_p = strtok_r(NULL, space, &next_p); */
-  /*   if (arg_p != NULL) { */
-  /*     str_len += strlen(arg_p) + 1; */
-  /*     argv[argc] = arg_p; */
-  /*     argc++; */
-  /*   } */
-  /* } */
-  /* char *file_rename = argv[0]; */
-
-  /* int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len; */
-  /* int esp[100]; */
-  /* memset(esp, 0, 400); */
-
-  /* char *current = (char *)esp + total - str_len; */
-
-  /* esp[1] = argc; */
-  /* esp[2] = (int)&esp[3]; */
-
-  /* for (i=0; i<argc; i++){ */
-  /*   if(argv[i] == NULL) */
-  /*     break; */
-  /*   strlcpy(current, argv[i], strlen(argv[i]) + 1); */
-  /*   esp[i+3] = (int)current; */
-  /*   current += strlen(argv[i]) + 1; */
-  /* } */
-  
-  /* off_t file_ofs; */
-  /* hex_dump(file_ofs, esp, 150, 1); */
-  /* printf("PHYS : %.8x\n",PHYS_BASE-total); */
-
-
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
 
-  success = load (file_name, &if_.eip, &if_.esp);
+  success = load (file_rename, &if_.eip, &if_.esp);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
 
   if (!success)
     thread_exit ();
+
+  off_t file_ofs;
+  memcpy((char *)(PHYS_BASE-(void *)total), (char *)esp, (size_t)total);
+  if_.esp = PHYS_BASE - total;
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -251,12 +196,7 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
-  struct thread *cur = thread_current();
-
-  /* if (!cur->tid) */
-  /* while(1); */
   return -1;
-  /* return cur->tid; */
 }
 
 /* Free the current process's resources. */
@@ -269,7 +209,7 @@ process_exit (void)
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
-  if (pd != NULL) 
+  if (pd != NULL)
     {
       /* Correct ordering here is crucial.  We must set
          cur->pagedir to NULL before switching page directories,
@@ -389,20 +329,12 @@ load (const char *file_name, void (**eip) (void), void **esp)
     goto done;
   process_activate ();
 
-  printf("0\n");
-
-  char *file_rename = argument_passing(file_name);
-
-  printf("1\n");
-
   /* Open executable file. */
-  file = filesys_open (file_rename);
-
-  printf("2\n");
+  file = filesys_open (file_name);
 
   if (file == NULL) 
     {
-      printf ("load: %s: open failed\n", file_rename);
+      printf ("load: %s: open failed\n", file_name);
       goto done; 
     }
 
@@ -415,7 +347,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       || ehdr.e_phentsize != sizeof (struct Elf32_Phdr)
       || ehdr.e_phnum > 1024) 
     {
-      printf ("load: %s: error loading executable\n", file_rename);
+      printf ("load: %s: error loading executable\n", file_name);
       goto done; 
     }
 
