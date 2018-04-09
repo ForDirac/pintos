@@ -40,29 +40,62 @@ syscall_handler (struct intr_frame *f UNUSED)
       process_wait(tid);
       break;
 
+    case SYS_CREATE:
+      break;
+
+    case SYS_REMOVE:
+      break;
+
     case SYS_OPEN:
       const char *file = (char *)(((int*)f->esp)[1]);
-      syscall_open(file);
+      int fd = syscall_open(file);
+      break;
+
+    case SYS_FILESIZE:
+      break;
+
+    case SYS_READ:
+      int fd = ((int *)f->esp)[1];
+      const void *buffer = (void *)(((int*)f->esp)[2]);
+      unsigned size = ((unsigned int *)f->esp)[3];
+      int count = syscall_read(fd, buffer, size);
       break;
 
     case SYS_WRITE:
       int fd = ((int *)f->esp)[1];
       const void *buffer = (void *)(((int*)f->esp)[2]);
       unsigned size = ((unsigned int *)f->esp)[3];
-      syscall_write(fd, buffer, size);
+      int count = syscall_write(fd, buffer, size);
       break;
 
+    case SYS_SEEK:
+      break;
+
+    case SYS_TELL:
+      break;
+
+    case SYS_CLOSE:
+      break;
+
+    default:
+      assert(0);
   }
   thread_exit ();
 }
 
-void syscall_open(const char *file){
-  
+int syscall_open(const char *file) {
+
 }
 
+int syscall_read(int fd, void *buffer, unsigned size) {
 
-void syscall_write(int fd, const void *buffer, unsigned size){
+}
 
+int syscall_write(int fd, const void *buffer, unsigned size) {
 
   strlcpy()
+}
+
+void syscall_close(int fd) {
+
 }
