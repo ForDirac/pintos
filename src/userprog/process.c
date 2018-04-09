@@ -86,8 +86,6 @@ start_process (void *file_name_)
   char *file_rename = argv[0];
 
   int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len;
-  /* To implement the malloc */
-  /* int esp[total+1]; */
   int esp[100];
   memset(esp, 0, 400);
 
