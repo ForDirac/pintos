@@ -1,231 +1,572 @@
-mkdir -p build/devices
-mkdir -p build/filesys
-mkdir -p build/lib
-mkdir -p build/lib/kernel
-mkdir -p build/lib/user
-mkdir -p build/tests/filesys/base
-mkdir -p build/tests/userprog
-mkdir -p build/tests/userprog/no-vm
-mkdir -p build/threads
-mkdir -p build/userprog
-cp ../Makefile.build build/Makefile
 cd build && make grade
-make[1]: Entering directory '/home/team46b/pintos/src/userprog/build'
-gcc-4.1 -m32 -E -nostdinc -I../.. -I../../lib -I../../lib/kernel -P ../../threads/kernel.lds.S > threads/kernel.lds.s
-gcc-4.1 -m32 -c ../../threads/start.S -o threads/start.o -Wa,--gstabs -nostdinc -I../.. -I../../lib -I../../lib/kernel -DUSERPROG -DFILESYS -MMD -MF threads/start.d
-gcc-4.1 -m32 -c ../../threads/init.c -o threads/init.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/init.d
-gcc-4.1 -m32 -c ../../threads/thread.c -o threads/thread.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/thread.d
-gcc-4.1 -m32 -c ../../threads/switch.S -o threads/switch.o -Wa,--gstabs -nostdinc -I../.. -I../../lib -I../../lib/kernel -DUSERPROG -DFILESYS -MMD -MF threads/switch.d
-gcc-4.1 -m32 -c ../../threads/interrupt.c -o threads/interrupt.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/interrupt.d
-gcc-4.1 -m32 -c ../../threads/intr-stubs.S -o threads/intr-stubs.o -Wa,--gstabs -nostdinc -I../.. -I../../lib -I../../lib/kernel -DUSERPROG -DFILESYS -MMD -MF threads/intr-stubs.d
-gcc-4.1 -m32 -c ../../threads/synch.c -o threads/synch.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/synch.d
-gcc-4.1 -m32 -c ../../threads/palloc.c -o threads/palloc.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/palloc.d
-gcc-4.1 -m32 -c ../../threads/malloc.c -o threads/malloc.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF threads/malloc.d
-gcc-4.1 -m32 -c ../../devices/pit.c -o devices/pit.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/pit.d
-gcc-4.1 -m32 -c ../../devices/timer.c -o devices/timer.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/timer.d
-gcc-4.1 -m32 -c ../../devices/kbd.c -o devices/kbd.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/kbd.d
-gcc-4.1 -m32 -c ../../devices/vga.c -o devices/vga.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/vga.d
-gcc-4.1 -m32 -c ../../devices/serial.c -o devices/serial.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/serial.d
-gcc-4.1 -m32 -c ../../devices/block.c -o devices/block.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/block.d
-gcc-4.1 -m32 -c ../../devices/partition.c -o devices/partition.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/partition.d
-gcc-4.1 -m32 -c ../../devices/ide.c -o devices/ide.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/ide.d
-gcc-4.1 -m32 -c ../../devices/input.c -o devices/input.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/input.d
-gcc-4.1 -m32 -c ../../devices/intq.c -o devices/intq.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/intq.d
-gcc-4.1 -m32 -c ../../devices/rtc.c -o devices/rtc.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/rtc.d
-gcc-4.1 -m32 -c ../../devices/shutdown.c -o devices/shutdown.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/shutdown.d
-gcc-4.1 -m32 -c ../../devices/speaker.c -o devices/speaker.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF devices/speaker.d
-gcc-4.1 -m32 -c ../../lib/debug.c -o lib/debug.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/debug.d
-gcc-4.1 -m32 -c ../../lib/random.c -o lib/random.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/random.d
-gcc-4.1 -m32 -c ../../lib/stdio.c -o lib/stdio.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/stdio.d
-gcc-4.1 -m32 -c ../../lib/stdlib.c -o lib/stdlib.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/stdlib.d
-gcc-4.1 -m32 -c ../../lib/string.c -o lib/string.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/string.d
-gcc-4.1 -m32 -c ../../lib/arithmetic.c -o lib/arithmetic.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/arithmetic.d
-gcc-4.1 -m32 -c ../../lib/ustar.c -o lib/ustar.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/ustar.d
-gcc-4.1 -m32 -c ../../lib/kernel/debug.c -o lib/kernel/debug.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/kernel/debug.d
-gcc-4.1 -m32 -c ../../lib/kernel/list.c -o lib/kernel/list.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/kernel/list.d
-gcc-4.1 -m32 -c ../../lib/kernel/bitmap.c -o lib/kernel/bitmap.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/kernel/bitmap.d
-gcc-4.1 -m32 -c ../../lib/kernel/hash.c -o lib/kernel/hash.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/kernel/hash.d
-gcc-4.1 -m32 -c ../../lib/kernel/console.c -o lib/kernel/console.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF lib/kernel/console.d
-gcc-4.1 -m32 -c ../../userprog/process.c -o userprog/process.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/process.d
-gcc-4.1 -m32 -c ../../userprog/pagedir.c -o userprog/pagedir.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/pagedir.d
-gcc-4.1 -m32 -c ../../userprog/exception.c -o userprog/exception.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/exception.d
-gcc-4.1 -m32 -c ../../userprog/syscall.c -o userprog/syscall.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/syscall.d
-gcc-4.1 -m32 -c ../../userprog/gdt.c -o userprog/gdt.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/gdt.d
-gcc-4.1 -m32 -c ../../userprog/tss.c -o userprog/tss.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF userprog/tss.d
-gcc-4.1 -m32 -c ../../filesys/filesys.c -o filesys/filesys.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/filesys.d
-gcc-4.1 -m32 -c ../../filesys/free-map.c -o filesys/free-map.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/free-map.d
-gcc-4.1 -m32 -c ../../filesys/file.c -o filesys/file.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/file.d
-gcc-4.1 -m32 -c ../../filesys/directory.c -o filesys/directory.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/directory.d
-gcc-4.1 -m32 -c ../../filesys/inode.c -o filesys/inode.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/inode.d
-gcc-4.1 -m32 -c ../../filesys/fsutil.c -o filesys/fsutil.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -MMD -MF filesys/fsutil.d
-ld -melf_i386 -T threads/kernel.lds.s -o kernel.o threads/start.o threads/init.o threads/thread.o threads/switch.o threads/interrupt.o threads/intr-stubs.o threads/synch.o threads/palloc.o threads/malloc.o devices/pit.o devices/timer.o devices/kbd.o devices/vga.o devices/serial.o devices/block.o devices/partition.o devices/ide.o devices/input.o devices/intq.o devices/rtc.o devices/shutdown.o devices/speaker.o lib/debug.o lib/random.o lib/stdio.o lib/stdlib.o lib/string.o lib/arithmetic.o lib/ustar.o lib/kernel/debug.o lib/kernel/list.o lib/kernel/bitmap.o lib/kernel/hash.o lib/kernel/console.o userprog/process.o userprog/pagedir.o userprog/exception.o userprog/syscall.o userprog/gdt.o userprog/tss.o filesys/filesys.o filesys/free-map.o filesys/file.o filesys/directory.o filesys/inode.o filesys/fsutil.o
-objcopy -R .note -R .comment -S kernel.o kernel.bin
-gcc-4.1 -m32 -c ../../threads/loader.S -o threads/loader.o -Wa,--gstabs -nostdinc -I../.. -I../../lib 
-ld -melf_i386 -N -e 0 -Ttext 0x7c00 --oformat binary -o loader.bin threads/loader.o
-gcc-4.1 -m32 -c ../../tests/userprog/args.c -o tests/userprog/args.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/args.d
-gcc-4.1 -m32 -c ../../tests/lib.c -o tests/lib.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/lib.d
-gcc-4.1 -m32 -c ../../lib/user/entry.c -o lib/user/entry.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF lib/user/entry.d
-gcc-4.1 -m32 -c ../../lib/user/debug.c -o lib/user/debug.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF lib/user/debug.d
-gcc-4.1 -m32 -c ../../lib/user/syscall.c -o lib/user/syscall.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF lib/user/syscall.d
-gcc-4.1 -m32 -c ../../lib/user/console.c -o lib/user/console.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF lib/user/console.d
-rm -f libc.a
-ar r libc.a lib/debug.o lib/random.o lib/stdio.o lib/stdlib.o lib/string.o lib/arithmetic.o lib/ustar.o lib/user/debug.o lib/user/syscall.o lib/user/console.o
-ranlib libc.a
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/args.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/args-none
+make[1]: Entering directory '/home/team46a/pintos/src/userprog/build'
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-none -a args-none -- -q  -f run args-none < /dev/null 2> tests/userprog/args-none.errors > tests/userprog/args-none.output
 perl -I../.. ../../tests/userprog/args-none.ck tests/userprog/args-none tests/userprog/args-none.result
 FAIL tests/userprog/args-none
-Run didn't produce any output
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/args.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/args-single
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (args) begin
+  (args) argc = 1
+  (args) argv[0] = 'args-none'
+  (args) argv[1] = null
+  (args) end
+  args-none: exit(0)
+Differences in `diff -u' format:
+  (args) begin
+  (args) argc = 1
+  (args) argv[0] = 'args-none'
+  (args) argv[1] = null
+  (args) end
+- args-none: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-single -a args-single -- -q  -f run 'args-single onearg' < /dev/null 2> tests/userprog/args-single.errors > tests/userprog/args-single.output
 perl -I../.. ../../tests/userprog/args-single.ck tests/userprog/args-single tests/userprog/args-single.result
 FAIL tests/userprog/args-single
-Run didn't produce any output
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/args.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/args-multiple
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (args) begin
+  (args) argc = 2
+  (args) argv[0] = 'args-single'
+  (args) argv[1] = 'onearg'
+  (args) argv[2] = null
+  (args) end
+  args-single: exit(0)
+Differences in `diff -u' format:
+  (args) begin
+  (args) argc = 2
+  (args) argv[0] = 'args-single'
+  (args) argv[1] = 'onearg'
+  (args) argv[2] = null
+  (args) end
+- args-single: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-multiple -a args-multiple -- -q  -f run 'args-multiple some arguments for you!' < /dev/null 2> tests/userprog/args-multiple.errors > tests/userprog/args-multiple.output
 perl -I../.. ../../tests/userprog/args-multiple.ck tests/userprog/args-multiple tests/userprog/args-multiple.result
 FAIL tests/userprog/args-multiple
-Run didn't produce any output
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/args.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/args-many
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (args) begin
+  (args) argc = 5
+  (args) argv[0] = 'args-multiple'
+  (args) argv[1] = 'some'
+  (args) argv[2] = 'arguments'
+  (args) argv[3] = 'for'
+  (args) argv[4] = 'you!'
+  (args) argv[5] = null
+  (args) end
+  args-multiple: exit(0)
+Differences in `diff -u' format:
+  (args) begin
+  (args) argc = 5
+  (args) argv[0] = 'args-multiple'
+  (args) argv[1] = 'some'
+  (args) argv[2] = 'arguments'
+  (args) argv[3] = 'for'
+  (args) argv[4] = 'you!'
+  (args) argv[5] = null
+  (args) end
+- args-multiple: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-many -a args-many -- -q  -f run 'args-many a b c d e f g h i j k l m n o p q r s t u v' < /dev/null 2> tests/userprog/args-many.errors > tests/userprog/args-many.output
 perl -I../.. ../../tests/userprog/args-many.ck tests/userprog/args-many tests/userprog/args-many.result
 FAIL tests/userprog/args-many
-Run didn't produce any output
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/args.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/args-dbl-space
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (args) begin
+  (args) argc = 23
+  (args) argv[0] = 'args-many'
+  (args) argv[1] = 'a'
+  (args) argv[2] = 'b'
+  (args) argv[3] = 'c'
+  (args) argv[4] = 'd'
+  (args) argv[5] = 'e'
+  (args) argv[6] = 'f'
+  (args) argv[7] = 'g'
+  (args) argv[8] = 'h'
+  (args) argv[9] = 'i'
+  (args) argv[10] = 'j'
+  (args) argv[11] = 'k'
+  (args) argv[12] = 'l'
+  (args) argv[13] = 'm'
+  (args) argv[14] = 'n'
+  (args) argv[15] = 'o'
+  (args) argv[16] = 'p'
+  (args) argv[17] = 'q'
+  (args) argv[18] = 'r'
+  (args) argv[19] = 's'
+  (args) argv[20] = 't'
+  (args) argv[21] = 'u'
+  (args) argv[22] = 'v'
+  (args) argv[23] = null
+  (args) end
+  args-many: exit(0)
+Differences in `diff -u' format:
+  (args) begin
+  (args) argc = 23
+  (args) argv[0] = 'args-many'
+  (args) argv[1] = 'a'
+  (args) argv[2] = 'b'
+  (args) argv[3] = 'c'
+  (args) argv[4] = 'd'
+  (args) argv[5] = 'e'
+  (args) argv[6] = 'f'
+  (args) argv[7] = 'g'
+  (args) argv[8] = 'h'
+  (args) argv[9] = 'i'
+  (args) argv[10] = 'j'
+  (args) argv[11] = 'k'
+  (args) argv[12] = 'l'
+  (args) argv[13] = 'm'
+  (args) argv[14] = 'n'
+  (args) argv[15] = 'o'
+  (args) argv[16] = 'p'
+  (args) argv[17] = 'q'
+  (args) argv[18] = 'r'
+  (args) argv[19] = 's'
+  (args) argv[20] = 't'
+  (args) argv[21] = 'u'
+  (args) argv[22] = 'v'
+  (args) argv[23] = null
+  (args) end
+- args-many: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-dbl-space -a args-dbl-space -- -q  -f run 'args-dbl-space two  spaces!' < /dev/null 2> tests/userprog/args-dbl-space.errors > tests/userprog/args-dbl-space.output
 perl -I../.. ../../tests/userprog/args-dbl-space.ck tests/userprog/args-dbl-space tests/userprog/args-dbl-space.result
 FAIL tests/userprog/args-dbl-space
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/sc-bad-sp.c -o tests/userprog/sc-bad-sp.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/sc-bad-sp.d
-gcc-4.1 -m32 -c ../../tests/main.c -o tests/main.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/main.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/sc-bad-sp.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/sc-bad-sp
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (args) begin
+  (args) argc = 3
+  (args) argv[0] = 'args-dbl-space'
+  (args) argv[1] = 'two'
+  (args) argv[2] = 'spaces!'
+  (args) argv[3] = null
+  (args) end
+  args-dbl-space: exit(0)
+Differences in `diff -u' format:
+  (args) begin
+  (args) argc = 3
+  (args) argv[0] = 'args-dbl-space'
+  (args) argv[1] = 'two'
+  (args) argv[2] = 'spaces!'
+  (args) argv[3] = null
+  (args) end
+- args-dbl-space: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-bad-sp -a sc-bad-sp -- -q  -f run sc-bad-sp < /dev/null 2> tests/userprog/sc-bad-sp.errors > tests/userprog/sc-bad-sp.output
 perl -I../.. ../../tests/userprog/sc-bad-sp.ck tests/userprog/sc-bad-sp tests/userprog/sc-bad-sp.result
 FAIL tests/userprog/sc-bad-sp
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/sc-bad-arg.c -o tests/userprog/sc-bad-arg.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/sc-bad-arg.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/sc-bad-arg.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/sc-bad-arg
+Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0028950 0xc002bb2c 0xc002bbd4 0xc0021aed 0xc0021c1f 0xc002be01 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bb2c: kill (.../userprog/exception.c:105)
+0xc002bbd4: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002be01: syscall_handler (.../../userprog/syscall.c:56)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/sc-bad-sp:
+0x080480ad: test_main (...s/userprog/sc-bad-sp.c:19)
+0x080480f1: main (...ild/../../tests/main.c:13)
+0x0804870e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-bad-arg -a sc-bad-arg -- -q  -f run sc-bad-arg < /dev/null 2> tests/userprog/sc-bad-arg.errors > tests/userprog/sc-bad-arg.output
 perl -I../.. ../../tests/userprog/sc-bad-arg.ck tests/userprog/sc-bad-arg tests/userprog/sc-bad-arg.result
 FAIL tests/userprog/sc-bad-arg
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/sc-boundary.c -o tests/userprog/sc-boundary.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/sc-boundary.d
-gcc-4.1 -m32 -c ../../tests/userprog/boundary.c -o tests/userprog/boundary.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/boundary.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/sc-boundary.o tests/userprog/boundary.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/sc-boundary
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (sc-bad-arg) begin
+  sc-bad-arg: exit(-1)
+Differences in `diff -u' format:
+  (sc-bad-arg) begin
+- sc-bad-arg: exit(-1)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-boundary -a sc-boundary -- -q  -f run sc-boundary < /dev/null 2> tests/userprog/sc-boundary.errors > tests/userprog/sc-boundary.output
 perl -I../.. ../../tests/userprog/sc-boundary.ck tests/userprog/sc-boundary tests/userprog/sc-boundary.result
 FAIL tests/userprog/sc-boundary
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/sc-boundary-2.c -o tests/userprog/sc-boundary-2.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/sc-boundary-2.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/sc-boundary-2.o tests/userprog/boundary.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/sc-boundary-2
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (sc-boundary) begin
+  sc-boundary: exit(42)
+Differences in `diff -u' format:
+  (sc-boundary) begin
+- sc-boundary: exit(42)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-boundary-2 -a sc-boundary-2 -- -q  -f run sc-boundary-2 < /dev/null 2> tests/userprog/sc-boundary-2.errors > tests/userprog/sc-boundary-2.output
 perl -I../.. ../../tests/userprog/sc-boundary-2.ck tests/userprog/sc-boundary-2 tests/userprog/sc-boundary-2.result
 FAIL tests/userprog/sc-boundary-2
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/halt.c -o tests/userprog/halt.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/halt.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/halt.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/halt
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (sc-boundary-2) begin
+  sc-boundary-2: exit(67)
+Differences in `diff -u' format:
+  (sc-boundary-2) begin
+- sc-boundary-2: exit(67)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/halt -a halt -- -q  -f run halt < /dev/null 2> tests/userprog/halt.errors > tests/userprog/halt.output
 perl -I../.. ../../tests/userprog/halt.ck tests/userprog/halt tests/userprog/halt.result
-FAIL tests/userprog/halt
-missing 'begin' message
-gcc-4.1 -m32 -c ../../tests/userprog/exit.c -o tests/userprog/exit.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/exit.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/exit.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/exit
+pass tests/userprog/halt
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/exit -a exit -- -q  -f run exit < /dev/null 2> tests/userprog/exit.errors > tests/userprog/exit.output
 perl -I../.. ../../tests/userprog/exit.ck tests/userprog/exit tests/userprog/exit.result
 FAIL tests/userprog/exit
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-normal.c -o tests/userprog/create-normal.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-normal.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-normal.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-normal
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (exit) begin
+  exit: exit(57)
+Differences in `diff -u' format:
+  (exit) begin
+- exit: exit(57)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-normal -a create-normal -- -q  -f run create-normal < /dev/null 2> tests/userprog/create-normal.errors > tests/userprog/create-normal.output
 perl -I../.. ../../tests/userprog/create-normal.ck tests/userprog/create-normal tests/userprog/create-normal.result
 FAIL tests/userprog/create-normal
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-empty.c -o tests/userprog/create-empty.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-empty.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-empty.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-empty
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-normal) begin
+  (create-normal) create quux.dat
+  (create-normal) end
+  create-normal: exit(0)
+Differences in `diff -u' format:
+  (create-normal) begin
+  (create-normal) create quux.dat
+  (create-normal) end
+- create-normal: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-empty -a create-empty -- -q  -f run create-empty < /dev/null 2> tests/userprog/create-empty.errors > tests/userprog/create-empty.output
 perl -I../.. ../../tests/userprog/create-empty.ck tests/userprog/create-empty tests/userprog/create-empty.result
 FAIL tests/userprog/create-empty
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-null.c -o tests/userprog/create-null.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-null.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-null.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-null
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-empty) begin
+  (create-empty) create(""): 0
+  (create-empty) end
+  create-empty: exit(0)
+Differences in `diff -u' format:
+  (create-empty) begin
+  (create-empty) create(""): 0
+  (create-empty) end
+- create-empty: exit(0)
+Acceptable output:
+  (create-empty) begin
+  create-empty: exit(-1)
+Differences in `diff -u' format:
+  (create-empty) begin
+- create-empty: exit(-1)
++ (create-empty) create(""): 0
++ (create-empty) end
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-null -a create-null -- -q  -f run create-null < /dev/null 2> tests/userprog/create-null.errors > tests/userprog/create-null.output
 perl -I../.. ../../tests/userprog/create-null.ck tests/userprog/create-null tests/userprog/create-null.result
 FAIL tests/userprog/create-null
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-bad-ptr.c -o tests/userprog/create-bad-ptr.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-bad-ptr.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-bad-ptr.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-bad-ptr
+Kernel panic in run: PANIC at ../../filesys/directory.c:149 in dir_add(): assertion `name != NULL' failed.
+Call stack: 0xc0028950 0xc002ce9d 0xc002c41e 0xc002be52 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002ce9d: dir_add (..../filesys/directory.c:152)
+0xc002c41e: filesys_create (..../../filesys/filesys.c:53)
+0xc002be52: syscall_handler (.../../userprog/syscall.c:91)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/create-null:
+0x0804a108: create (.../../lib/user/syscall.c:93)
+0x080480ba: test_main (...userprog/create-null.c:10)
+0x08048107: main (...ild/../../tests/main.c:13)
+0x0804872e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-bad-ptr -a create-bad-ptr -- -q  -f run create-bad-ptr < /dev/null 2> tests/userprog/create-bad-ptr.errors > tests/userprog/create-bad-ptr.output
 perl -I../.. ../../tests/userprog/create-bad-ptr.ck tests/userprog/create-bad-ptr tests/userprog/create-bad-ptr.result
 FAIL tests/userprog/create-bad-ptr
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-long.c -o tests/userprog/create-long.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-long.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-long.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-long
+Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0028950 0xc002bb2c 0xc002bbd4 0xc0021aed 0xc0021c1f 0xc002ce9d 0xc002c41e 0xc002be52 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bb2c: kill (.../userprog/exception.c:105)
+0xc002bbd4: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002ce9d: dir_add (..../filesys/directory.c:152)
+0xc002c41e: filesys_create (..../../filesys/filesys.c:53)
+0xc002be52: syscall_handler (.../../userprog/syscall.c:91)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/create-bad-ptr:
+0x0804a108: create (.../../lib/user/syscall.c:93)
+0x080480ba: test_main (...rprog/create-bad-ptr.c:11)
+0x08048107: main (...ild/../../tests/main.c:13)
+0x0804872e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-long -a create-long -- -q  -f run create-long < /dev/null 2> tests/userprog/create-long.errors > tests/userprog/create-long.output
 perl -I../.. ../../tests/userprog/create-long.ck tests/userprog/create-long tests/userprog/create-long.result
 FAIL tests/userprog/create-long
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-exists.c -o tests/userprog/create-exists.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-exists.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-exists.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-exists
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-long) begin
+  (create-long) create("x..."): 0
+  (create-long) end
+  create-long: exit(0)
+Differences in `diff -u' format:
+  (create-long) begin
+  (create-long) create("x..."): 0
+  (create-long) end
+- create-long: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-exists -a create-exists -- -q  -f run create-exists < /dev/null 2> tests/userprog/create-exists.errors > tests/userprog/create-exists.output
 perl -I../.. ../../tests/userprog/create-exists.ck tests/userprog/create-exists tests/userprog/create-exists.result
 FAIL tests/userprog/create-exists
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/create-bound.c -o tests/userprog/create-bound.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/create-bound.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/create-bound.o tests/userprog/boundary.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/create-bound
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-exists) begin
+  (create-exists) create quux.dat
+  (create-exists) create warble.dat
+  (create-exists) try to re-create quux.dat
+  (create-exists) create baffle.dat
+  (create-exists) try to re-create quux.dat
+  (create-exists) end
+  create-exists: exit(0)
+Differences in `diff -u' format:
+  (create-exists) begin
+  (create-exists) create quux.dat
+  (create-exists) create warble.dat
+  (create-exists) try to re-create quux.dat
+  (create-exists) create baffle.dat
+  (create-exists) try to re-create quux.dat
+  (create-exists) end
+- create-exists: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-bound -a create-bound -- -q  -f run create-bound < /dev/null 2> tests/userprog/create-bound.errors > tests/userprog/create-bound.output
 perl -I../.. ../../tests/userprog/create-bound.ck tests/userprog/create-bound tests/userprog/create-bound.result
 FAIL tests/userprog/create-bound
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-normal.c -o tests/userprog/open-normal.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-normal.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-normal.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-normal
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-bound) begin
+  (create-bound) create("quux.dat"): 1
+  (create-bound) end
+  create-bound: exit(0)
+Differences in `diff -u' format:
+  (create-bound) begin
+  (create-bound) create("quux.dat"): 1
+  (create-bound) end
+- create-bound: exit(0)
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-normal -a open-normal -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run open-normal < /dev/null 2> tests/userprog/open-normal.errors > tests/userprog/open-normal.output
 perl -I../.. ../../tests/userprog/open-normal.ck tests/userprog/open-normal tests/userprog/open-normal.result
 FAIL tests/userprog/open-normal
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-missing.c -o tests/userprog/open-missing.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-missing.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-missing.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-missing
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048101 0x804871e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-normal:
+0x0804a128: open (...../lib/user/syscall.c:105)
+0x080480b2: test_main (...userprog/open-normal.c:11)
+0x08048101: main (...ild/../../tests/main.c:13)
+0x0804871e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-missing -a open-missing -- -q  -f run open-missing < /dev/null 2> tests/userprog/open-missing.errors > tests/userprog/open-missing.output
 perl -I../.. ../../tests/userprog/open-missing.ck tests/userprog/open-missing tests/userprog/open-missing.result
 FAIL tests/userprog/open-missing
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-boundary.c -o tests/userprog/open-boundary.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-boundary.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-boundary.o tests/userprog/boundary.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-boundary
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048101 0x804871e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-missing:
+0x0804a128: open (...../lib/user/syscall.c:105)
+0x080480b2: test_main (...serprog/open-missing.c:11)
+0x08048101: main (...ild/../../tests/main.c:13)
+0x0804871e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-boundary -a open-boundary -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run open-boundary < /dev/null 2> tests/userprog/open-boundary.errors > tests/userprog/open-boundary.output
 perl -I../.. ../../tests/userprog/open-boundary.ck tests/userprog/open-boundary tests/userprog/open-boundary.result
 FAIL tests/userprog/open-boundary
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-empty.c -o tests/userprog/open-empty.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-empty.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-empty.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-empty
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a1c8 0x80480c6 0x804819a 0x80487be
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-boundary:
+0x0804a1c8: open (...../lib/user/syscall.c:105)
+0x080480c6: test_main (...erprog/open-boundary.c:12)
+0x0804819a: main (...ild/../../tests/main.c:13)
+0x080487be: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-empty -a open-empty -- -q  -f run open-empty < /dev/null 2> tests/userprog/open-empty.errors > tests/userprog/open-empty.output
 perl -I../.. ../../tests/userprog/open-empty.ck tests/userprog/open-empty tests/userprog/open-empty.result
 FAIL tests/userprog/open-empty
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-null.c -o tests/userprog/open-null.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-null.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-null.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-null
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048101 0x804871e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-empty:
+0x0804a128: open (...../lib/user/syscall.c:105)
+0x080480b2: test_main (.../userprog/open-empty.c:11)
+0x08048101: main (...ild/../../tests/main.c:13)
+0x0804871e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-null -a open-null -- -q  -f run open-null < /dev/null 2> tests/userprog/open-null.errors > tests/userprog/open-null.output
 perl -I../.. ../../tests/userprog/open-null.ck tests/userprog/open-null tests/userprog/open-null.result
 FAIL tests/userprog/open-null
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-bad-ptr.c -o tests/userprog/open-bad-ptr.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-bad-ptr.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-bad-ptr.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-bad-ptr
+Kernel panic in run: PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
+Call stack: 0xc0028950 0xc002cdf1 0xc002c3a8 0xc002bea2 0xc0021aed 0xc0021c1f 0x804a118 0x80480b2 0x80480ec 0x804870e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002cdf1: dir_lookup (..../filesys/directory.c:127)
+0xc002c3a8: filesys_open (..../../filesys/filesys.c:74)
+0xc002bea2: syscall_handler (...../userprog/syscall.c:103)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-null:
+0x0804a118: open (...../lib/user/syscall.c:105)
+0x080480b2: test_main (...s/userprog/open-null.c:12)
+0x080480ec: main (...ild/../../tests/main.c:13)
+0x0804870e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-bad-ptr -a open-bad-ptr -- -q  -f run open-bad-ptr < /dev/null 2> tests/userprog/open-bad-ptr.errors > tests/userprog/open-bad-ptr.output
 perl -I../.. ../../tests/userprog/open-bad-ptr.ck tests/userprog/open-bad-ptr tests/userprog/open-bad-ptr.result
 FAIL tests/userprog/open-bad-ptr
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/open-twice.c -o tests/userprog/open-twice.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/open-twice.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/open-twice.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/open-twice
+Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc0028950 0xc002bb2c 0xc002bbd4 0xc0021aed 0xc0021c1f 0xc0027b6f 0xc002cc15 0xc002ce00 0xc002c3a8 0xc002bea2 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048106 0x804871e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bb2c: kill (.../userprog/exception.c:105)
+0xc002bbd4: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027b6f: strcmp (...ild/../../lib/string.c:81)
+0xc002cc15: lookup (..../filesys/directory.c:103)
+0xc002ce00: dir_lookup (..../filesys/directory.c:127)
+0xc002c3a8: filesys_open (..../../filesys/filesys.c:74)
+0xc002bea2: syscall_handler (...../userprog/syscall.c:103)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-bad-ptr:
+0x0804a128: open (...../lib/user/syscall.c:105)
+0x080480b2: test_main (...serprog/open-bad-ptr.c:11)
+0x08048106: main (...ild/../../tests/main.c:13)
+0x0804871e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-twice -a open-twice -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run open-twice < /dev/null 2> tests/userprog/open-twice.errors > tests/userprog/open-twice.output
 perl -I../.. ../../tests/userprog/open-twice.ck tests/userprog/open-twice tests/userprog/open-twice.result
 FAIL tests/userprog/open-twice
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/close-normal.c -o tests/userprog/close-normal.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/close-normal.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/close-normal.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/close-normal
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a188 0x80480b3 0x8048165 0x804877e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/open-twice:
+0x0804a188: open (...../lib/user/syscall.c:105)
+0x080480b3: test_main (.../userprog/open-twice.c:13)
+0x08048165: main (...ild/../../tests/main.c:13)
+0x0804877e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/close-normal -a close-normal -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run close-normal < /dev/null 2> tests/userprog/close-normal.errors > tests/userprog/close-normal.output
 perl -I../.. ../../tests/userprog/close-normal.ck tests/userprog/close-normal tests/userprog/close-normal.result
 FAIL tests/userprog/close-normal
-Run didn't produce any output
-gcc-4.1 -m32 -c ../../tests/userprog/close-twice.c -o tests/userprog/close-twice.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/user -I. -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers  -MMD -MF tests/userprog/close-twice.d
-gcc-4.1 -m32  -Wl,--build-id=none -nostdlib -static -Wl,-T,../../lib/user/user.lds tests/userprog/close-twice.o tests/main.o tests/lib.o lib/user/entry.o libc.a -o tests/userprog/close-twice
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a148 0x80480bf 0x8048124 0x804873e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/close-normal:
+0x0804a148: open (...../lib/user/syscall.c:105)
+0x080480bf: test_main (...serprog/close-normal.c:11)
+0x08048124: main (...ild/../../tests/main.c:13)
+0x0804873e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/close-twice -a close-twice -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run close-twice < /dev/null 2> tests/userprog/close-twice.errors > tests/userprog/close-twice.output
-../../tests/Make.tests:73: recipe for target 'tests/userprog/close-twice.output' failed
+perl -I../.. ../../tests/userprog/close-twice.ck tests/userprog/close-twice tests/userprog/close-twice.result
+FAIL tests/userprog/close-twice
+Kernel panic in run: PANIC at ../../lib/string.c:78 in strcmp(): assertion `a != NULL' failed.
+Call stack: 0xc0028950 0xc0027b69 0xc002bec7 0xc0021aed 0xc0021c1f 0x804a168 0x80480bf 0x8048138 0x804875e
+Translation of call stack:
+In kernel.o:
+0xc0028950: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0027b69: strcmp (...ild/../../lib/string.c:79)
+0xc002bec7: syscall_handler (...../userprog/syscall.c:109)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+In tests/userprog/close-twice:
+0x0804a168: open (...../lib/user/syscall.c:105)
+0x080480bf: test_main (...userprog/close-twice.c:13)
+0x08048138: main (...ild/../../tests/main.c:13)
+0x0804875e: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/close-stdin -a close-stdin -- -q  -f run close-stdin < /dev/null 2> tests/userprog/close-stdin.errors > tests/userprog/close-stdin.output
+perl -I../.. ../../tests/userprog/close-stdin.ck tests/userprog/close-stdin tests/userprog/close-stdin.result
+FAIL tests/userprog/close-stdin
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (close-stdin) begin
+  (close-stdin) end
+  close-stdin: exit(0)
+Differences in `diff -u' format:
+  (close-stdin) begin
+  (close-stdin) end
+- close-stdin: exit(0)
+Acceptable output:
+  (close-stdin) begin
+  close-stdin: exit(-1)
+Differences in `diff -u' format:
+  (close-stdin) begin
+- close-stdin: exit(-1)
++ (close-stdin) end
+pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/close-stdout -a close-stdout -- -q  -f run close-stdout < /dev/null 2> tests/userprog/close-stdout.errors > tests/userprog/close-stdout.output
+../../tests/Make.tests:73: recipe for target 'tests/userprog/close-stdout.output' failed
 ../Makefile.kernel:10: recipe for target 'grade' failed

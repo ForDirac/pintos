@@ -221,9 +221,13 @@ thread_create (const char *name, int priority,
 
   intr_set_level (old_level);
 
-  /* (Proj.#1) Compare between current thread's priority and create one's */
   struct thread *t_cur = thread_current();
 
+  /* For Proj. #2 */
+  t->parent = t_cur;
+
+
+  /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
   if (t_cur->priority <= t->priority)
     thread_yield();
@@ -315,6 +319,9 @@ void
 thread_exit (void) 
 {
   ASSERT (!intr_context ());
+
+  /* For proj.#2 */
+  sema_up(&thread_current()->parent->sema);
 
 #ifdef USERPROG
   process_exit ();
@@ -517,6 +524,9 @@ init_thread (struct thread *t, const char *name, int priority)
   list_init(&t->donation_list);
   t->temp = NULL;
 
+  /* For Proj.#2 */
+  sema_init(&t->sema, 0);
+
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
 }
@@ -543,12 +553,15 @@ static struct thread *
 next_thread_to_run (void) 
 {
   /* list_less_func *less = &compare; */
-
   if (list_empty (&ready_list))
     return idle_thread;
-  else
-    /* return list_entry(list_max(&ready_list, &compare_m, NULL), struct thread, elem); */
-    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+  else{
+    /* For proj.#2 */
+    struct thread *t = list_entry (list_pop_front (&ready_list), struct thread, elem);
+    ASSERT(t->status == THREAD_READY);
+    return t;
+    /* return list_entry (list_pop_front (&ready_list), struct thread, elem); */
+  }
 }
 
 /* Completes a thread switch by activating the new thread's page
