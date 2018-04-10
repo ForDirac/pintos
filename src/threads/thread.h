@@ -4,6 +4,7 @@
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+#include "threads/synch.h"
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -87,6 +88,10 @@ struct thread
     struct list donated_priorities;
     struct list donation_list;
     struct thread *temp;
+
+    /* To implement for Proj.#2 */
+    struct thread *parent;
+    struct semaphore sema;
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */
