@@ -89,9 +89,10 @@ struct thread
     struct list donation_list;
     struct thread *temp;
 
-    /* To implement for Proj.#2 */
-    struct thread *parent;
-    struct semaphore sema;
+#ifdef USERPROG
+    /* To implement for Proj.#2, To store the File_descriptor */
+    struct list file_list;
+#endif
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */
@@ -112,6 +113,23 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
+
+/* For proj.#2, To insert in the file_list*/
+struct fd
+{
+  int fd;
+  const char *file_name;
+  struct file* file_p;
+  struct list_elem elem;
+};
+
+/* struct child */
+/* { */
+/*   tid_t tid; */
+/*   int exit_status; */
+/*   struct list_elem elem; */
+/*   struct semaphore sema; */
+/* }; */
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.

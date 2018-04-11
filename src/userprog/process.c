@@ -17,6 +17,8 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "userprog/syscall.h"
+#include "threads/malloc.h"
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -32,6 +34,10 @@ tid_t
 process_execute (const char *file_name) 
 {
   char *fn_copy;
+
+  /* For proj.#2 */
+  struct thread *t = thread_current();
+
   tid_t tid;
 
   /* Make a copy of FILE_NAME.
@@ -45,6 +51,20 @@ process_execute (const char *file_name)
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy);
+
+  /* For proj.#2 */
+  struct member *new_member = (struct member *) malloc(sizeof(struct member));
+  /* init the member's property */
+  new_member->child_tid = tid;
+  new_member->parent = t;
+  new_member->exit_status = 0;
+  new_member->is_exit = 0;
+  sema_init(&new_member->sema, 0);
+
+  lock_acquire(&family_lock);
+  list_push_back(&family, &new_member->elem);
+  lock_release(&family_lock);
+
  return tid;
 }
 
@@ -142,7 +162,48 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
-  sema_down(&thread_current()->sema);
+  struct list_elem *e;
+  bool child_exists = 0;
+  struct member *member;
+
+  lock_acquire(&family_lock);
+  ASSERT(!list_empty(&family));
+  for(e=list_begin(&family); e != list_end(&family); e = list_next(e)){
+    member = list_entry(e, struct member, elem);
+    if(child_tid == member->child_tid){
+      child_exists = 1;
+      break;
+    }
+  }
+  lock_release(&family_lock);
+
+  if (child_exists)
+    sema_down(&member->sema);
+  else
+    return -1;
+
+  if(!member->is_exit){
+    return -1;
+  }
+
+  int exit_status = member->exit_status;
+
+  list_remove(&member->elem);
+  free(member);
+
+  return exit_status;
+  /* return member->exit_status; */
+  /* struct thread *t = thread_current(); */
+  /* struct list *list = &t->children; */
+  /* struct list_elem *e; */
+
+  /* for(e=list_begin(list); e!=list_end(list); e=list_next(e)){ */
+  /*   struct child *child = list_entry(e, struct child, elem); */
+  /*   if(child_tid == child->tid){ */
+  /*     sema_down(&child->sema); */
+  /*     break; */
+  /*   } */
+  /* } */
   /* return -1; */
 }
 

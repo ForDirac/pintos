@@ -224,7 +224,7 @@ thread_create (const char *name, int priority,
   struct thread *t_cur = thread_current();
 
   /* For Proj. #2 */
-  t->parent = t_cur;
+  /* t->parent = t_cur; */
 
 
   /* (Proj.#1) Compare between current thread's priority and create one's */
@@ -319,9 +319,6 @@ void
 thread_exit (void) 
 {
   ASSERT (!intr_context ());
-
-  /* For proj.#2 */
-  sema_up(&thread_current()->parent->sema);
 
 #ifdef USERPROG
   process_exit ();
@@ -482,7 +479,7 @@ kernel_thread (thread_func *function, void *aux)
   function (aux);       /* Execute the thread function. */
   thread_exit ();       /* If function() returns, kill the thread. */
 }
-
+
 /* Returns the running thread. */
 struct thread *
 running_thread (void) 
@@ -524,8 +521,14 @@ init_thread (struct thread *t, const char *name, int priority)
   list_init(&t->donation_list);
   t->temp = NULL;
 
-  /* For Proj.#2 */
-  sema_init(&t->sema, 0);
+  /* For Proj.#2, To initialize the file_list about file descriptor*/
+  list_init(&t->file_list);
+  struct fd std_in;
+  struct fd std_out;
+  std_in.fd = 0;
+  std_out.fd = 1;
+  list_push_back(&t->file_list, &std_in.elem);
+  list_push_back(&t->file_list, &std_out.elem);
 
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);

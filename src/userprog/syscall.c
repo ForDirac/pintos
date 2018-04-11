@@ -10,19 +10,18 @@
 #include "filesys/file.h"
 #include "lib/kernel/console.h"
 #include "devices/input.h"
+#include "threads/synch.h"
 
 static void syscall_handler (struct intr_frame *);
 
 /* For Proj.#2 */
-struct fd
-{
-  int fd;
-  const char *file_name;
-  struct file* file_p;
-  struct list_elem elem;
-};
-
-struct list file_list;
+/* struct fd */
+/* { */
+/*   int fd; */
+/*   const char *file_name; */
+/*   struct file* file_p; */
+/*   struct list_elem elem; */
+/* }; */
 
 
 /* For Proj.#2 */
@@ -37,13 +36,8 @@ syscall_init (void)
 {
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
   /* For proj.#2 */
-  list_init(&file_list);
-  struct fd std_in;
-  struct fd std_out;
-  std_in.fd = 0;
-  std_out.fd = 1;
-  list_push_back(&file_list, &std_in.elem);
-  list_push_back(&file_list, &std_out.elem);
+  list_init(&family); // To store the parent, child_tid, exit_status, sema
+  lock_init(&family_lock);
 }
 
 static void
@@ -54,6 +48,7 @@ syscall_handler (struct intr_frame *f UNUSED)
   /* enum syscall_nr = *(unsigned int *)f->esp; */
 
   switch(*(unsigned int *)f->esp) {
+
     case SYS_HALT:
     {
       shutdown_power_off();
@@ -63,17 +58,46 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_EXIT:
     {
       int status = ((int *)f->esp)[1];
+      struct thread *t = thread_current();
+      struct list_elem *e;
+      char *next_p;
+      char space[2] = " ";
+      bool find = 0;
+      struct member *member;
+
+      char *file_name = strtok_r(t->name, space, &next_p);
+
+      lock_acquire(&family_lock);
+      for(e = list_begin(&family); e != list_end(&family); e = list_next(e)){
+        member = list_entry(e, struct member, elem);
+        if(t->tid == member->child_tid){
+          member->is_exit = 1;
+          member->exit_status = status;
+          find = 1;
+        }
+      }
+      lock_release(&family_lock);
+
+
+      if(!find)
+        status = -1;
+      else
+        sema_up(&member->sema);
+
       f->eax = status;
+      printf("%s: exit(%d)\n", file_name, status);
+
       thread_exit();
       break;
-      /* return status; */
     }
 
     case SYS_EXEC:
     {
       /* We suppose that pintos have single thread system! */
       const char *file = (char *)(((int*)f->esp)[1]);
+
       tid_t tid = process_execute(file);
+
       f->eax = tid;
       break;
     }
@@ -81,7 +105,10 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_WAIT:
     {
       tid_t tid = ((int *)f->esp)[1];
-      process_wait(tid);
+
+      int exit_status = process_wait(tid);
+
+      f->eax = exit_status;
       break;
     }
 
@@ -103,11 +130,12 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_OPEN:
     {
       const char *file = (char *)(((int*)f->esp)[1]);
+      struct thread *t = thread_current();
       struct file* file_p = filesys_open(file);
       struct list_elem *e;
       int i = 0;
 
-      for(e = list_begin(&file_list); e != list_end(&file_list); e = list_next(e)){
+      for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *_fd = list_entry(e, struct fd, elem);
         if(strcmp(_fd->file_name, file) == 0){
           f->eax = _fd->fd;
@@ -117,23 +145,23 @@ syscall_handler (struct intr_frame *f UNUSED)
 
       struct fd new_fd;
 
-      for(e = list_begin(&file_list); e != list_end(&file_list); e = list_next(e)){
+      for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *__fd = list_entry(e, struct fd, elem);
         if (__fd->fd != i){
           new_fd.fd = i;
-          new_fd.file_name = file;
+          strlcpy(new_fd.file_name, file, strlen(file)+1);
           new_fd.file_p = file_p;
-          list_insert_ordered(&file_list, &new_fd.elem, compare, NULL);
+          list_insert_ordered(&t->file_list, &new_fd.elem, compare, NULL);
           break;
         }
         i++;
       }
 
-      if ((size_t)i == list_size(&file_list)){
+      if ((size_t)i == list_size(&t->file_list)){
         new_fd.fd = i;
-        new_fd.file_name = file;
+        strlcpy(new_fd.file_name, file, strlen(file)+1);
         new_fd.file_p = file_p;
-        list_push_back(&file_list, &new_fd.elem);
+        list_push_back(&t->file_list, &new_fd.elem);
       }
 
       f->eax = new_fd.fd;
@@ -200,6 +228,7 @@ int syscall_read(int fd, void *buffer, unsigned size) {
   /* lock_acquire(&read_lock); */
   struct list_elem *e;
   struct fd *_fd = NULL;
+  struct thread *t = thread_current();
 
   ASSERT(fd != 1);
 
@@ -218,7 +247,7 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     return i;
   }
 
-  for(e = list_begin(&file_list); e != list_end(&file_list); e = list_next(e)){
+  for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
     _fd = list_entry(e, struct fd, elem);
     if(_fd->fd == fd){
       break;
@@ -231,6 +260,7 @@ int syscall_read(int fd, void *buffer, unsigned size) {
 int syscall_write(int fd, void *buffer, unsigned size) {
   struct list_elem *e;
   struct fd *_fd = NULL;
+  struct thread *t = thread_current();
 
   ASSERT(fd != 0);
 
@@ -239,7 +269,7 @@ int syscall_write(int fd, void *buffer, unsigned size) {
     return size;
   }
 
-  for(e = list_begin(&file_list); e != list_end(&file_list); e = list_next(e)){
+  for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
     _fd = list_entry(e, struct fd, elem);
     if(_fd->fd == fd){
       break;
