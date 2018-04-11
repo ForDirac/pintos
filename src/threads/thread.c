@@ -13,6 +13,7 @@
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#include "threads/malloc.h"
 #endif
 
 /* Random value for struct thread's `magic' member.
@@ -523,12 +524,18 @@ init_thread (struct thread *t, const char *name, int priority)
 
   /* For Proj.#2, To initialize the file_list about file descriptor*/
   list_init(&t->file_list);
-  struct fd std_in;
-  struct fd std_out;
-  std_in.fd = 0;
-  std_out.fd = 1;
-  list_push_back(&t->file_list, &std_in.elem);
-  list_push_back(&t->file_list, &std_out.elem);
+  /* struct fd std_in; */
+  /* struct fd std_out; */
+  /* struct fd *std_in = (struct fd *) malloc(sizeof(struct fd)); */
+  /* struct fd *std_out = (struct fd *) malloc(sizeof(struct fd)); */
+  /* std_in->fd = 0; */
+  /* std_in->file_name = "STD_IN"; */
+  /* /1* std_in.file_p = NULL; *1/ */
+  /* std_out->fd = 1; */
+  /* std_out->file_name = "STD_OUT"; */
+  /* /1* std_out.file_p = NULL; *1/ */
+  /* list_push_back(&t->file_list, &std_in->elem); */
+  /* list_push_back(&t->file_list, &std_out->elem); */
 
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
