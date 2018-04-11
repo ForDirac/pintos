@@ -524,6 +524,7 @@ init_thread (struct thread *t, const char *name, int priority)
 
   /* For Proj.#2, To initialize the file_list about file descriptor*/
   list_init(&t->file_list);
+  lock_init(&t->file_list_lock);
   /* struct fd std_in; */
   /* struct fd std_out; */
   /* struct fd *std_in = (struct fd *) malloc(sizeof(struct fd)); */
