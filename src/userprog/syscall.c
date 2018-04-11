@@ -63,8 +63,8 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_EXIT:
     {
       int status = ((int *)f->esp)[1];
-      thread_exit();
       f->eax = status;
+      thread_exit();
       break;
       /* return status; */
     }
