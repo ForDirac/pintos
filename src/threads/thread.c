@@ -526,7 +526,11 @@ init_thread (struct thread *t, const char *name, int priority)
   struct fd std_in;
   struct fd std_out;
   std_in.fd = 0;
+  std_in.file_name = "STDIN";
+  std_in.file_p = NULL;
   std_out.fd = 1;
+  std_out.file_name = "STDOUT";
+  std_in.file_p = NULL;
   list_push_back(&t->file_list, &std_in.elem);
   list_push_back(&t->file_list, &std_out.elem);
 

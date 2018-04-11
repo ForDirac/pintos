@@ -137,6 +137,8 @@ syscall_handler (struct intr_frame *f UNUSED)
 
       for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *_fd = list_entry(e, struct fd, elem);
+        printf("%s\n", file);
+        printf("%d\n", _fd->fd);
         if(strcmp(_fd->file_name, file) == 0){
           f->eax = _fd->fd;
           return;
