@@ -122,6 +122,7 @@ struct fd
   const char *file_name;
   struct file* file_p;
   struct list_elem elem;
+  bool deny_write;
 };
 
 /* If false (default), use round-robin scheduler.

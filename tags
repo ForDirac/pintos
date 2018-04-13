@@ -741,6 +741,7 @@ check_for_triple_fault	src/tests/tests.pm	/^sub check_for_triple_fault {$/;"	s
 check_mlfqs_fair	src/tests/threads/mlfqs.pm	/^sub check_mlfqs_fair {$/;"	s
 check_partition	src/threads/loader.S	/^check_partition:$/;"	l
 check_process_death	src/tests/vm/process_death.pm	/^sub check_process_death {$/;"	s
+check_right_add	src/userprog/syscall.c	/^static bool check_right_add(void * add){$/;"	f	file:
 check_sector	src/devices/block.c	/^check_sector (struct block *block, block_sector_t sector)$/;"	f	file:
 check_tell	src/tests/filesys/extended/grow-tell.c	/^check_tell (int fd, long ofs) $/;"	f	file:
 checkf	src/tests/internal/stdio.c	/^checkf (const char *expect, const char *format, ...) $/;"	f	file:
@@ -808,6 +809,7 @@ debug_backtrace_all	src/lib/kernel/debug.c	/^debug_backtrace_all (void)$/;"	f
 debug_panic	src/lib/kernel/debug.c	/^debug_panic (const char *file, int line, const char *function,$/;"	f
 debug_panic	src/lib/user/debug.c	/^debug_panic (const char *file, int line, const char *function,$/;"	f
 deny_write	src/filesys/file.c	/^    bool deny_write;            \/* Has file_deny_write() been called? *\/$/;"	m	struct:file	file:
+deny_write	src/threads/thread.h	/^  bool deny_write;$/;"	m	struct:fd
 deny_write_cnt	src/filesys/inode.c	/^    int deny_write_cnt;                 \/* 0: writes ok, >0: deny writes. *\/$/;"	m	struct:inode	file:
 desc	src/threads/malloc.c	/^    struct desc *desc;          \/* Owning descriptor, null for big block. *\/$/;"	m	struct:arena	typeref:struct:arena::desc	file:
 desc	src/threads/malloc.c	/^struct desc$/;"	s	file:
@@ -977,7 +979,6 @@ find_elem	src/lib/kernel/hash.c	/^find_elem (struct hash *h, struct list *bucket
 find_end_of_run	src/lib/kernel/list.c	/^find_end_of_run (struct list_elem *a, struct list_elem *b,$/;"	f	file:
 find_file	src/utils/Pintos.pm	/^sub find_file {$/;"	s
 find_in_path	src/utils/pintos	/^sub find_in_path {$/;"	s
-find_right_fd	src/userprog/syscall.c	/^static struct fd find_right_fd(int fd){$/;"	f	file:
 finish	src/tests/tests.pm	/^sub finish {$/;"	s
 finish_scratch_disk	src/utils/pintos	/^sub finish_scratch_disk {$/;"	s
 first	src/tests/threads/priority-donate-chain.c	/^    struct lock *first;$/;"	m	struct:lock_pair	typeref:struct:lock_pair::lock	file:

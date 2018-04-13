@@ -51,29 +51,25 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
 /*     expand_stack (addr) */
 /*   } */
 /* } */
+static bool check_right_add(void * add){
+  bool right = 1;
+  int i;
+  struct thread *t = thread_current();
 
+  for (i = 0; i < 4; i++){
+    void * p = pagedir_get_page(t->pagedir, add+i);
 
-/* static inline void check_ustring(const char *str, void *esp){ */
-/*     for (; check_address ((void *) str, esp), *str; str++); */
-/* } */
-
-/* static inline void check_single_ustring(char **args, int flag, int index, int32_t esp){ */
-/*   if(flag & (0b1000 >> index)) */
-/*     check_ustring(args[index], esp); */
-/* } */
-
-/* static inline void get_user_string(char **args, int flag, void *esp){ */
-/*   ASSERT (0 <= flag && flag <= 0b1111); */
-/*   check_single_ustring (args, flag, 0, esp); */
-/*   check_single_ustring (args, flag, 1, esp); */
-/*   check_single_ustring (args, flag, 2, esp); */
-/*   check_single_ustring (args, flag, 3, esp); */
-/*   get_single_ustring (args, flag, 0); */
-/*   get_single_ustring (args, flag, 1); */
-/*   get_single_ustring (args, flag, 2); */
-/*   get_single_ustring (args, flag, 3); */
-/* } */
-
+    if( add+i > PHYS_BASE - 12)
+      right = 0;
+    if(!p)
+      right = 0;
+    if(add+i < 0x8048000)
+      right = 0;
+    if(!(add+i))
+      right = 0;
+  }
+  return right;
+}
 
 void
 syscall_init (void)
@@ -87,16 +83,9 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-  if(((uintptr_t)f->esp > (uintptr_t)PHYS_BASE) || ((uintptr_t)f->esp < (uintptr_t)0x40000000)) {
-    struct thread *t = thread_current();
-    char *next_p;
-    char space[2] = " ";
-    char *file_name = strtok_r(t->name, space, &next_p);
-
-    f->eax = -1;
-    printf("%s: exit(%d)\n", file_name, -1);
-    thread_exit();
-    return;
+  /* if(!(is_user_vaddr((int)&f->esp)) && (&f->esp >= 0x40000000)){ */
+  if(!check_right_add(f->esp)){
+    syscall_exit(-1);
   }
 
   switch(*(unsigned int *)f->esp) {
@@ -110,28 +99,24 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_EXIT:
     {
       int status = ((int *)f->esp)[1];
-      struct thread *t = thread_current();
-      char *next_p;
-      char space[2] = " ";
 
-      char *file_name = strtok_r(t->name, space, &next_p);
-
-      int return_status = syscall_exit(status);
-
-      f->eax = return_status;
-      printf("%s: exit(%d)\n", file_name, return_status);
-
-      thread_exit();
+      syscall_exit(status);
       break;
     }
 
     case SYS_EXEC:
     {
       /* We suppose that pintos have single thread system! */
+      if(!check_right_add(f->esp + 4)){
+        syscall_exit(-1);
+      }
+
       const char *file = (char *)(((int*)f->esp)[1]);
 
       if(file == NULL){
-        f->eax = -1;
+        /* f->eax = -1; */
+        /* break; */
+        syscall_exit(-1);
         break;
       }
 
@@ -153,10 +138,14 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CREATE:
     {
+      if(!check_right_add(f->esp + 4)){
+        syscall_exit(-1);
+      }
+
       const char *file = (char *)(((int*)f->esp)[1]);
 
       if(file == NULL){
-        f->eax = -1;
+        syscall_exit(-1);
         break;
       }
 
@@ -169,10 +158,16 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_REMOVE:
     {
+      if(!check_right_add(f->esp + 4)){
+        syscall_exit(-1);
+        break;
+      }
+
       const char *file = (char *)(((int*)f->esp)[1]);
 
       if(file == NULL){
-        f->eax = -1;
+        /* f->eax = -1; */
+        syscall_exit(-1);
         break;
       }
 
@@ -184,10 +179,16 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_OPEN:
     {
+      if(!check_right_add(f->esp + 4)){
+        syscall_exit(-1);
+        break;
+      }
+
       const char *file = (char *)(((int*)f->esp)[1]);
 
       if(file == NULL){
-        f->eax = -1;
+        /* f->eax = -1; */
+        syscall_exit(-1);
         break;
       }
 
@@ -218,6 +219,12 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_READ:
     {
       int fd = ((int *)f->esp)[1];
+
+      if(!check_right_add(f->esp + 8)){
+        syscall_exit(-1);
+        break;
+      }
+
       void *buffer = (void *)(((int*)f->esp)[2]);
       unsigned size = ((unsigned int *)f->esp)[3];
       int count = syscall_read(fd, buffer, size);
@@ -228,6 +235,12 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_WRITE:
     {
       int fd = ((int *)f->esp)[1];
+
+      if(!check_right_add(f->esp + 8)){
+        syscall_exit(-1);
+        break;
+      }
+
       void *buffer = (void *)(((int*)f->esp)[2]);
       unsigned size = ((unsigned int *)f->esp)[3];
       int count = syscall_write(fd, buffer, size);
@@ -291,12 +304,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     default:
     {
-      int status = syscall_exit(-1);
-      /* ASSERT(0); */
-      f->eax = status;
-      printf("%s: exit(%d)\n", thread_name(), status);
-
-      thread_exit();
+      syscall_exit(-1);
       break;
     }
   }
@@ -308,6 +316,10 @@ int syscall_exit(int status){
   struct list_elem *e;
   bool find = 0;
   struct member *member = NULL;
+  char *next_p;
+  char space[2] = " ";
+
+  char *file_name = strtok_r(t->name, space, &next_p);
 
   if(status < 0 || status > 255){
     status = -1;
@@ -329,7 +341,10 @@ int syscall_exit(int status){
   else
     sema_up(&member->sema);
 
-  return status;
+  /* return status; */
+  printf("%s: exit(%d)\n", file_name, status);
+
+  thread_exit();
 }
 
 int syscall_open(const char *file){
@@ -400,6 +415,7 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     uint8_t key;
     uint8_t *temp = buffer;
     unsigned i = 0;
+
     while((key = input_getc()) != 13){
       if (i >= size){
         break;
@@ -419,11 +435,17 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     }
   }
 
+  /* To change the read only file handler */
+  file_deny_write(_fd->file_p);
+
+  /* is it right to return -1? */
   if(!find){
     return -1;
   }
 
-  return (int)file_read(_fd->file_p, buffer, (off_t)size);
+  int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);
+
+  return bytes_read;
 }
 
 int syscall_write(int fd, void *buffer, unsigned size) {
@@ -436,7 +458,7 @@ int syscall_write(int fd, void *buffer, unsigned size) {
     return -1;
   }
 
-  if (fd == 1){
+  if(fd == 1){
     putbuf(buffer, size);
     return size;
   }
