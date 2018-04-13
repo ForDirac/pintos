@@ -19,17 +19,17 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-bad-sp -a sc-ba
 perl -I../.. ../../tests/userprog/sc-bad-sp.ck tests/userprog/sc-bad-sp tests/userprog/sc-bad-sp.result
 FAIL tests/userprog/sc-bad-sp
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bf0c: syscall_handler (.../../userprog/syscall.c:50)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002bf7d: syscall_handler (.../../userprog/syscall.c:60)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/sc-bad-sp:
 0x080480ad: test_main (...s/userprog/sc-bad-sp.c:19)
 0x080480f1: main (...ild/../../tests/main.c:13)
@@ -40,15 +40,7 @@ translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-bad-arg -a sc-bad-arg -- -q  -f run sc-bad-arg < /dev/null 2> tests/userprog/sc-bad-arg.errors > tests/userprog/sc-bad-arg.output
 perl -I../.. ../../tests/userprog/sc-bad-arg.ck tests/userprog/sc-bad-arg tests/userprog/sc-bad-arg.result
 FAIL tests/userprog/sc-bad-arg
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (sc-bad-arg) begin
-  sc-bad-arg: exit(-1)
-Differences in `diff -u' format:
-  (sc-bad-arg) begin
-- sc-bad-arg: exit(-1)
-+ sc-bad-arg: exit(-268370093)
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.06, 0.06, 0.07
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-boundary -a sc-boundary -- -q  -f run sc-boundary < /dev/null 2> tests/userprog/sc-boundary.errors > tests/userprog/sc-boundary.output
 perl -I../.. ../../tests/userprog/sc-boundary.ck tests/userprog/sc-boundary tests/userprog/sc-boundary.result
 pass tests/userprog/sc-boundary
@@ -71,15 +63,15 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-null -a cre
 perl -I../.. ../../tests/userprog/create-null.ck tests/userprog/create-null tests/userprog/create-null.result
 FAIL tests/userprog/create-null
 Kernel panic in run: PANIC at ../../filesys/directory.c:149 in dir_add(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e
+Call stack: 0xc0028960 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002d0dd: dir_add (..../filesys/directory.c:152)
-0xc002c65e: filesys_create (..../../filesys/filesys.c:53)
-0xc002c033: syscall_handler (...../userprog/syscall.c:121)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002d2ed: dir_add (..../filesys/directory.c:152)
+0xc002c86e: filesys_create (..../../filesys/filesys.c:53)
+0xc002c0d0: syscall_handler (...../userprog/syscall.c:137)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/create-null:
 0x0804a108: create (.../../lib/user/syscall.c:93)
 0x080480ba: test_main (...userprog/create-null.c:10)
@@ -92,19 +84,19 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/create-bad-ptr -a 
 perl -I../.. ../../tests/userprog/create-bad-ptr.ck tests/userprog/create-bad-ptr tests/userprog/create-bad-ptr.result
 FAIL tests/userprog/create-bad-ptr
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d0dd: dir_add (..../filesys/directory.c:152)
-0xc002c65e: filesys_create (..../../filesys/filesys.c:53)
-0xc002c033: syscall_handler (...../userprog/syscall.c:121)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002d2ed: dir_add (..../filesys/directory.c:152)
+0xc002c86e: filesys_create (..../../filesys/filesys.c:53)
+0xc002c0d0: syscall_handler (...../userprog/syscall.c:137)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/create-bad-ptr:
 0x0804a108: create (.../../lib/user/syscall.c:93)
 0x080480ba: test_main (...rprog/create-bad-ptr.c:11)
@@ -127,28 +119,26 @@ perl -I../.. ../../tests/userprog/open-normal.ck tests/userprog/open-normal test
 pass tests/userprog/open-normal
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-missing -a open-missing -- -q  -f run open-missing < /dev/null 2> tests/userprog/open-missing.errors > tests/userprog/open-missing.output
 perl -I../.. ../../tests/userprog/open-missing.ck tests/userprog/open-missing tests/userprog/open-missing.result
-FAIL tests/userprog/open-missing
-run: open() returned 2: FAILED
+pass tests/userprog/open-missing
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-boundary -a open-boundary -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run open-boundary < /dev/null 2> tests/userprog/open-boundary.errors > tests/userprog/open-boundary.output
 perl -I../.. ../../tests/userprog/open-boundary.ck tests/userprog/open-boundary tests/userprog/open-boundary.result
 pass tests/userprog/open-boundary
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-empty -a open-empty -- -q  -f run open-empty < /dev/null 2> tests/userprog/open-empty.errors > tests/userprog/open-empty.output
 perl -I../.. ../../tests/userprog/open-empty.ck tests/userprog/open-empty tests/userprog/open-empty.result
-FAIL tests/userprog/open-empty
-run: open() returned 2 instead of -1: FAILED
+pass tests/userprog/open-empty
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-null -a open-null -- -q  -f run open-null < /dev/null 2> tests/userprog/open-null.errors > tests/userprog/open-null.output
 perl -I../.. ../../tests/userprog/open-null.ck tests/userprog/open-null tests/userprog/open-null.result
 FAIL tests/userprog/open-null
 Kernel panic in run: PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d031 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a118 0x80480b2 0x80480ec 0x804870e
+Call stack: 0xc0028960 0xc002d241 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a118 0x80480b2 0x80480ec 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002d031: dir_lookup (..../filesys/directory.c:127)
-0xc002c5e8: filesys_open (..../../filesys/filesys.c:74)
-0xc002c08c: syscall_handler (...../userprog/syscall.c:134)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002d241: dir_lookup (..../filesys/directory.c:127)
+0xc002c7f8: filesys_open (..../../filesys/filesys.c:74)
+0xc002c10f: syscall_handler (...../userprog/syscall.c:154)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/open-null:
 0x0804a118: open (...../lib/user/syscall.c:105)
 0x080480b2: test_main (...s/userprog/open-null.c:12)
@@ -161,21 +151,21 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-bad-ptr -a op
 perl -I../.. ../../tests/userprog/open-bad-ptr.ck tests/userprog/open-bad-ptr tests/userprog/open-bad-ptr.result
 FAIL tests/userprog/open-bad-ptr
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002ce55 0xc002d040 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a128 0x80480b2 0x8048106 0x804871e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027b7f 0xc002d065 0xc002d250 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048106 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027b4f: strcmp (...ild/../../lib/string.c:81)
-0xc002ce55: lookup (..../filesys/directory.c:103)
-0xc002d040: dir_lookup (..../filesys/directory.c:127)
-0xc002c5e8: filesys_open (..../../filesys/filesys.c:74)
-0xc002c08c: syscall_handler (...../userprog/syscall.c:134)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027b7f: strcmp (...ild/../../lib/string.c:81)
+0xc002d065: lookup (..../filesys/directory.c:103)
+0xc002d250: dir_lookup (..../filesys/directory.c:127)
+0xc002c7f8: filesys_open (..../../filesys/filesys.c:74)
+0xc002c10f: syscall_handler (...../userprog/syscall.c:154)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/open-bad-ptr:
 0x0804a128: open (...../lib/user/syscall.c:105)
 0x080480b2: test_main (...serprog/open-bad-ptr.c:11)
@@ -186,8 +176,7 @@ the binary to use.  If this guess is incorrect, then those
 translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-twice -a open-twice -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run open-twice < /dev/null 2> tests/userprog/open-twice.errors > tests/userprog/open-twice.output
 perl -I../.. ../../tests/userprog/open-twice.ck tests/userprog/open-twice tests/userprog/open-twice.result
-FAIL tests/userprog/open-twice
-run: open() returned 2 both times: FAILED
+pass tests/userprog/open-twice
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/close-normal -a close-normal -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run close-normal < /dev/null 2> tests/userprog/close-normal.errors > tests/userprog/close-normal.output
 perl -I../.. ../../tests/userprog/close-normal.ck tests/userprog/close-normal tests/userprog/close-normal.result
 pass tests/userprog/close-normal
@@ -205,31 +194,30 @@ perl -I../.. ../../tests/userprog/close-bad-fd.ck tests/userprog/close-bad-fd te
 pass tests/userprog/close-bad-fd
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/read-normal -a read-normal -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run read-normal < /dev/null 2> tests/userprog/read-normal.errors > tests/userprog/read-normal.output
 perl -I../.. ../../tests/userprog/read-normal.ck tests/userprog/read-normal tests/userprog/read-normal.result
-FAIL tests/userprog/read-normal
-run: size of sample.txt (2) differs from expected (239): FAILED
+pass tests/userprog/read-normal
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/read-bad-ptr -a read-bad-ptr -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run read-bad-ptr < /dev/null 2> tests/userprog/read-bad-ptr.errors > tests/userprog/read-bad-ptr.output
 perl -I../.. ../../tests/userprog/read-bad-ptr.ck tests/userprog/read-bad-ptr tests/userprog/read-bad-ptr.result
 FAIL tests/userprog/read-bad-ptr
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0029777 0xc002985a 0xc0029959 0xc00233a3 0xc0023415 0xc002b928 0xc002a86b 0xc0020fec 0xc002bff5 0xc0021acd 0xc0021bff 0x804a277
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc00297a7 0xc002988a 0xc0029989 0xc00233c3 0xc0023435 0xc002b968 0xc002a8a4 0xc0020ff7 0xc002c092 0xc0021aed 0xc0021c1f 0x804a277
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0029777: bitmap_test (..../lib/kernel/bitmap.c:202)
-0xc002985a: bitmap_contains (..../lib/kernel/bitmap.c:261)
-0xc0029959: bitmap_all (..../lib/kernel/bitmap.c:287)
-0xc00233a3: palloc_free_multiple (..../../threads/palloc.c:140)
-0xc0023415: palloc_free_page (..../../threads/palloc.c:149)
-0xc002b928: pagedir_destroy (.../../userprog/pagedir.c:42)
-0xc002a86b: process_exit (...../userprog/process.c:233)
-0xc0020fec: thread_exit (..../../threads/thread.c:331)
-0xc002bff5: syscall_handler (.../../userprog/syscall.c:99)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc00297a7: bitmap_test (..../lib/kernel/bitmap.c:202)
+0xc002988a: bitmap_contains (..../lib/kernel/bitmap.c:261)
+0xc0029989: bitmap_all (..../lib/kernel/bitmap.c:287)
+0xc00233c3: palloc_free_multiple (..../../threads/palloc.c:140)
+0xc0023435: palloc_free_page (..../../threads/palloc.c:149)
+0xc002b968: pagedir_destroy (.../../userprog/pagedir.c:42)
+0xc002a8a4: process_exit (...../userprog/process.c:233)
+0xc0020ff7: thread_exit (..../../threads/thread.c:331)
+0xc002c092: syscall_handler (...../userprog/syscall.c:115)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/read-bad-ptr:
 0x0804a277: exit (.../../lib/user/syscall.c:74)
 Translations of user virtual addresses above are based on a guess at
@@ -244,15 +232,15 @@ pass tests/userprog/read-zero
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/read-stdout -a read-stdout -- -q  -f run read-stdout < /dev/null 2> tests/userprog/read-stdout.errors > tests/userprog/read-stdout.output
 perl -I../.. ../../tests/userprog/read-stdout.ck tests/userprog/read-stdout tests/userprog/read-stdout.result
 FAIL tests/userprog/read-stdout
-Kernel panic in run: PANIC at ../../userprog/syscall.c:248 in syscall_read(): assertion `fd != 1' failed.
-Call stack: 0xc0028930 0xc002be16 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a150 0x80480c1 0x80480fb 0x804871e
+Kernel panic in run: PANIC at ../../userprog/syscall.c:327 in syscall_read(): assertion `fd != 1' failed.
+Call stack: 0xc0028960 0xc002be4b 0xc002c2c1 0xc0021aed 0xc0021c1f 0x804a150 0x80480c1 0x80480fb 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002be16: syscall_read (...../userprog/syscall.c:252)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002be4b: syscall_read (...../userprog/syscall.c:331)
+0xc002c2c1: syscall_handler (...../userprog/syscall.c:242)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/read-stdout:
 0x0804a150: read (...../lib/user/syscall.c:117)
 0x080480c1: test_main (...userprog/read-stdout.c:14)
@@ -263,28 +251,7 @@ the binary to use.  If this guess is incorrect, then those
 translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/read-bad-fd -a read-bad-fd -- -q  -f run read-bad-fd < /dev/null 2> tests/userprog/read-bad-fd.errors > tests/userprog/read-bad-fd.output
 perl -I../.. ../../tests/userprog/read-bad-fd.ck tests/userprog/read-bad-fd tests/userprog/read-bad-fd.result
-FAIL tests/userprog/read-bad-fd
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002be85 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1e0 0x80480c2 0x8048190 0x80487ae
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002be85: syscall_read (...../userprog/syscall.c:272)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/read-bad-fd:
-0x0804a1e0: read (...../lib/user/syscall.c:117)
-0x080480c2: test_main (...userprog/read-bad-fd.c:15)
-0x08048190: main (...ild/../../tests/main.c:13)
-0x080487ae: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+pass tests/userprog/read-bad-fd
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/write-normal -a write-normal -p ../../tests/userprog/sample.txt -a sample.txt -- -q  -f run write-normal < /dev/null 2> tests/userprog/write-normal.errors > tests/userprog/write-normal.output
 perl -I../.. ../../tests/userprog/write-normal.ck tests/userprog/write-normal tests/userprog/write-normal.result
 pass tests/userprog/write-normal
@@ -292,21 +259,21 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/write-bad-ptr -a w
 perl -I../.. ../../tests/userprog/write-bad-ptr.ck tests/userprog/write-bad-ptr tests/userprog/write-bad-ptr.result
 FAIL tests/userprog/write-bad-ptr
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027e48 0xc002d542 0xc002cc39 0xc002bdcc 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a198 0x80480e7 0x804812b 0x804874e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027e78 0xc002d752 0xc002ce49 0xc002be01 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a198 0x80480e7 0x804812b 0x804874e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027e48: memcpy (...ild/../../lib/string.c:16)
-0xc002d542: inode_write_at (...../../filesys/inode.c:307)
-0xc002cc39: file_write (...d/../../filesys/file.c:98)
-0xc002bdcc: syscall_write (...../userprog/syscall.c:295)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027e78: memcpy (...ild/../../lib/string.c:16)
+0xc002d752: inode_write_at (...../../filesys/inode.c:307)
+0xc002ce49: file_write (...d/../../filesys/file.c:98)
+0xc002be01: syscall_write (...../userprog/syscall.c:385)
+0xc002c2e5: syscall_handler (...../userprog/syscall.c:252)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/write-bad-ptr:
 0x0804a198: write (...../lib/user/syscall.c:123)
 0x080480e7: test_main (...erprog/write-bad-ptr.c:15)
@@ -324,15 +291,15 @@ pass tests/userprog/write-zero
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/write-stdin -a write-stdin -- -q  -f run write-stdin < /dev/null 2> tests/userprog/write-stdin.errors > tests/userprog/write-stdin.output
 perl -I../.. ../../tests/userprog/write-stdin.ck tests/userprog/write-stdin tests/userprog/write-stdin.result
 FAIL tests/userprog/write-stdin
-Kernel panic in run: PANIC at ../../userprog/syscall.c:280 in syscall_write(): assertion `fd != 0' failed.
-Call stack: 0xc0028930 0xc002bd5d 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a168 0x80480c5 0x80480ff 0x804871e
+Kernel panic in run: PANIC at ../../userprog/syscall.c:365 in syscall_write(): assertion `fd != 0' failed.
+Call stack: 0xc0028960 0xc002bd98 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a168 0x80480c5 0x80480ff 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bd5d: syscall_write (...../userprog/syscall.c:282)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bd98: syscall_write (...../userprog/syscall.c:367)
+0xc002c2e5: syscall_handler (...../userprog/syscall.c:252)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/write-stdin:
 0x0804a168: write (...../lib/user/syscall.c:123)
 0x080480c5: test_main (...userprog/write-stdin.c:14)
@@ -343,28 +310,7 @@ the binary to use.  If this guess is incorrect, then those
 translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/write-bad-fd -a write-bad-fd -- -q  -f run write-bad-fd < /dev/null 2> tests/userprog/write-bad-fd.errors > tests/userprog/write-bad-fd.output
 perl -I../.. ../../tests/userprog/write-bad-fd.ck tests/userprog/write-bad-fd tests/userprog/write-bad-fd.result
-FAIL tests/userprog/write-bad-fd
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bdc1 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a1f8 0x80480c6 0x8048194 0x80487ae
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bdc1: syscall_write (...../userprog/syscall.c:294)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/write-bad-fd:
-0x0804a1f8: write (...../lib/user/syscall.c:123)
-0x080480c6: test_main (...serprog/write-bad-fd.c:14)
-0x08048194: main (...ild/../../tests/main.c:13)
-0x080487ae: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+pass tests/userprog/write-bad-fd
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/exec-once -a exec-once -p tests/userprog/child-simple -a child-simple -- -q  -f run exec-once < /dev/null 2> tests/userprog/exec-once.errors > tests/userprog/exec-once.output
 perl -I../.. ../../tests/userprog/exec-once.ck tests/userprog/exec-once tests/userprog/exec-once.result
 pass tests/userprog/exec-once
@@ -377,24 +323,24 @@ pass tests/userprog/exec-multiple
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/exec-missing -a exec-missing -- -q  -f run exec-missing < /dev/null 2> tests/userprog/exec-missing.errors > tests/userprog/exec-missing.output
 perl -I../.. ../../tests/userprog/exec-missing.ck tests/userprog/exec-missing tests/userprog/exec-missing.result
 FAIL tests/userprog/exec-missing
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.32, 0.24, 0.09
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.16, 0.14, 0.09
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/exec-bad-ptr -a exec-bad-ptr -- -q  -f run exec-bad-ptr < /dev/null 2> tests/userprog/exec-bad-ptr.errors > tests/userprog/exec-bad-ptr.output
 perl -I../.. ../../tests/userprog/exec-bad-ptr.ck tests/userprog/exec-bad-ptr tests/userprog/exec-bad-ptr.result
 FAIL tests/userprog/exec-bad-ptr
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027fc2 0xc002a997 0xc002c000 0xc0021acd 0xc0021bff 0x804a0c4 0x80480b2 0x80480ec 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027ff2 0xc002a9d0 0xc002c09d 0xc0021aed 0xc0021c1f 0x804a0c4 0x80480b2 0x80480ec 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027fc2: strlcpy (...ld/../../lib/string.c:333)
-0xc002a997: process_execute (.../../userprog/process.c:51)
-0xc002c000: syscall_handler (...../userprog/syscall.c:101)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027ff2: strlcpy (...ld/../../lib/string.c:333)
+0xc002a9d0: process_execute (.../../userprog/process.c:51)
+0xc002c09d: syscall_handler (...../userprog/syscall.c:117)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/exec-bad-ptr:
 0x0804a0c4: exec (.../../lib/user/syscall.c:81)
 0x080480b2: test_main (...serprog/exec-bad-ptr.c:11)
@@ -413,17 +359,17 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/wait-killed -a wai
 perl -I../.. ../../tests/userprog/wait-killed.ck tests/userprog/wait-killed tests/userprog/wait-killed.result
 FAIL tests/userprog/wait-killed
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bf0c: syscall_handler (.../../userprog/syscall.c:50)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002bf7d: syscall_handler (.../../userprog/syscall.c:60)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/wait-killed:
 0x080480ad: test_main (...userprog/wait-killed.c:10)
 0x080480f1: main (...ild/../../tests/main.c:10)
@@ -439,32 +385,7 @@ perl -I../.. ../../tests/userprog/multi-recurse.ck tests/userprog/multi-recurse 
 pass tests/userprog/multi-recurse
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/multi-child-fd -a multi-child-fd -p ../../tests/userprog/sample.txt -a sample.txt -p tests/userprog/child-close -a child-close -- -q  -f run multi-child-fd < /dev/null 2> tests/userprog/multi-child-fd.errors > tests/userprog/multi-child-fd.output
 perl -I../.. ../../tests/userprog/multi-child-fd.ck tests/userprog/multi-child-fd tests/userprog/multi-child-fd.result
-FAIL tests/userprog/multi-child-fd
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1d0 0x8048564 0x8048138 0x804817a 0x804879e
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d3e7: byte_to_sector (.../../../filesys/inode.c:50)
-0xc002d5ba: inode_read_at (...../../filesys/inode.c:210)
-0xc002cc95: file_read (...d/../../filesys/file.c:72)
-0xc002be90: syscall_read (...../userprog/syscall.c:273)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/multi-child-fd:
-0x0804a1d0: read (...../lib/user/syscall.c:117)
-0x08048564: check_file_handle (...ild/../../tests/lib.c:133)
-0x08048138: test_main (...rprog/multi-child-fd.c:25)
-0x0804817a: main (...ild/../../tests/main.c:13)
-0x0804879e: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+pass tests/userprog/multi-child-fd
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/rox-simple -a rox-simple -- -q  -f run rox-simple < /dev/null 2> tests/userprog/rox-simple.errors > tests/userprog/rox-simple.output
 perl -I../.. ../../tests/userprog/rox-simple.ck tests/userprog/rox-simple tests/userprog/rox-simple.result
 FAIL tests/userprog/rox-simple
@@ -472,136 +393,82 @@ run: try to write "rox-simple": FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/rox-child -a rox-child -p tests/userprog/child-rox -a child-rox -- -q  -f run rox-child < /dev/null 2> tests/userprog/rox-child.errors > tests/userprog/rox-child.output
 perl -I../.. ../../tests/userprog/rox-child.ck tests/userprog/rox-child tests/userprog/rox-child.result
 FAIL tests/userprog/rox-child
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.14, 0.21, 0.09
+run: try to write "child-rox": FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/rox-multichild -a rox-multichild -p tests/userprog/child-rox -a child-rox -- -q  -f run rox-multichild < /dev/null 2> tests/userprog/rox-multichild.errors > tests/userprog/rox-multichild.output
 perl -I../.. ../../tests/userprog/rox-multichild.ck tests/userprog/rox-multichild tests/userprog/rox-multichild.result
 FAIL tests/userprog/rox-multichild
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.05, 0.17, 0.08
+run: try to write "child-rox": FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-read -a bad-read -- -q  -f run bad-read < /dev/null 2> tests/userprog/bad-read.errors > tests/userprog/bad-read.output
 perl -I../.. ../../tests/userprog/bad-read.ck tests/userprog/bad-read tests/userprog/bad-read.result
 FAIL tests/userprog/bad-read
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.02, 0.14, 0.08
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.34, 0.20, 0.11
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-write -a bad-write -- -q  -f run bad-write < /dev/null 2> tests/userprog/bad-write.errors > tests/userprog/bad-write.output
 perl -I../.. ../../tests/userprog/bad-write.ck tests/userprog/bad-write tests/userprog/bad-write.result
 FAIL tests/userprog/bad-write
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.12, 0.08
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.12, 0.16, 0.10
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-read2 -a bad-read2 -- -q  -f run bad-read2 < /dev/null 2> tests/userprog/bad-read2.errors > tests/userprog/bad-read2.output
 perl -I../.. ../../tests/userprog/bad-read2.ck tests/userprog/bad-read2 tests/userprog/bad-read2.result
 FAIL tests/userprog/bad-read2
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.01, 0.10, 0.07
+run: TIMEOUT after 62 seconds of wall-clock time - load average: 0.04, 0.13, 0.09
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-write2 -a bad-write2 -- -q  -f run bad-write2 < /dev/null 2> tests/userprog/bad-write2.errors > tests/userprog/bad-write2.output
 perl -I../.. ../../tests/userprog/bad-write2.ck tests/userprog/bad-write2 tests/userprog/bad-write2.result
 FAIL tests/userprog/bad-write2
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.00, 0.08, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.18, 0.15, 0.10
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-jump -a bad-jump -- -q  -f run bad-jump < /dev/null 2> tests/userprog/bad-jump.errors > tests/userprog/bad-jump.output
 perl -I../.. ../../tests/userprog/bad-jump.ck tests/userprog/bad-jump tests/userprog/bad-jump.result
 FAIL tests/userprog/bad-jump
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.07, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.26, 0.18, 0.11
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/bad-jump2 -a bad-jump2 -- -q  -f run bad-jump2 < /dev/null 2> tests/userprog/bad-jump2.errors > tests/userprog/bad-jump2.output
 perl -I../.. ../../tests/userprog/bad-jump2.ck tests/userprog/bad-jump2 tests/userprog/bad-jump2.result
 FAIL tests/userprog/bad-jump2
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.10, 0.09, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.17, 0.16, 0.10
 pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom < /dev/null 2> tests/userprog/no-vm/multi-oom.errors > tests/userprog/no-vm/multi-oom.output
 perl -I../.. ../../tests/userprog/no-vm/multi-oom.ck tests/userprog/no-vm/multi-oom tests/userprog/no-vm/multi-oom.result
 FAIL tests/userprog/no-vm/multi-oom
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002c110 0xc0021acd 0xc0021bff 0x804a768 0x80480b9 0x80480d8 0x8048237 0x804896e
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027b4f: strcmp (...ild/../../lib/string.c:81)
-0xc002c110: syscall_handler (...../userprog/syscall.c:153)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/no-vm/multi-oom:
-0x0804a768: open (...../lib/user/syscall.c:105)
-0x080480b9: consume_some_resources (...prog/no-vm/multi-oom.c:59)
-0x080480d8: consume_some_resources_and_die (...prog/no-vm/multi-oom.c:69)
-0x08048237: main (...rog/no-vm/multi-oom.c:119)
-0x0804896e: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+run: TIMEOUT after 361 seconds of wall-clock time - load average: 0.08, 0.09, 0.08
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-create -a lg-create -- -q  -f run lg-create < /dev/null 2> tests/filesys/base/lg-create.errors > tests/filesys/base/lg-create.output
 perl -I../.. ../../tests/filesys/base/lg-create.ck tests/filesys/base/lg-create tests/filesys/base/lg-create.result
-FAIL tests/filesys/base/lg-create
-run: size of blargle (2) differs from expected (75678): FAILED
+pass tests/filesys/base/lg-create
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-full -a lg-full -- -q  -f run lg-full < /dev/null 2> tests/filesys/base/lg-full.errors > tests/filesys/base/lg-full.output
 perl -I../.. ../../tests/filesys/base/lg-full.ck tests/filesys/base/lg-full tests/filesys/base/lg-full.result
-FAIL tests/filesys/base/lg-full
-run: read of 512 bytes at offset 0 in "quux" returned 0: FAILED
+pass tests/filesys/base/lg-full
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-random -a lg-random -- -q  -f run lg-random < /dev/null 2> tests/filesys/base/lg-random.errors > tests/filesys/base/lg-random.output
 perl -I../.. ../../tests/filesys/base/lg-random.ck tests/filesys/base/lg-random tests/filesys/base/lg-random.result
-FAIL tests/filesys/base/lg-random
-run: read 512 bytes at offset 16896 failed: FAILED
+pass tests/filesys/base/lg-random
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-seq-block -a lg-seq-block -- -q  -f run lg-seq-block < /dev/null 2> tests/filesys/base/lg-seq-block.errors > tests/filesys/base/lg-seq-block.output
 perl -I../.. ../../tests/filesys/base/lg-seq-block.ck tests/filesys/base/lg-seq-block tests/filesys/base/lg-seq-block.result
-FAIL tests/filesys/base/lg-seq-block
-run: read of 512 bytes at offset 0 in "noodle" returned 0: FAILED
+pass tests/filesys/base/lg-seq-block
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-seq-random -a lg-seq-random -- -q  -f run lg-seq-random < /dev/null 2> tests/filesys/base/lg-seq-random.errors > tests/filesys/base/lg-seq-random.output
 perl -I../.. ../../tests/filesys/base/lg-seq-random.ck tests/filesys/base/lg-seq-random tests/filesys/base/lg-seq-random.result
-FAIL tests/filesys/base/lg-seq-random
-run: read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
+pass tests/filesys/base/lg-seq-random
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-create -a sm-create -- -q  -f run sm-create < /dev/null 2> tests/filesys/base/sm-create.errors > tests/filesys/base/sm-create.output
 perl -I../.. ../../tests/filesys/base/sm-create.ck tests/filesys/base/sm-create tests/filesys/base/sm-create.result
-FAIL tests/filesys/base/sm-create
-run: size of blargle (2) differs from expected (5678): FAILED
+pass tests/filesys/base/sm-create
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-full -a sm-full -- -q  -f run sm-full < /dev/null 2> tests/filesys/base/sm-full.errors > tests/filesys/base/sm-full.output
 perl -I../.. ../../tests/filesys/base/sm-full.ck tests/filesys/base/sm-full tests/filesys/base/sm-full.result
-FAIL tests/filesys/base/sm-full
-run: read of 512 bytes at offset 0 in "quux" returned 0: FAILED
+pass tests/filesys/base/sm-full
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-random -a sm-random -- -q  -f run sm-random < /dev/null 2> tests/filesys/base/sm-random.errors > tests/filesys/base/sm-random.output
 perl -I../.. ../../tests/filesys/base/sm-random.ck tests/filesys/base/sm-random tests/filesys/base/sm-random.result
-FAIL tests/filesys/base/sm-random
-run: read 13 bytes at offset 260 failed: FAILED
+pass tests/filesys/base/sm-random
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-seq-block -a sm-seq-block -- -q  -f run sm-seq-block < /dev/null 2> tests/filesys/base/sm-seq-block.errors > tests/filesys/base/sm-seq-block.output
 perl -I../.. ../../tests/filesys/base/sm-seq-block.ck tests/filesys/base/sm-seq-block tests/filesys/base/sm-seq-block.result
-FAIL tests/filesys/base/sm-seq-block
-run: TIMEOUT after 60 seconds of host CPU time
+pass tests/filesys/base/sm-seq-block
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-seq-random -a sm-seq-random -- -q  -f run sm-seq-random < /dev/null 2> tests/filesys/base/sm-seq-random.errors > tests/filesys/base/sm-seq-random.output
 perl -I../.. ../../tests/filesys/base/sm-seq-random.ck tests/filesys/base/sm-seq-random tests/filesys/base/sm-seq-random.result
-FAIL tests/filesys/base/sm-seq-random
-run: read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
+pass tests/filesys/base/sm-seq-random
 pintos -v -k -T 300 --qemu  --filesys-size=2 -p tests/filesys/base/syn-read -a syn-read -p tests/filesys/base/child-syn-read -a child-syn-read -- -q  -f run syn-read < /dev/null 2> tests/filesys/base/syn-read.errors > tests/filesys/base/syn-read.output
 perl -I../.. ../../tests/filesys/base/syn-read.ck tests/filesys/base/syn-read tests/filesys/base/syn-read.result
 FAIL tests/filesys/base/syn-read
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a740 0x804817e 0x8048922
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d3e7: byte_to_sector (.../../../filesys/inode.c:50)
-0xc002d5ba: inode_read_at (...../../filesys/inode.c:210)
-0xc002cc95: file_read (...d/../../filesys/file.c:72)
-0xc002be90: syscall_read (...../userprog/syscall.c:273)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0x0804a740: (unknown)
-In tests/filesys/base/syn-read:
-0x0804817e: test_main (...ilesys/base/syn-read.c:26)
-0x08048922: main (...ild/../../tests/main.c:11)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+run: TIMEOUT after 301 seconds of wall-clock time - load average: 0.11, 0.10, 0.09
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/syn-remove -a syn-remove -- -q  -f run syn-remove < /dev/null 2> tests/filesys/base/syn-remove.errors > tests/filesys/base/syn-remove.output
 perl -I../.. ../../tests/filesys/base/syn-remove.ck tests/filesys/base/syn-remove tests/filesys/base/syn-remove.result
-FAIL tests/filesys/base/syn-remove
-run: read "deleteme": FAILED
+pass tests/filesys/base/syn-remove
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/syn-write -a syn-write -p tests/filesys/base/child-syn-wrt -a child-syn-wrt -- -q  -f run syn-write < /dev/null 2> tests/filesys/base/syn-write.errors > tests/filesys/base/syn-write.output
 perl -I../.. ../../tests/filesys/base/syn-write.ck tests/filesys/base/syn-write tests/filesys/base/syn-write.result
 FAIL tests/filesys/base/syn-write
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.37, 0.28, 0.15
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.09, 0.09, 0.09
 ../../tests/make-grade ../.. results ../../tests/userprog/Grading | tee grade
-TOTAL TESTING SCORE: 39.1%
+TOTAL TESTING SCORE: 66.3%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -609,12 +476,12 @@ SUMMARY BY TEST SET
 
 Test Set                                      Pts Max  % Ttl  % Max
 --------------------------------------------- --- --- ------ ------
-tests/userprog/Rubric.functionality            90/108  29.2%/ 35.0%
-tests/userprog/Rubric.robustness               35/ 88   9.9%/ 25.0%
+tests/userprog/Rubric.functionality            99/108  32.1%/ 35.0%
+tests/userprog/Rubric.robustness               43/ 88  12.2%/ 25.0%
 tests/userprog/no-vm/Rubric                     0/  1   0.0%/ 10.0%
-tests/filesys/base/Rubric                       0/ 30   0.0%/ 30.0%
+tests/filesys/base/Rubric                      22/ 30  22.0%/ 30.0%
 --------------------------------------------- --- --- ------ ------
-Total                                                  39.1%/100.0%
+Total                                                  66.3%/100.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -635,12 +502,12 @@ Functionality of system calls (tests/userprog/Rubric.functionality):
 	     3/ 3 tests/userprog/create-exists
 
 	- Test "open" system call.
-	  ** 0/ 3 tests/userprog/open-missing
+	     3/ 3 tests/userprog/open-missing
 	     3/ 3 tests/userprog/open-normal
-	  ** 0/ 3 tests/userprog/open-twice
+	     3/ 3 tests/userprog/open-twice
 
 	- Test "read" system call.
-	  ** 0/ 3 tests/userprog/read-normal
+	     3/ 3 tests/userprog/read-normal
 	     3/ 3 tests/userprog/read-zero
 
 	- Test "write" system call.
@@ -674,8 +541,8 @@ Functionality of system calls (tests/userprog/Rubric.functionality):
 	  ** 0/ 3 tests/userprog/rox-multichild
 
 	- Section summary.
-	     22/ 28 tests passed
-	     90/108 points subtotal
+	     25/ 28 tests passed
+	     99/108 points subtotal
 
 Robustness of system calls (tests/userprog/Rubric.robustness):
 	- Test robustness of file descriptor handling.
@@ -683,11 +550,11 @@ Robustness of system calls (tests/userprog/Rubric.robustness):
 	     2/ 2 tests/userprog/close-stdout
 	     2/ 2 tests/userprog/close-bad-fd
 	     2/ 2 tests/userprog/close-twice
-	  ** 0/ 2 tests/userprog/read-bad-fd
+	     2/ 2 tests/userprog/read-bad-fd
 	  ** 0/ 2 tests/userprog/read-stdout
-	  ** 0/ 2 tests/userprog/write-bad-fd
+	     2/ 2 tests/userprog/write-bad-fd
 	  ** 0/ 2 tests/userprog/write-stdin
-	  ** 0/ 2 tests/userprog/multi-child-fd
+	     2/ 2 tests/userprog/multi-child-fd
 
 	- Test robustness of pointer handling.
 	  ** 0/ 3 tests/userprog/create-bad-ptr
@@ -705,7 +572,7 @@ Robustness of system calls (tests/userprog/Rubric.robustness):
 	- Test handling of null pointer and empty strings.
 	  ** 0/ 2 tests/userprog/create-null
 	  ** 0/ 2 tests/userprog/open-null
-	  ** 0/ 2 tests/userprog/open-empty
+	     2/ 2 tests/userprog/open-empty
 
 	- Test robustness of system call implementation.
 	  ** 0/ 3 tests/userprog/sc-bad-arg
@@ -727,8 +594,8 @@ Robustness of system calls (tests/userprog/Rubric.robustness):
 	  ** 0/ 1 tests/userprog/bad-jump2
 
 	- Section summary.
-	     11/ 34 tests passed
-	     35/ 88 points subtotal
+	     15/ 34 tests passed
+	     43/ 88 points subtotal
 
 Functionality of features that VM might break (tests/userprog/no-vm/Rubric):
 
@@ -740,162 +607,28 @@ Functionality of features that VM might break (tests/userprog/no-vm/Rubric):
 
 Functionality of base file system (tests/filesys/base/Rubric):
 	- Test basic support for small files.
-	  ** 0/ 1 tests/filesys/base/sm-create
-	  ** 0/ 2 tests/filesys/base/sm-full
-	  ** 0/ 2 tests/filesys/base/sm-random
-	  ** 0/ 2 tests/filesys/base/sm-seq-block
-	  ** 0/ 3 tests/filesys/base/sm-seq-random
+	     1/ 1 tests/filesys/base/sm-create
+	     2/ 2 tests/filesys/base/sm-full
+	     2/ 2 tests/filesys/base/sm-random
+	     2/ 2 tests/filesys/base/sm-seq-block
+	     3/ 3 tests/filesys/base/sm-seq-random
 
 	- Test basic support for large files.
-	  ** 0/ 1 tests/filesys/base/lg-create
-	  ** 0/ 2 tests/filesys/base/lg-full
-	  ** 0/ 2 tests/filesys/base/lg-random
-	  ** 0/ 2 tests/filesys/base/lg-seq-block
-	  ** 0/ 3 tests/filesys/base/lg-seq-random
+	     1/ 1 tests/filesys/base/lg-create
+	     2/ 2 tests/filesys/base/lg-full
+	     2/ 2 tests/filesys/base/lg-random
+	     2/ 2 tests/filesys/base/lg-seq-block
+	     3/ 3 tests/filesys/base/lg-seq-random
 
 	- Test synchronized multiprogram access to files.
 	  ** 0/ 4 tests/filesys/base/syn-read
 	  ** 0/ 4 tests/filesys/base/syn-write
-	  ** 0/ 2 tests/filesys/base/syn-remove
+	     2/ 2 tests/filesys/base/syn-remove
 
 	- Section summary.
-	      0/ 13 tests passed
-	      0/ 30 points subtotal
+	     11/ 13 tests passed
+	     22/ 30 points subtotal
 
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/userprog/open-missing FAILURE:
-
-run: open() returned 2: FAILED
-
-OUTPUT FROM tests/userprog/open-missing:
-
-Copying tests/userprog/open-missing to scratch partition...
-qemu -hda /tmp/user/1002/bhaWb_jEg6.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run open-missing
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 107 sectors (53 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'open-missing' into the file system...
-Erasing ustar archive...
-Executing 'open-missing':
-(open-missing) begin
-(open-missing) open() returned 2: FAILED
-open-missing: exit(1)
-Execution of 'open-missing' complete.
-Timer: 87 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 78 reads, 218 writes
-hda3 (scratch): 106 reads, 2 writes
-Console: 927 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/userprog/open-twice FAILURE:
-
-run: open() returned 2 both times: FAILED
-
-OUTPUT FROM tests/userprog/open-twice:
-
-Copying tests/userprog/open-twice to scratch partition...
-Copying ../../tests/userprog/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/8dOT2BHkNe.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run open-twice
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 110 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Erasing ustar archive...
-Executing 'open-twice':
-(open-twice) begin
-(open-twice) open "sample.txt" once
-(open-twice) open "sample.txt" again
-(open-twice) open() returned 2 both times: FAILED
-open-twice: exit(1)
-Execution of 'open-twice' complete.
-Timer: 88 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 101 reads, 226 writes
-hda3 (scratch): 109 reads, 2 writes
-Console: 1043 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/userprog/read-normal FAILURE:
-
-run: size of sample.txt (2) differs from expected (239): FAILED
-
-OUTPUT FROM tests/userprog/read-normal:
-
-Copying tests/userprog/read-normal to scratch partition...
-Copying ../../tests/userprog/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/kC9PDZ7Hrw.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run read-normal
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 110 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'read-normal' into the file system...
-Putting 'sample.txt' into the file system...
-Erasing ustar archive...
-Executing 'read-normal':
-(read-normal) begin
-(read-normal) open "sample.txt" for verification
-(read-normal) size of sample.txt (2) differs from expected (239)
-(read-normal) size of sample.txt (2) differs from expected (239): FAILED
-read-normal: exit(1)
-Execution of 'read-normal' complete.
-Timer: 88 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 92 reads, 226 writes
-hda3 (scratch): 109 reads, 2 writes
-Console: 1112 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -906,7 +639,7 @@ run: try to write "rox-simple": FAILED
 OUTPUT FROM tests/userprog/rox-simple:
 
 Copying tests/userprog/rox-simple to scratch partition...
-qemu -hda /tmp/user/1002/wZTtocQMNj.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/hqQSLiw57g.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run rox-simple
@@ -946,13 +679,13 @@ Powering off...
 
 DETAILS OF tests/userprog/rox-child FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.14, 0.21, 0.09
+run: try to write "child-rox": FAILED
 
 OUTPUT FROM tests/userprog/rox-child:
 
 Copying tests/userprog/rox-child to scratch partition...
 Copying tests/userprog/child-rox to scratch partition...
-qemu -hda /tmp/user/1002/Fu7m91l5ld.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/CCPTNB69S6.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run rox-child
@@ -978,21 +711,33 @@ Executing 'rox-child':
 (rox-child) read "child-rox"
 (rox-child) write "child-rox"
 (rox-child) exec "child-rox 1"
-load: child-rox: error loading executable
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.14, 0.21, 0.09
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) try to write "child-rox": FAILED
+child-rox: exit(1)
+(rox-child) wait for child: FAILED
+rox-child: exit(1)
+Execution of 'rox-child' complete.
+Timer: 96 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 131 reads, 462 writes
+hda3 (scratch): 226 reads, 2 writes
+Console: 1187 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/rox-multichild FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.05, 0.17, 0.08
+run: try to write "child-rox": FAILED
 
 OUTPUT FROM tests/userprog/rox-multichild:
 
 Copying tests/userprog/rox-multichild to scratch partition...
 Copying tests/userprog/child-rox to scratch partition...
-qemu -hda /tmp/user/1002/Xp272cFHPI.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Ugq4xUCGWO.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run rox-multichild
@@ -1018,93 +763,35 @@ Executing 'rox-multichild':
 (rox-multichild) read "child-rox"
 (rox-multichild) write "child-rox"
 (rox-multichild) exec "child-rox 5"
-load: child-rox: error loading executable
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.05, 0.17, 0.08
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/userprog/read-bad-fd FAILURE:
-
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002be85 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1e0 0x80480c2 0x8048190 0x80487ae
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002be85: syscall_read (...../userprog/syscall.c:272)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/read-bad-fd:
-0x0804a1e0: read (...../lib/user/syscall.c:117)
-0x080480c2: test_main (...userprog/read-bad-fd.c:15)
-0x08048190: main (...ild/../../tests/main.c:13)
-0x080487ae: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
-
-OUTPUT FROM tests/userprog/read-bad-fd:
-
-Copying tests/userprog/read-bad-fd to scratch partition...
-qemu -hda /tmp/user/1002/6A4gHPWtGW.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run read-bad-fd
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 108 sectors (54 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'read-bad-fd' into the file system...
-Erasing ustar archive...
-Executing 'read-bad-fd':
-(read-bad-fd) begin
-Page fault at 0x8: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002be85
- cr2=00000008 error=00000000
- eax=bfffffb3 ebx=c010a038 ecx=00000030 edx=00000000
- esi=c010a030 edi=20101234 esp=c010a030 ebp=c010af14
- cs=0008 ds=0010 es=0010 ss=ffb3
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002be85 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1e0 0x80480c2 0x8048190 0x80487ae.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 88 ticks
+(child-rox) begin
+(child-rox) try to write "child-rox"
+(child-rox) try to write "child-rox": FAILED
+child-rox: exit(1)
+(rox-multichild) wait for child: FAILED
+rox-multichild: exit(1)
+Execution of 'rox-multichild' complete.
+Timer: 100 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 63 reads, 220 writes
-hda3 (scratch): 107 reads, 2 writes
-Console: 1527 characters output
+hda2 (filesys): 131 reads, 462 writes
+hda3 (scratch): 226 reads, 2 writes
+Console: 1243 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/read-stdout FAILURE:
 
-Kernel panic in run: PANIC at ../../userprog/syscall.c:248 in syscall_read(): assertion `fd != 1' failed.
-Call stack: 0xc0028930 0xc002be16 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a150 0x80480c1 0x80480fb 0x804871e
+Kernel panic in run: PANIC at ../../userprog/syscall.c:327 in syscall_read(): assertion `fd != 1' failed.
+Call stack: 0xc0028960 0xc002be4b 0xc002c2c1 0xc0021aed 0xc0021c1f 0x804a150 0x80480c1 0x80480fb 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002be16: syscall_read (...../userprog/syscall.c:252)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002be4b: syscall_read (...../userprog/syscall.c:331)
+0xc002c2c1: syscall_handler (...../userprog/syscall.c:242)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/read-stdout:
 0x0804a150: read (...../lib/user/syscall.c:117)
 0x080480c1: test_main (...userprog/read-stdout.c:14)
@@ -1117,7 +804,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/read-stdout:
 
 Copying tests/userprog/read-stdout to scratch partition...
-qemu -hda /tmp/user/1002/hzP2vrzBVh.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/3knBTCzF3f.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run read-stdout
@@ -1138,12 +825,12 @@ Putting 'read-stdout' into the file system...
 Erasing ustar archive...
 Executing 'read-stdout':
 (read-stdout) begin
-Kernel PANIC at ../../userprog/syscall.c:248 in syscall_read(): assertion `fd != 1' failed.
-Call stack: 0xc0028930 0xc002be16 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a150 0x80480c1 0x80480fb 0x804871e.
+Kernel PANIC at ../../userprog/syscall.c:327 in syscall_read(): assertion `fd != 1' failed.
+Call stack: 0xc0028960 0xc002be4b 0xc002c2c1 0xc0021aed 0xc0021c1f 0x804a150 0x80480c1 0x80480fb 0x804871e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 88 ticks
+Timer: 85 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 61 reads, 218 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -1154,87 +841,17 @@ Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-DETAILS OF tests/userprog/write-bad-fd FAILURE:
-
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bdc1 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a1f8 0x80480c6 0x8048194 0x80487ae
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bdc1: syscall_write (...../userprog/syscall.c:294)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/write-bad-fd:
-0x0804a1f8: write (...../lib/user/syscall.c:123)
-0x080480c6: test_main (...serprog/write-bad-fd.c:14)
-0x08048194: main (...ild/../../tests/main.c:13)
-0x080487ae: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
-
-OUTPUT FROM tests/userprog/write-bad-fd:
-
-Copying tests/userprog/write-bad-fd to scratch partition...
-qemu -hda /tmp/user/1002/nbOcnIiv7M.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run write-bad-fd
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 108 sectors (54 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'write-bad-fd' into the file system...
-Erasing ustar archive...
-Executing 'write-bad-fd':
-(write-bad-fd) begin
-Page fault at 0x8: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002bdc1
- cr2=00000008 error=00000000
- eax=bfffffa3 ebx=c010a038 ecx=00000030 edx=00000000
- esi=c010a030 edi=01012342 esp=c010a030 ebp=c010af14
- cs=0008 ds=0010 es=0010 ss=ffa3
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bdc1 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a1f8 0x80480c6 0x8048194 0x80487ae.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 87 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 63 reads, 220 writes
-hda3 (scratch): 107 reads, 2 writes
-Console: 1531 characters output
-Keyboard: 0 keys pressed
-Exception: 1 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 DETAILS OF tests/userprog/write-stdin FAILURE:
 
-Kernel panic in run: PANIC at ../../userprog/syscall.c:280 in syscall_write(): assertion `fd != 0' failed.
-Call stack: 0xc0028930 0xc002bd5d 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a168 0x80480c5 0x80480ff 0x804871e
+Kernel panic in run: PANIC at ../../userprog/syscall.c:365 in syscall_write(): assertion `fd != 0' failed.
+Call stack: 0xc0028960 0xc002bd98 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a168 0x80480c5 0x80480ff 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bd5d: syscall_write (...../userprog/syscall.c:282)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bd98: syscall_write (...../userprog/syscall.c:367)
+0xc002c2e5: syscall_handler (...../userprog/syscall.c:252)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/write-stdin:
 0x0804a168: write (...../lib/user/syscall.c:123)
 0x080480c5: test_main (...userprog/write-stdin.c:14)
@@ -1247,7 +864,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/write-stdin:
 
 Copying tests/userprog/write-stdin to scratch partition...
-qemu -hda /tmp/user/1002/jsSq1PZopc.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/TZmFySDERT.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run write-stdin
@@ -1268,8 +885,8 @@ Putting 'write-stdin' into the file system...
 Erasing ustar archive...
 Executing 'write-stdin':
 (write-stdin) begin
-Kernel PANIC at ../../userprog/syscall.c:280 in syscall_write(): assertion `fd != 0' failed.
-Call stack: 0xc0028930 0xc002bd5d 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a168 0x80480c5 0x80480ff 0x804871e.
+Kernel PANIC at ../../userprog/syscall.c:365 in syscall_write(): assertion `fd != 0' failed.
+Call stack: 0xc0028960 0xc002bd98 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a168 0x80480c5 0x80480ff 0x804871e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
@@ -1284,106 +901,22 @@ Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-DETAILS OF tests/userprog/multi-child-fd FAILURE:
-
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1d0 0x8048564 0x8048138 0x804817a 0x804879e
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d3e7: byte_to_sector (.../../../filesys/inode.c:50)
-0xc002d5ba: inode_read_at (...../../filesys/inode.c:210)
-0xc002cc95: file_read (...d/../../filesys/file.c:72)
-0xc002be90: syscall_read (...../userprog/syscall.c:273)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/multi-child-fd:
-0x0804a1d0: read (...../lib/user/syscall.c:117)
-0x08048564: check_file_handle (...ild/../../tests/lib.c:133)
-0x08048138: test_main (...rprog/multi-child-fd.c:25)
-0x0804817a: main (...ild/../../tests/main.c:13)
-0x0804879e: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
-
-OUTPUT FROM tests/userprog/multi-child-fd:
-
-Copying tests/userprog/multi-child-fd to scratch partition...
-Copying ../../tests/userprog/sample.txt to scratch partition...
-Copying tests/userprog/child-close to scratch partition...
-qemu -hda /tmp/user/1002/2K3ImG2fMr.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run multi-child-fd
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  313,753,600 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 227 sectors (113 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'multi-child-fd' into the file system...
-Putting 'sample.txt' into the file system...
-Putting 'child-close' into the file system...
-Erasing ustar archive...
-Executing 'multi-child-fd':
-(multi-child-fd) begin
-(multi-child-fd) open "sample.txt"
-(child-close) begin
-(child-close) end
-child-close: exit(0)
-(multi-child-fd) wait(exec()) = 0
-(multi-child-fd) size of sample.txt (2) differs from expected (239)
-Page fault at 0xbb74c0a0: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002d3e7
- cr2=bb74c0a0 error=00000000
- eax=ffffffff ebx=c0024231 ecx=bb74c084 edx=5b10c483
- esi=c010a030 edi=5b10c483 esp=0804bde4 ebp=c010ae94
- cs=0008 ds=0010 es=0010 ss=3f88
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a1d0 0x8048564 0x8048138 0x804817a 0x804879e.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 104 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 160 reads, 462 writes
-hda3 (scratch): 226 reads, 2 writes
-Console: 1879 characters output
-Keyboard: 0 keys pressed
-Exception: 1 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 DETAILS OF tests/userprog/create-bad-ptr FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d0dd: dir_add (..../filesys/directory.c:152)
-0xc002c65e: filesys_create (..../../filesys/filesys.c:53)
-0xc002c033: syscall_handler (...../userprog/syscall.c:121)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002d2ed: dir_add (..../filesys/directory.c:152)
+0xc002c86e: filesys_create (..../../filesys/filesys.c:53)
+0xc002c0d0: syscall_handler (...../userprog/syscall.c:137)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/create-bad-ptr:
 0x0804a108: create (.../../lib/user/syscall.c:93)
 0x080480ba: test_main (...rprog/create-bad-ptr.c:11)
@@ -1396,7 +929,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/create-bad-ptr:
 
 Copying tests/userprog/create-bad-ptr to scratch partition...
-qemu -hda /tmp/user/1002/SjAzl7YuG9.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/37jWm_MPVF.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run create-bad-ptr
@@ -1418,17 +951,17 @@ Erasing ustar archive...
 Executing 'create-bad-ptr':
 (create-bad-ptr) begin
 Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002d0dd
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002d2ed
  cr2=20101234 error=00000000
  eax=20101234 ebx=20101234 ecx=c010620c edx=00000001
  esi=c010705c edi=00000000 esp=c010703c ebp=c010aee4
  cs=0008 ds=0010 es=0010 ss=704c
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 86 ticks
+Timer: 85 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 62 reads, 221 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -1442,19 +975,19 @@ Powering off...
 DETAILS OF tests/userprog/exec-bad-ptr FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027fc2 0xc002a997 0xc002c000 0xc0021acd 0xc0021bff 0x804a0c4 0x80480b2 0x80480ec 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027ff2 0xc002a9d0 0xc002c09d 0xc0021aed 0xc0021c1f 0x804a0c4 0x80480b2 0x80480ec 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027fc2: strlcpy (...ld/../../lib/string.c:333)
-0xc002a997: process_execute (.../../userprog/process.c:51)
-0xc002c000: syscall_handler (...../userprog/syscall.c:101)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027ff2: strlcpy (...ld/../../lib/string.c:333)
+0xc002a9d0: process_execute (.../../userprog/process.c:51)
+0xc002c09d: syscall_handler (...../userprog/syscall.c:117)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/exec-bad-ptr:
 0x0804a0c4: exec (.../../lib/user/syscall.c:81)
 0x080480b2: test_main (...serprog/exec-bad-ptr.c:11)
@@ -1467,7 +1000,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/exec-bad-ptr:
 
 Copying tests/userprog/exec-bad-ptr to scratch partition...
-qemu -hda /tmp/user/1002/_NyH4nhx1K.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/yeV17f1hup.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run exec-bad-ptr
@@ -1489,17 +1022,17 @@ Erasing ustar archive...
 Executing 'exec-bad-ptr':
 (exec-bad-ptr) begin
 Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027fc2
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027ff2
  cr2=20101234 error=00000000
  eax=00000000 ebx=00001000 ecx=ffffffff edx=20101234
  esi=c0109000 edi=20101234 esp=c0033f88 ebp=c010aee4
  cs=0008 ds=0010 es=0010 ss=bbd5
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027fc2 0xc002a997 0xc002c000 0xc0021acd 0xc0021bff 0x804a0c4 0x80480b2 0x80480ec 0x804870e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027ff2 0xc002a9d0 0xc002c09d 0xc0021aed 0xc0021c1f 0x804a0c4 0x80480b2 0x80480ec 0x804870e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 84 ticks
+Timer: 88 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 61 reads, 218 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -1513,21 +1046,21 @@ Powering off...
 DETAILS OF tests/userprog/open-bad-ptr FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002ce55 0xc002d040 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a128 0x80480b2 0x8048106 0x804871e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027b7f 0xc002d065 0xc002d250 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048106 0x804871e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027b4f: strcmp (...ild/../../lib/string.c:81)
-0xc002ce55: lookup (..../filesys/directory.c:103)
-0xc002d040: dir_lookup (..../filesys/directory.c:127)
-0xc002c5e8: filesys_open (..../../filesys/filesys.c:74)
-0xc002c08c: syscall_handler (...../userprog/syscall.c:134)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027b7f: strcmp (...ild/../../lib/string.c:81)
+0xc002d065: lookup (..../filesys/directory.c:103)
+0xc002d250: dir_lookup (..../filesys/directory.c:127)
+0xc002c7f8: filesys_open (..../../filesys/filesys.c:74)
+0xc002c10f: syscall_handler (...../userprog/syscall.c:154)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/open-bad-ptr:
 0x0804a128: open (...../lib/user/syscall.c:105)
 0x080480b2: test_main (...serprog/open-bad-ptr.c:11)
@@ -1540,7 +1073,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/open-bad-ptr:
 
 Copying tests/userprog/open-bad-ptr to scratch partition...
-qemu -hda /tmp/user/1002/Zf5YcTOwvX.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Ba82_GXANs.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run open-bad-ptr
@@ -1562,17 +1095,17 @@ Erasing ustar archive...
 Executing 'open-bad-ptr':
 (open-bad-ptr) begin
 Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027b4f
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027b7f
  cr2=20101234 error=00000000
  eax=20101234 ebx=00000000 ecx=c010ae88 edx=c010ae88
  esi=00000000 edi=c010705c esp=00000014 ebp=c010ae54
  cs=0008 ds=0010 es=0010 ss=620c
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002ce55 0xc002d040 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a128 0x80480b2 0x8048106 0x804871e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027b7f 0xc002d065 0xc002d250 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a128 0x80480b2 0x8048106 0x804871e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 87 ticks
+Timer: 86 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 63 reads, 218 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -1586,25 +1119,25 @@ Powering off...
 DETAILS OF tests/userprog/read-bad-ptr FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0029777 0xc002985a 0xc0029959 0xc00233a3 0xc0023415 0xc002b928 0xc002a86b 0xc0020fec 0xc002bff5 0xc0021acd 0xc0021bff 0x804a277
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc00297a7 0xc002988a 0xc0029989 0xc00233c3 0xc0023435 0xc002b968 0xc002a8a4 0xc0020ff7 0xc002c092 0xc0021aed 0xc0021c1f 0x804a277
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0029777: bitmap_test (..../lib/kernel/bitmap.c:202)
-0xc002985a: bitmap_contains (..../lib/kernel/bitmap.c:261)
-0xc0029959: bitmap_all (..../lib/kernel/bitmap.c:287)
-0xc00233a3: palloc_free_multiple (..../../threads/palloc.c:140)
-0xc0023415: palloc_free_page (..../../threads/palloc.c:149)
-0xc002b928: pagedir_destroy (.../../userprog/pagedir.c:42)
-0xc002a86b: process_exit (...../userprog/process.c:233)
-0xc0020fec: thread_exit (..../../threads/thread.c:331)
-0xc002bff5: syscall_handler (.../../userprog/syscall.c:99)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc00297a7: bitmap_test (..../lib/kernel/bitmap.c:202)
+0xc002988a: bitmap_contains (..../lib/kernel/bitmap.c:261)
+0xc0029989: bitmap_all (..../lib/kernel/bitmap.c:287)
+0xc00233c3: palloc_free_multiple (..../../threads/palloc.c:140)
+0xc0023435: palloc_free_page (..../../threads/palloc.c:149)
+0xc002b968: pagedir_destroy (.../../userprog/pagedir.c:42)
+0xc002a8a4: process_exit (...../userprog/process.c:233)
+0xc0020ff7: thread_exit (..../../threads/thread.c:331)
+0xc002c092: syscall_handler (...../userprog/syscall.c:115)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/read-bad-ptr:
 0x0804a277: exit (.../../lib/user/syscall.c:74)
 Translations of user virtual addresses above are based on a guess at
@@ -1615,14 +1148,14 @@ OUTPUT FROM tests/userprog/read-bad-ptr:
 
 Copying tests/userprog/read-bad-ptr to scratch partition...
 Copying ../../tests/userprog/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/KgSAzDcdUR.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/WO6TxjMnIS.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run read-bad-ptr
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 147 sectors (73 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -1641,20 +1174,20 @@ Executing 'read-bad-ptr':
 (read-bad-ptr) should not have survived read(): FAILED
 read-bad-ptr: exit(1)
 Page fault at 0x676e69a6: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0029777
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc00297a7
  cr2=676e69a6 error=00000000
  eax=00010000 ebx=0000000b ecx=00000010 edx=676e697a
  esi=00000001 edi=00000170 esp=00000001 ebp=c010ae24
  cs=0008 ds=0010 es=0010 ss=000a
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0029777 0xc002985a 0xc0029959 0xc00233a3 0xc0023415 0xc002b928 0xc002a86b 0xc0020fec 0xc002bff5 0xc0021acd 0xc0021bff 0x804a277Page fault at 0xbfffff68: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0026589
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc00297a7 0xc002988a 0xc0029989 0xc00233c3 0xc0023435 0xc002b968 0xc002a8a4 0xc0020ff7 0xc002c092 0xc0021aed 0xc0021c1f 0x804a277Page fault at 0xbfffff68: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc00265b9
  cr2=bfffff68 error=00000000
  eax=0000000a ebx=bfffff68 ecx=c010ac54 edx=000003d4
- esi=c002ef2e edi=c003132a esp=c0030a61 ebp=c010ace8
+ esi=c002f14e edi=c003154a esp=c0030c81 ebp=c010ace8
  cs=0008 ds=0010 es=0010 ss=a277
 Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 90 ticks
+Timer: 86 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 92 reads, 224 writes
 hda3 (scratch): 108 reads, 2 writes
@@ -1668,21 +1201,21 @@ Powering off...
 DETAILS OF tests/userprog/write-bad-ptr FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027e48 0xc002d542 0xc002cc39 0xc002bdcc 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a198 0x80480e7 0x804812b 0x804874e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027e78 0xc002d752 0xc002ce49 0xc002be01 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a198 0x80480e7 0x804812b 0x804874e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027e48: memcpy (...ild/../../lib/string.c:16)
-0xc002d542: inode_write_at (...../../filesys/inode.c:307)
-0xc002cc39: file_write (...d/../../filesys/file.c:98)
-0xc002bdcc: syscall_write (...../userprog/syscall.c:295)
-0xc002c1ce: syscall_handler (...../userprog/syscall.c:208)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc0027e78: memcpy (...ild/../../lib/string.c:16)
+0xc002d752: inode_write_at (...../../filesys/inode.c:307)
+0xc002ce49: file_write (...d/../../filesys/file.c:98)
+0xc002be01: syscall_write (...../userprog/syscall.c:385)
+0xc002c2e5: syscall_handler (...../userprog/syscall.c:252)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/write-bad-ptr:
 0x0804a198: write (...../lib/user/syscall.c:123)
 0x080480e7: test_main (...erprog/write-bad-ptr.c:15)
@@ -1696,14 +1229,14 @@ OUTPUT FROM tests/userprog/write-bad-ptr:
 
 Copying tests/userprog/write-bad-ptr to scratch partition...
 Copying ../../tests/userprog/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/AQVq1nOAhK.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/tO87lCmRlB.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run write-bad-ptr
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 147 sectors (73 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -1720,17 +1253,17 @@ Executing 'write-bad-ptr':
 (write-bad-ptr) begin
 (write-bad-ptr) open "sample.txt"
 Page fault at 0x10123420: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027e48
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027e78
  cr2=10123420 error=00000000
  eax=10123401 ebx=0000007b ecx=10123420 edx=00000000
  esi=c010620c edi=c010620c esp=c0033b48 ebp=c010ae84
  cs=0008 ds=0010 es=0010 ss=0000
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027e48 0xc002d542 0xc002cc39 0xc002bdcc 0xc002c1ce 0xc0021acd 0xc0021bff 0x804a198 0x80480e7 0x804812b 0x804874e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc0027e78 0xc002d752 0xc002ce49 0xc002be01 0xc002c2e5 0xc0021aed 0xc0021c1f 0x804a198 0x80480e7 0x804812b 0x804874e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 90 ticks
+Timer: 83 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 92 reads, 224 writes
 hda3 (scratch): 108 reads, 2 writes
@@ -1744,15 +1277,15 @@ Powering off...
 DETAILS OF tests/userprog/create-null FAILURE:
 
 Kernel panic in run: PANIC at ../../filesys/directory.c:149 in dir_add(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e
+Call stack: 0xc0028960 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002d0dd: dir_add (..../filesys/directory.c:152)
-0xc002c65e: filesys_create (..../../filesys/filesys.c:53)
-0xc002c033: syscall_handler (...../userprog/syscall.c:121)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002d2ed: dir_add (..../filesys/directory.c:152)
+0xc002c86e: filesys_create (..../../filesys/filesys.c:53)
+0xc002c0d0: syscall_handler (...../userprog/syscall.c:137)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/create-null:
 0x0804a108: create (.../../lib/user/syscall.c:93)
 0x080480ba: test_main (...userprog/create-null.c:10)
@@ -1765,7 +1298,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/create-null:
 
 Copying tests/userprog/create-null to scratch partition...
-qemu -hda /tmp/user/1002/AeCNHJE8WX.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/BhoZAYJE4w.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run create-null
@@ -1787,7 +1320,7 @@ Erasing ustar archive...
 Executing 'create-null':
 (create-null) begin
 Kernel PANIC at ../../filesys/directory.c:149 in dir_add(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d0dd 0xc002c65e 0xc002c033 0xc0021acd 0xc0021bff 0x804a108 0x80480ba 0x8048107 0x804872e.
+Call stack: 0xc0028960 0xc002d2ed 0xc002c86e 0xc002c0d0 0xc0021aed 0xc0021c1f 0x804a108 0x80480ba 0x8048107 0x804872e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
@@ -1805,15 +1338,15 @@ Powering off...
 DETAILS OF tests/userprog/open-null FAILURE:
 
 Kernel panic in run: PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d031 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a118 0x80480b2 0x80480ec 0x804870e
+Call stack: 0xc0028960 0xc002d241 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a118 0x80480b2 0x80480ec 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002d031: dir_lookup (..../filesys/directory.c:127)
-0xc002c5e8: filesys_open (..../../filesys/filesys.c:74)
-0xc002c08c: syscall_handler (...../userprog/syscall.c:134)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002d241: dir_lookup (..../filesys/directory.c:127)
+0xc002c7f8: filesys_open (..../../filesys/filesys.c:74)
+0xc002c10f: syscall_handler (...../userprog/syscall.c:154)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/open-null:
 0x0804a118: open (...../lib/user/syscall.c:105)
 0x080480b2: test_main (...s/userprog/open-null.c:12)
@@ -1826,7 +1359,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/open-null:
 
 Copying tests/userprog/open-null to scratch partition...
-qemu -hda /tmp/user/1002/rZUuskrAOV.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/GCFvsMhPMh.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run open-null
@@ -1848,11 +1381,11 @@ Erasing ustar archive...
 Executing 'open-null':
 (open-null) begin
 Kernel PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
-Call stack: 0xc0028930 0xc002d031 0xc002c5e8 0xc002c08c 0xc0021acd 0xc0021bff 0x804a118 0x80480b2 0x80480ec 0x804870e.
+Call stack: 0xc0028960 0xc002d241 0xc002c7f8 0xc002c10f 0xc0021aed 0xc0021c1f 0x804a118 0x80480b2 0x80480ec 0x804870e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 87 ticks
+Timer: 84 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 62 reads, 218 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -1863,64 +1396,14 @@ Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-DETAILS OF tests/userprog/open-empty FAILURE:
-
-run: open() returned 2 instead of -1: FAILED
-
-OUTPUT FROM tests/userprog/open-empty:
-
-Copying tests/userprog/open-empty to scratch partition...
-qemu -hda /tmp/user/1002/5gXCnEvaof.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run open-empty
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 107 sectors (53 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'open-empty' into the file system...
-Erasing ustar archive...
-Executing 'open-empty':
-(open-empty) begin
-(open-empty) open() returned 2 instead of -1: FAILED
-open-empty: exit(1)
-Execution of 'open-empty' complete.
-Timer: 89 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 78 reads, 218 writes
-hda3 (scratch): 106 reads, 2 writes
-Console: 927 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 DETAILS OF tests/userprog/sc-bad-arg FAILURE:
 
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (sc-bad-arg) begin
-  sc-bad-arg: exit(-1)
-Differences in `diff -u' format:
-  (sc-bad-arg) begin
-- sc-bad-arg: exit(-1)
-+ sc-bad-arg: exit(-268370093)
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.06, 0.06, 0.07
 
 OUTPUT FROM tests/userprog/sc-bad-arg:
 
 Copying tests/userprog/sc-bad-arg to scratch partition...
-qemu -hda /tmp/user/1002/laYkWMxXYJ.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/MPzBg0vX3A.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run sc-bad-arg
@@ -1942,32 +1425,25 @@ Erasing ustar archive...
 Executing 'sc-bad-arg':
 (sc-bad-arg) begin
 sc-bad-arg: exit(-268370093)
-Execution of 'sc-bad-arg' complete.
-Timer: 86 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 61 reads, 218 writes
-hda3 (scratch): 106 reads, 2 writes
-Console: 883 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.06, 0.06, 0.07
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/sc-bad-sp FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bf0c: syscall_handler (.../../userprog/syscall.c:50)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002bf7d: syscall_handler (.../../userprog/syscall.c:60)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/sc-bad-sp:
 0x080480ad: test_main (...s/userprog/sc-bad-sp.c:19)
 0x080480f1: main (...ild/../../tests/main.c:13)
@@ -1979,7 +1455,7 @@ translations will be misleading.
 OUTPUT FROM tests/userprog/sc-bad-sp:
 
 Copying tests/userprog/sc-bad-sp to scratch partition...
-qemu -hda /tmp/user/1002/yu8ReDTpeU.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/H1YDfqxVSQ.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run sc-bad-sp
@@ -2001,17 +1477,17 @@ Erasing ustar archive...
 Executing 'sc-bad-sp':
 (sc-bad-sp) begin
 Page fault at 0x40480a6: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002bf0c
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002bf7d
  cr2=040480a6 error=00000000
  eax=c010afb0 ebx=00000000 ecx=00000030 edx=040480a6
  esi=c010afb0 edi=00000000 esp=00000001 ebp=c010af74
  cs=0008 ds=0010 es=0010 ss=bbe0
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 87 ticks
+Timer: 89 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 61 reads, 218 writes
 hda3 (scratch): 106 reads, 2 writes
@@ -2024,12 +1500,12 @@ Powering off...
 
 DETAILS OF tests/userprog/exec-missing FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.32, 0.24, 0.09
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.16, 0.14, 0.09
 
 OUTPUT FROM tests/userprog/exec-missing:
 
 Copying tests/userprog/exec-missing to scratch partition...
-qemu -hda /tmp/user/1002/xrqnWVBzt5.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/GXadWJkJHp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run exec-missing
@@ -2055,24 +1531,24 @@ Executing 'exec-missing':
 exec-missing: exit(0)
 load: no-such-file: open failed
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.32, 0.24, 0.09
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.16, 0.14, 0.09
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/wait-killed FAILURE:
 
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e
 Translation of call stack:
 In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002bf0c: syscall_handler (.../../userprog/syscall.c:50)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
+0xc0028960: debug_panic (.../../lib/kernel/debug.c:38)
+0xc002bc8c: kill (.../userprog/exception.c:105)
+0xc002bd34: page_fault (.../userprog/exception.c:160)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
+0xc002bf7d: syscall_handler (.../../userprog/syscall.c:60)
+0xc0021aed: intr_handler (..../threads/interrupt.c:367)
+0xc0021c1f: intr_entry (threads/intr-stubs.S:38)
 In tests/userprog/wait-killed:
 0x080480ad: test_main (...userprog/wait-killed.c:10)
 0x080480f1: main (...ild/../../tests/main.c:10)
@@ -2085,7 +1561,7 @@ OUTPUT FROM tests/userprog/wait-killed:
 
 Copying tests/userprog/wait-killed to scratch partition...
 Copying tests/userprog/child-bad to scratch partition...
-qemu -hda /tmp/user/1002/iBlffThNY8.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/p3Zk7NOyQ6.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run wait-killed
@@ -2109,17 +1585,17 @@ Executing 'wait-killed':
 (wait-killed) begin
 (child-bad) begin
 Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002bf0c
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002bf7d
  cr2=20101234 error=00000000
  eax=c010efb0 ebx=00000000 ecx=00000030 edx=20101234
  esi=c010efb0 edi=00000000 esp=00000001 ebp=c010ef74
  cs=0008 ds=0010 es=0010 ss=bbe0
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002bf0c 0xc0021acd 0xc0021bff 0x80480ad 0x80480f1 0x804870e.
+Call stack: 0xc0028960 0xc002bc8c 0xc002bd34 0xc0021aed 0xc0021c1f 0xc002bf7d 0xc0021aed 0xc0021c1f 0x80480ad 0x80480f1 0x804870e.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 93 ticks
+Timer: 94 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 122 reads, 430 writes
 hda3 (scratch): 211 reads, 2 writes
@@ -2132,12 +1608,12 @@ Powering off...
 
 DETAILS OF tests/userprog/bad-read FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.02, 0.14, 0.08
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.34, 0.20, 0.11
 
 OUTPUT FROM tests/userprog/bad-read:
 
 Copying tests/userprog/bad-read to scratch partition...
-qemu -hda /tmp/user/1002/KtEhPcHgJW.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/raUDcYOnD9.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-read
@@ -2166,18 +1642,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
  esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.02, 0.14, 0.08
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.34, 0.20, 0.11
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/bad-write FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.12, 0.08
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.12, 0.16, 0.10
 
 OUTPUT FROM tests/userprog/bad-write:
 
 Copying tests/userprog/bad-write to scratch partition...
-qemu -hda /tmp/user/1002/2sn8whXDQO.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/iyvycRF0M5.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-write
@@ -2206,18 +1682,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
  esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.12, 0.08
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.12, 0.16, 0.10
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/bad-jump FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.07, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.26, 0.18, 0.11
 
 OUTPUT FROM tests/userprog/bad-jump:
 
 Copying tests/userprog/bad-jump to scratch partition...
-qemu -hda /tmp/user/1002/UjZ7q_Q1O6.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/89ACPtvAXr.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-jump
@@ -2246,18 +1722,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0
  esi=00000000 edi=00000000 esp=bfffffac ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.03, 0.07, 0.07
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.26, 0.18, 0.11
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/bad-read2 FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.01, 0.10, 0.07
+run: TIMEOUT after 62 seconds of wall-clock time - load average: 0.04, 0.13, 0.09
 
 OUTPUT FROM tests/userprog/bad-read2:
 
 Copying tests/userprog/bad-read2 to scratch partition...
-qemu -hda /tmp/user/1002/As5QqbnvOR.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/fuQVjcXjcN.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-read2
@@ -2286,18 +1762,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
  esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.01, 0.10, 0.07
+TIMEOUT after 62 seconds of wall-clock time - load average: 0.04, 0.13, 0.09
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/bad-write2 FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.00, 0.08, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.18, 0.15, 0.10
 
 OUTPUT FROM tests/userprog/bad-write2:
 
 Copying tests/userprog/bad-write2 to scratch partition...
-qemu -hda /tmp/user/1002/wgrGOSyCvw.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/JZKU9aRYAC.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-write2
@@ -2326,18 +1802,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480a6
  esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.00, 0.08, 0.07
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.18, 0.15, 0.10
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/bad-jump2 FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.10, 0.09, 0.07
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.17, 0.16, 0.10
 
 OUTPUT FROM tests/userprog/bad-jump2:
 
 Copying tests/userprog/bad-jump2 to scratch partition...
-qemu -hda /tmp/user/1002/SuMb2IcufV.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/pJCuPRsFL9.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run bad-jump2
@@ -2366,39 +1842,18 @@ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0000000
  esi=00000000 edi=00000000 esp=bfffffac ebp=bfffffb8
  cs=001b ds=0023 es=0023 ss=0023
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.10, 0.09, 0.07
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.17, 0.16, 0.10
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/userprog/no-vm/multi-oom FAILURE:
 
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002c110 0xc0021acd 0xc0021bff 0x804a768 0x80480b9 0x80480d8 0x8048237 0x804896e
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc0027b4f: strcmp (...ild/../../lib/string.c:81)
-0xc002c110: syscall_handler (...../userprog/syscall.c:153)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-In tests/userprog/no-vm/multi-oom:
-0x0804a768: open (...../lib/user/syscall.c:105)
-0x080480b9: consume_some_resources (...prog/no-vm/multi-oom.c:59)
-0x080480d8: consume_some_resources_and_die (...prog/no-vm/multi-oom.c:69)
-0x08048237: main (...rog/no-vm/multi-oom.c:119)
-0x0804896e: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+run: TIMEOUT after 361 seconds of wall-clock time - load average: 0.08, 0.09, 0.08
 
 OUTPUT FROM tests/userprog/no-vm/multi-oom:
 
 Copying tests/userprog/no-vm/multi-oom to scratch partition...
-qemu -hda /tmp/user/1002/yBcVkC23yc.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/g8RBR3KbSB.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run multi-oom
@@ -2420,521 +1875,20 @@ Erasing ustar archive...
 Executing 'multi-oom':
 (multi-oom) begin
 multi-oom: exit(-1)
-multi-oom: exit(-1)
-multi-oom: exit(-1)
-Page fault at 0x69: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0027b4f
- cr2=00000069 error=00000000
- eax=00000069 ebx=c015cf5c ecx=0804b080 edx=0804b080
- esi=c015c030 edi=0804b05b esp=c015c030 ebp=c015cf14
- cs=0008 ds=0010 es=0010 ss=3a88
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc0027b4f 0xc002c110 0xc0021acd 0xc0021bff 0x804a768 0x80480b9 0x80480d8 0x8048237 0x804896e.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 126 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 1880 reads, 252 writes
-hda3 (scratch): 123 reads, 2 writes
-Console: 1593 characters output
-Keyboard: 0 keys pressed
-Exception: 1 page faults
-Powering off...
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/sm-create FAILURE:
-
-run: size of blargle (2) differs from expected (5678): FAILED
-
-OUTPUT FROM tests/filesys/base/sm-create:
-
-Copying tests/filesys/base/sm-create to scratch partition...
-qemu -hda /tmp/user/1002/sc65ZXhuZX.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run sm-create
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'sm-create' into the file system...
-Erasing ustar archive...
-Executing 'sm-create':
-(sm-create) begin
-(sm-create) create "blargle"
-(sm-create) open "blargle" for verification
-(sm-create) size of blargle (2) differs from expected (5678)
-(sm-create) size of blargle (2) differs from expected (5678): FAILED
-sm-create: exit(1)
-Execution of 'sm-create' complete.
-Timer: 88 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 99 reads, 242 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1071 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/sm-full FAILURE:
-
-run: read of 512 bytes at offset 0 in "quux" returned 0: FAILED
-
-OUTPUT FROM tests/filesys/base/sm-full:
-
-Copying tests/filesys/base/sm-full to scratch partition...
-qemu -hda /tmp/user/1002/xKyAWKaWLX.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run sm-full
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'sm-full' into the file system...
-Erasing ustar archive...
-Executing 'sm-full':
-(sm-full) begin
-(sm-full) create "quux"
-(sm-full) open "quux"
-(sm-full) writing "quux"
-(sm-full) close "quux"
-(sm-full) open "quux" for verification
-(sm-full) size of quux (2) differs from expected (5678)
-(sm-full) read of 512 bytes at offset 0 in "quux" returned 0: FAILED
-sm-full: exit(1)
-Execution of 'sm-full' complete.
-Timer: 90 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 91 reads, 254 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1114 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/sm-random FAILURE:
-
-run: read 13 bytes at offset 260 failed: FAILED
-
-OUTPUT FROM tests/filesys/base/sm-random:
-
-Copying tests/filesys/base/sm-random to scratch partition...
-qemu -hda /tmp/user/1002/_R43juZGUh.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run sm-random
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 113 sectors (56 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'sm-random' into the file system...
-Erasing ustar archive...
-Executing 'sm-random':
-(sm-random) begin
-(sm-random) create "bazzle"
-(sm-random) open "bazzle"
-(sm-random) write "bazzle" in random order
-(sm-random) read "bazzle" in random order
-(sm-random) read 13 bytes at offset 260 failed: FAILED
-sm-random: exit(1)
-Execution of 'sm-random' complete.
-Timer: 95 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 215 reads, 364 writes
-hda3 (scratch): 112 reads, 2 writes
-Console: 1063 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/sm-seq-block FAILURE:
-
-run: TIMEOUT after 60 seconds of host CPU time
-
-OUTPUT FROM tests/filesys/base/sm-seq-block:
-
-Copying tests/filesys/base/sm-seq-block to scratch partition...
-qemu -hda /tmp/user/1002/YnIgyjW5ih.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run sm-seq-block
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  268,288,000 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'sm-seq-block' into the file system...
-Erasing ustar archive...
-Executing 'sm-seq-block':
-(sm-seq-block) begin
-(sm-seq-block) create "noodle"
-(sm-seq-block) open "noodle"
-(sm-seq-block) writing "noodle"
-(sm-seq-block) close "noodle"
-(sm-seq-block) open "noodle" for verification
-
-TIMEOUT after 60 seconds of host CPU time
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/sm-seq-random FAILURE:
-
-run: read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
-
-OUTPUT FROM tests/filesys/base/sm-seq-random:
-
-Copying tests/filesys/base/sm-seq-random to scratch partition...
-qemu -hda /tmp/user/1002/bgh48yfbl3.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run sm-seq-random
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'sm-seq-random' into the file system...
-Erasing ustar archive...
-Executing 'sm-seq-random':
-(sm-seq-random) begin
-(sm-seq-random) create "nibble"
-(sm-seq-random) open "nibble"
-(sm-seq-random) writing "nibble"
-(sm-seq-random) close "nibble"
-(sm-seq-random) open "nibble" for verification
-(sm-seq-random) size of nibble (2) differs from expected (5678)
-(sm-seq-random) read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
-sm-seq-random: exit(1)
-Execution of 'sm-seq-random' complete.
-Timer: 89 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 105 reads, 262 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1207 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/lg-create FAILURE:
-
-run: size of blargle (2) differs from expected (75678): FAILED
-
-OUTPUT FROM tests/filesys/base/lg-create:
-
-Copying tests/filesys/base/lg-create to scratch partition...
-qemu -hda /tmp/user/1002/QMtH6Qnxst.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run lg-create
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  209,510,400 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'lg-create' into the file system...
-Erasing ustar archive...
-Executing 'lg-create':
-(lg-create) begin
-(lg-create) create "blargle"
-(lg-create) open "blargle" for verification
-(lg-create) size of blargle (2) differs from expected (75678)
-(lg-create) size of blargle (2) differs from expected (75678): FAILED
-lg-create: exit(1)
-Execution of 'lg-create' complete.
-Timer: 94 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 235 reads, 378 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1074 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/lg-full FAILURE:
-
-run: read of 512 bytes at offset 0 in "quux" returned 0: FAILED
-
-OUTPUT FROM tests/filesys/base/lg-full:
-
-Copying tests/filesys/base/lg-full to scratch partition...
-qemu -hda /tmp/user/1002/in2dg4uHK0.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run lg-full
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'lg-full' into the file system...
-Erasing ustar archive...
-Executing 'lg-full':
-(lg-full) begin
-(lg-full) create "quux"
-(lg-full) open "quux"
-(lg-full) writing "quux"
-(lg-full) close "quux"
-(lg-full) open "quux" for verification
-(lg-full) size of quux (2) differs from expected (75678)
-(lg-full) read of 512 bytes at offset 0 in "quux" returned 0: FAILED
-lg-full: exit(1)
-Execution of 'lg-full' complete.
-Timer: 99 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 91 reads, 526 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1115 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/lg-random FAILURE:
-
-run: read 512 bytes at offset 16896 failed: FAILED
-
-OUTPUT FROM tests/filesys/base/lg-random:
-
-Copying tests/filesys/base/lg-random to scratch partition...
-qemu -hda /tmp/user/1002/oXyP_7VrsR.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run lg-random
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 113 sectors (56 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'lg-random' into the file system...
-Erasing ustar archive...
-Executing 'lg-random':
-(lg-random) begin
-(lg-random) create "bazzle"
-(lg-random) open "bazzle"
-(lg-random) write "bazzle" in random order
-(lg-random) read "bazzle" in random order
-(lg-random) read 512 bytes at offset 16896 failed: FAILED
-lg-random: exit(1)
-Execution of 'lg-random' complete.
-Timer: 104 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 89 reads, 534 writes
-hda3 (scratch): 112 reads, 2 writes
-Console: 1066 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/lg-seq-block FAILURE:
-
-run: read of 512 bytes at offset 0 in "noodle" returned 0: FAILED
-
-OUTPUT FROM tests/filesys/base/lg-seq-block:
-
-Copying tests/filesys/base/lg-seq-block to scratch partition...
-qemu -hda /tmp/user/1002/RxUsvGcMIh.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run lg-seq-block
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'lg-seq-block' into the file system...
-Erasing ustar archive...
-Executing 'lg-seq-block':
-(lg-seq-block) begin
-(lg-seq-block) create "noodle"
-(lg-seq-block) open "noodle"
-(lg-seq-block) writing "noodle"
-(lg-seq-block) close "noodle"
-(lg-seq-block) open "noodle" for verification
-(lg-seq-block) size of noodle (2) differs from expected (75678)
-(lg-seq-block) read of 512 bytes at offset 0 in "noodle" returned 0: FAILED
-lg-seq-block: exit(1)
-Execution of 'lg-seq-block' complete.
-Timer: 104 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 384 reads, 673 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1196 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/lg-seq-random FAILURE:
-
-run: read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
-
-OUTPUT FROM tests/filesys/base/lg-seq-random:
-
-Copying tests/filesys/base/lg-seq-random to scratch partition...
-qemu -hda /tmp/user/1002/33RFi7zIwa.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run lg-seq-random
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 111 sectors (55 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'lg-seq-random' into the file system...
-Erasing ustar archive...
-Executing 'lg-seq-random':
-(lg-seq-random) begin
-(lg-seq-random) create "nibble"
-(lg-seq-random) open "nibble"
-(lg-seq-random) writing "nibble"
-(lg-seq-random) close "nibble"
-(lg-seq-random) open "nibble" for verification
-(lg-seq-random) size of nibble (2) differs from expected (75678)
-(lg-seq-random) read of 512 bytes at offset 0 in "nibble" returned 0: FAILED
-lg-seq-random: exit(1)
-Execution of 'lg-seq-random' complete.
-Timer: 102 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 354 reads, 678 writes
-hda3 (scratch): 110 reads, 2 writes
-Console: 1209 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
+TIMEOUT after 361 seconds of wall-clock time - load average: 0.08, 0.09, 0.08
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/base/syn-read FAILURE:
 
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a740 0x804817e 0x8048922
-Translation of call stack:
-In kernel.o:
-0xc0028930: debug_panic (.../../lib/kernel/debug.c:38)
-0xc002bc4c: kill (.../userprog/exception.c:105)
-0xc002bcf4: page_fault (.../userprog/exception.c:160)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0xc002d3e7: byte_to_sector (.../../../filesys/inode.c:50)
-0xc002d5ba: inode_read_at (...../../filesys/inode.c:210)
-0xc002cc95: file_read (...d/../../filesys/file.c:72)
-0xc002be90: syscall_read (...../userprog/syscall.c:273)
-0xc002c1ad: syscall_handler (...../userprog/syscall.c:198)
-0xc0021acd: intr_handler (..../threads/interrupt.c:367)
-0xc0021bff: intr_entry (threads/intr-stubs.S:38)
-0x0804a740: (unknown)
-In tests/filesys/base/syn-read:
-0x0804817e: test_main (...ilesys/base/syn-read.c:26)
-0x08048922: main (...ild/../../tests/main.c:11)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+run: TIMEOUT after 301 seconds of wall-clock time - load average: 0.11, 0.10, 0.09
 
 OUTPUT FROM tests/filesys/base/syn-read:
 
 Copying tests/filesys/base/syn-read to scratch partition...
 Copying tests/filesys/base/child-syn-read to scratch partition...
-qemu -hda /tmp/user/1002/LnhTa1bGcQ.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/p59F37Tw33.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run syn-read
@@ -2977,37 +1931,23 @@ child-syn-read: exit(7)
 child-syn-read: exit(2)
 child-syn-read: exit(8)
 child-syn-read: exit(5)
-Page fault at 0xbb74c0a0: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc002d3e7
- cr2=bb74c0a0 error=00000000
- eax=ffffffff ebx=c0024231 ecx=bb74c084 edx=5b10c483
- esi=c012c030 edi=5b10c483 esp=c010701c ebp=c012ce94
- cs=0008 ds=0010 es=0010 ss=00ec
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc0028930 0xc002bc4c 0xc002bcf4 0xc0021acd 0xc0021bff 0xc002d3e7 0xc002d5ba 0xc002cc95 0xc002be90 0xc002c1ad 0xc0021acd 0xc0021bff 0x804a740 0x804817e 0x8048922.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 327 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 7596 reads, 480 writes
-hda3 (scratch): 232 reads, 2 writes
-Console: 2363 characters output
-Keyboard: 0 keys pressed
-Exception: 1 page faults
-Powering off...
+child-syn-read: exit(9)
+child-syn-read: exit(4)
+child-syn-read: exit(6)
+
+TIMEOUT after 301 seconds of wall-clock time - load average: 0.11, 0.10, 0.09
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/base/syn-write FAILURE:
 
-run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.37, 0.28, 0.15
+run: TIMEOUT after 61 seconds of wall-clock time - load average: 0.09, 0.09, 0.09
 
 OUTPUT FROM tests/filesys/base/syn-write:
 
 Copying tests/filesys/base/syn-write to scratch partition...
 Copying tests/filesys/base/child-syn-wrt to scratch partition...
-qemu -hda /tmp/user/1002/U7KZN5fJHe.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/5qC_BBlDDR.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run syn-write
@@ -3051,53 +1991,5 @@ child-syn-wrt: exit(7)
 child-syn-wrt: exit(1)
 child-syn-wrt: exit(3)
 
-TIMEOUT after 61 seconds of wall-clock time - load average: 0.37, 0.28, 0.15
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/syn-remove FAILURE:
-
-run: read "deleteme": FAILED
-
-OUTPUT FROM tests/filesys/base/syn-remove:
-
-Copying tests/filesys/base/syn-remove to scratch partition...
-qemu -hda /tmp/user/1002/SGWUmVQ1PC.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run syn-remove
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 5,040 sectors (2 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 147 sectors (73 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 112 sectors (56 kB), Pintos scratch (22)
-filesys: using hda2
-scratch: using hda3
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'syn-remove' into the file system...
-Erasing ustar archive...
-Executing 'syn-remove':
-(syn-remove) begin
-(syn-remove) create "deleteme"
-(syn-remove) open "deleteme"
-(syn-remove) remove "deleteme"
-(syn-remove) write "deleteme"
-(syn-remove) seek "deleteme" to 0
-(syn-remove) read "deleteme"
-(syn-remove) read "deleteme": FAILED
-syn-remove: exit(1)
-Execution of 'syn-remove' complete.
-Timer: 89 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 90 reads, 238 writes
-hda3 (scratch): 111 reads, 2 writes
-Console: 1095 characters output
-Keyboard: 0 keys pressed
-Exception: 0 page faults
-Powering off...
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.09, 0.09, 0.09
 make[1]: Leaving directory '/home/team46a/pintos/src/userprog/build'

@@ -124,14 +124,6 @@ struct fd
   struct list_elem elem;
 };
 
-/* struct child */
-/* { */
-/*   tid_t tid; */
-/*   int exit_status; */
-/*   struct list_elem elem; */
-/*   struct semaphore sema; */
-/* }; */
-
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
