@@ -46,12 +46,11 @@ static bool check_right_add(void * add){
   bool right = 1;
   int i;
   struct thread *t = thread_current();
-
+  if(!(add))
+    return 0;
   if( add > PHYS_BASE - 12)
     return 0;
   if(add < 0x8048000)
-    return 0;
-  if(!(add))
     return 0;
 
   for (i = 0; i < 4; i++){
@@ -83,18 +82,21 @@ syscall_handler (struct intr_frame *f UNUSED)
 {
   if(!check_right_add(f->esp)){
     syscall_exit(-1);
+    return;
   }
 
   switch(*(unsigned int *)f->esp) {
 
     case SYS_HALT:
     {
+      /* printf("halt\n"); */
       shutdown_power_off();
       break;
     }
 
     case SYS_EXIT:
     {
+      /* printf("exit\n"); */
       int status = ((int *)f->esp)[1];
 
       syscall_exit(status);
@@ -103,14 +105,17 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_EXEC:
     {
+      /* printf("exec\n"); */
       /* We suppose that pintos have single thread system! */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
+        break;
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
       if (!valid_file_ptr(file)) {
         syscall_exit(-1);
+        break;
       }
 
       tid_t tid = process_execute(file);
@@ -121,6 +126,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_WAIT:
     {
+      /* printf("wait\n"); */
       tid_t tid = ((int *)f->esp)[1];
 
       int exit_status = process_wait(tid);
@@ -131,8 +137,10 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CREATE:
     {
+      /* printf("create\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
+        break;
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
@@ -149,6 +157,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_REMOVE:
     {
+      /* printf("remove\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -167,6 +176,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_OPEN:
     {
+      /* printf("open\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -184,6 +194,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_FILESIZE:
     {
+      /* printf("filesize\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -203,6 +214,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_READ:
     {
+      /* printf("read\n"); */
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_add((void *)(((int*)f->esp)[2]))){
@@ -224,6 +236,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_WRITE:
     {
+      /* printf("write\n"); */
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_add((void *)(((int*)f->esp)[2]))){
@@ -240,6 +253,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_SEEK:
     {
+      /* printf("seek\n"); */
       int fd = ((int *)f->esp)[1];
       off_t position = ((off_t *)f->esp)[2];
       struct list_elem *e;
@@ -257,6 +271,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_TELL:
     {
+      /* printf("tell\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -277,6 +292,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CLOSE:
     {
+      /* printf("close\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -300,6 +316,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     default:
     {
+      /* printf("default\n"); */
       syscall_exit(-1);
       break;
     }
@@ -412,6 +429,7 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     return -1;
   }
 
+
   if (fd == 0){
     uint8_t key;
     uint8_t *temp = buffer;
@@ -440,9 +458,6 @@ int syscall_read(int fd, void *buffer, unsigned size) {
   if(!find){
     return -2;
   }
-
-  /* To change the read only file handler */
-  file_deny_write(_fd->file_p);
 
   lock_acquire(&_fd->file_p->file_lock);
   int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);

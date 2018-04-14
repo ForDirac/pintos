@@ -75,6 +75,24 @@ process_execute (const char *file_name)
  return tid;
 }
 
+struct member *lookup_child(tid_t tid) {
+  struct list_elem *e;
+  struct member *member;
+  bool valid = 0;
+  lock_acquire(&family_lock);
+  for (e = list_begin(&family); e != list_end(&family); e = list_next(e)) {
+    member = list_entry(e, struct member, elem);
+    if (tid == member->child_tid) {
+      valid = 1;
+      break;
+    }
+  }
+  lock_release(&family_lock);
+  if (!valid)
+    return NULL;
+  return member;
+}
+
 static void loading_result(bool success) {
   struct list_elem *e;
   struct member *member;
@@ -135,6 +153,8 @@ start_process (void *file_name_)
   char *file_rename = argv[0];
   char *exit_file_name = (char *)malloc(strlen(file_rename)+1);
   strlcpy(exit_file_name, file_rename, strlen(file_rename)+1);
+  struct thread *t = thread_current();
+  strlcpy(t->file_name, file_rename, strlen(file_rename)+1);
 
   int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len;
   int esp[100];
@@ -169,6 +189,7 @@ start_process (void *file_name_)
   /* For Proj.#2 */
   if (!success) {
     printf("%s: exit(%d)\n", exit_file_name, -1);
+    free(exit_file_name);
     thread_exit();
   }
   free(exit_file_name);
@@ -221,6 +242,7 @@ process_wait (tid_t child_tid UNUSED)
     return -1;
 
   if(!member->is_exit){
+    free(member);
     return -1;
   }
 
@@ -251,6 +273,32 @@ process_exit (void)
 {
   struct thread *cur = thread_current ();
   uint32_t *pd;
+
+  if(cur->execute_f){
+    file_allow_write(cur->execute_f);
+    file_close(cur->execute_f);
+  }
+
+  /* For Proj.#2 Multi-oom */
+  /* struct list_elem *e; */
+  /* struct member *member; */
+  /* for (e = list_begin(&family); e !=list_end(&family); e = list_next(e)){ */
+  /*   member = list_entry(e, struct member, elem); */
+  /*   if (cur->tid == member->child_tid){ */
+  /*     list_remove(&member->elem); */
+  /*     free(member); */
+  /*   } */
+  /*   if (cur == member->parent) { */
+  /*     list_remove(&member->elem); */
+  /*     free(member); */
+  /*   } */
+  /* } */
+  /* struct list_elem *l; */
+  /* struct fd *fd; */
+  /* for (l = list_begin(&cur->file_list); e != list_end(&cur->file_list); e = list_next(e)) { */
+  /*   fd = list_entry(e, struct member, elem); */
+  /*   free(fd); */
+  /* } */
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -463,11 +511,14 @@ load (const char *file_name, void (**eip) (void), void **esp)
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
 
+  file_deny_write(file);
+  thread_current()->execute_f = file;
+
   success = true;
 
  done:
   /* We arrive here whether the load is successful or not. */
-  file_close (file);
+  /* file_close (file); */
   return success;
 }
 
