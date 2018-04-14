@@ -56,6 +56,13 @@ static bool check_right_add(void * add){
   int i;
   struct thread *t = thread_current();
 
+  if( add > PHYS_BASE - 12)
+    return 0;
+  if(add < 0x8048000)
+    return 0;
+  if(!(add))
+    return 0;
+
   for (i = 0; i < 4; i++){
     void * p = pagedir_get_page(t->pagedir, add+i);
 
@@ -112,12 +119,8 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
-
-      if(file == NULL){
-        /* f->eax = -1; */
-        /* break; */
+      if (!valid_file_ptr(file)) {
         syscall_exit(-1);
-        break;
       }
 
       tid_t tid = process_execute(file);
@@ -143,11 +146,10 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
-      if(file == NULL){
+      if (!valid_file_ptr(file)){
         syscall_exit(-1);
         break;
       }
-
       off_t initial_size = (off_t)((unsigned int *)f->esp)[2];
       bool success = filesys_create(file, initial_size);
       f->eax = 0;
@@ -163,13 +165,10 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
-
-      if(file == NULL){
-        /* f->eax = -1; */
+      if (!valid_file_ptr(file)) {
         syscall_exit(-1);
         break;
       }
-
       bool success = filesys_remove(file);
       f->eax = 0;
       f->eax = success;
@@ -184,13 +183,10 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
-
-      if(file == NULL){
-        /* f->eax = -1; */
+      if (!valid_file_ptr(file)) {
         syscall_exit(-1);
         break;
       }
-
       int fd = syscall_open(file);
       f->eax = fd;
       break;
@@ -219,7 +215,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     {
       int fd = ((int *)f->esp)[1];
 
-      if(!check_right_add(f->esp + 8)){
+      if(!check_right_add((void *)(((int*)f->esp)[2]))){
         syscall_exit(-1);
         break;
       }
@@ -227,6 +223,11 @@ syscall_handler (struct intr_frame *f UNUSED)
       void *buffer = (void *)(((int*)f->esp)[2]);
       unsigned size = ((unsigned int *)f->esp)[3];
       int count = syscall_read(fd, buffer, size);
+      if (count == -2) {
+        syscall_exit(-1);
+        break;
+      }
+
       f->eax = count;
       break;
     }
@@ -235,7 +236,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     {
       int fd = ((int *)f->esp)[1];
 
-      if(!check_right_add(f->esp + 8)){
+      if(!check_right_add((void *)(((int*)f->esp)[2]))){
         syscall_exit(-1);
         break;
       }
@@ -331,6 +332,7 @@ int syscall_exit(int status){
       member->is_exit = 1;
       member->exit_status = status;
       find = 1;
+      break;
     }
   }
   lock_release(&family_lock);
@@ -405,6 +407,10 @@ int syscall_read(int fd, void *buffer, unsigned size) {
   struct thread *t = thread_current();
   bool find = 0;
 
+  if (fd < 0) {
+    return -2;
+  }
+
   /* ASSERT(fd != 1); */
   if (fd == 1){
     return -1;
@@ -434,13 +440,13 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     }
   }
 
-  /* To change the read only file handler */
-  file_deny_write(_fd->file_p);
-
   /* is it right to return -1? */
   if(!find){
-    return -1;
+    return -2;
   }
+
+  /* To change the read only file handler */
+  file_deny_write(_fd->file_p);
 
   int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);
 
@@ -477,3 +483,10 @@ int syscall_write(int fd, void *buffer, unsigned size) {
   return (int)file_write(_fd->file_p, buffer, (off_t)size);
 }
 
+bool valid_file_ptr(char *file) {
+  if (!file)
+    return 0;
+  if(file > (uintptr_t)0x8084000 && file < (uintptr_t)0x40000000)
+    return 0;
+  return 1;
+}

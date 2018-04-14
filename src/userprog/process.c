@@ -59,13 +59,42 @@ process_execute (const char *file_name)
   new_member->parent = t;
   new_member->exit_status = 0;
   new_member->is_exit = 0;
+  new_member->success = 0;
   sema_init(&new_member->sema, 0);
+  sema_init(&new_member->loading_sema, 0);
 
   lock_acquire(&family_lock);
   list_push_back(&family, &new_member->elem);
   lock_release(&family_lock);
 
+  sema_down(&new_member->loading_sema);
+
+  if (!new_member->success)
+    tid = -1;
+
  return tid;
+}
+
+static void loading_result(bool success) {
+  struct list_elem *e;
+  struct member *member;
+  struct thread *t = thread_current();
+  lock_acquire(&family_lock);
+  ASSERT(!list_empty(&family));
+  for (e = list_begin(&family); e != list_end(&family); e = list_next(e)) {
+    member = list_entry(e, struct member, elem);
+    if (t->tid == member->child_tid) {
+      member->success = success;
+      sema_up(&member->loading_sema);
+      if (!success) {
+        member->is_exit = 1;
+        member->exit_status = -1;
+        sema_up(&member->sema);
+      }
+      break;
+    }
+  }
+  lock_release(&family_lock);
 }
 
 /* A thread function that loads a user process and starts it
@@ -104,6 +133,8 @@ start_process (void *file_name_)
     }
   }
   char *file_rename = argv[0];
+  char *exit_file_name = (char *)malloc(strlen(file_rename)+1);
+  strlcpy(exit_file_name, file_rename, strlen(file_rename)+1);
 
   int total = 8 + (argc+2)*4 + (str_len%4 != 0) * (4-(str_len%4)) + str_len;
   int esp[100];
@@ -130,12 +161,19 @@ start_process (void *file_name_)
   if_.eflags = FLAG_IF | FLAG_MBS;
 
   success = load (file_rename, &if_.eip, &if_.esp);
+  loading_result(success);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
 
-  if (!success)
-    thread_exit ();
+  /* For Proj.#2 */
+  if (!success) {
+    printf("%s: exit(%d)\n", exit_file_name, -1);
+    thread_exit();
+  }
+  free(exit_file_name);
+  /* if (!success) */
+  /*   thread_exit (); */
 
   memcpy((char *)(PHYS_BASE-(void *)total), (char *)esp, (size_t)total);
   if_.esp = PHYS_BASE - total;
