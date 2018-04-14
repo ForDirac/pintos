@@ -11,6 +11,7 @@
 #include "lib/kernel/console.h"
 #include "devices/input.h"
 #include "threads/synch.h"
+#include "threads/vaddr.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -43,9 +44,16 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-  /* printf ("system call!\n"); */
-
-  /* enum syscall_nr = *(unsigned int *)f->esp; */
+  if(f->esp > PHYS_BASE || f->esp < 0x40000000){
+    struct thread *t = thread_current();
+    char *next_p;
+    char space[2] = " ";
+    char *file_name = strtok_r(t->name, space, &next_p);
+    f->eax = -1;
+    printf("%s: exit(%d)\n", file_name, -1);
+    thread_exit();
+    return;
+  }
 
   switch(*(unsigned int *)f->esp) {
 
@@ -66,6 +74,13 @@ syscall_handler (struct intr_frame *f UNUSED)
       struct member *member;
 
       char *file_name = strtok_r(t->name, space, &next_p);
+
+      if(status < 0 || status > 255){
+        f->eax = -1;
+        printf("%s: exit(%d)\n", file_name, status);
+        thread_exit();
+        break;
+      }
 
       lock_acquire(&family_lock);
       for(e = list_begin(&family); e != list_end(&family); e = list_next(e)){
@@ -115,6 +130,10 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_CREATE:
     {
       const char *file = (char *)(((int*)f->esp)[1]);
+      if ((uintptr_t)file < 0x40000000){
+        f->eax = -1;
+        break;
+      }
       off_t initial_size = (off_t)((unsigned int *)f->esp)[2];
       bool success = filesys_create(file, initial_size);
       f->eax = 0;
@@ -129,18 +148,18 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_OPEN:
     {
-      printf("start\n");
       const char *file = (char *)(((int*)f->esp)[1]);
       struct thread *t = thread_current();
       struct file* file_p = filesys_open(file);
       struct list_elem *e;
       int i = 0;
 
-      printf("after filesys open\n");
       if(file_p == NULL){
         f->eax = -1;
         break;
       }
+
+      lock_acquire(&t->file_list_lock);
 
       if(list_empty(&t->file_list)){
         /* Insert the Default values which are STD_IN & STD_OUT and initialize them */
@@ -164,36 +183,32 @@ syscall_handler (struct intr_frame *f UNUSED)
       /*   } */
       /* } */
 
-      struct fd new_fd;
-
-      printf("Open!\n");
+      struct fd *new_fd = (struct fd *)malloc(sizeof(struct fd));
 
       for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
-        struct fd *fd2 = list_entry(e, struct fd, elem);
-        printf("position 1, fd : %d, i : %d, \n", fd2->fd, i);
-        if (fd2->fd != i){
-          printf("position 2, fd : %d, i : %d, \n", fd2->fd, i);
-          new_fd.fd = i;
-          new_fd.file_name = file;
+        struct fd *__fd = list_entry(e, struct fd, elem);
+        if (__fd->fd != i){
+          new_fd->fd = i;
+          new_fd->file_name = file;
           /* strlcpy(new_fd.file_name, file, strlen(file)+1); */
-          new_fd.file_p = file_p;
-          list_insert_ordered(&t->file_list, &new_fd.elem, compare, NULL);
-          printf("after insert\n");
+          new_fd->file_p = file_p;
+          list_insert_ordered(&t->file_list, &new_fd->elem, compare, NULL);
           break;
         }
         i++;
       }
 
       if ((size_t)i == list_size(&t->file_list)){
-        new_fd.fd = i;
-        printf("fd = %d\n", new_fd.fd);
-        new_fd.file_name = file;
+        new_fd->fd = i;
+        new_fd->file_name = file;
         /* strlcpy(new_fd.file_name, file, strlen(file)+1); */
-        new_fd.file_p = file_p;
-        list_push_back(&t->file_list, &new_fd.elem);
+        new_fd->file_p = file_p;
+        list_push_back(&t->file_list, &new_fd->elem);
       }
 
-      f->eax = new_fd.fd;
+      lock_release(&t->file_list_lock);
+
+      f->eax = new_fd->fd;
 
       break;
     }

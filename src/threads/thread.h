@@ -92,6 +92,7 @@ struct thread
 #ifdef USERPROG
     /* To implement for Proj.#2, To store the File_descriptor */
     struct list file_list;
+    struct lock file_list_lock;
 #endif
 
     /* Owned by thread.c. */
