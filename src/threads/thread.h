@@ -122,15 +122,8 @@ struct fd
   const char *file_name;
   struct file* file_p;
   struct list_elem elem;
+  bool deny_write;
 };
-
-/* struct child */
-/* { */
-/*   tid_t tid; */
-/*   int exit_status; */
-/*   struct list_elem elem; */
-/*   struct semaphore sema; */
-/* }; */
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
