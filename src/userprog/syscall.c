@@ -41,16 +41,7 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
 /*     return *_fd; */
 /*   } */
 /* } */
-/* static inline void check_address(void *addr, void *esp){ */
-/*   if (!(is_user_vaddr (addr) && addr >= (void *)0x08048000UL)) */
-/*     exit (-1); */
 
-/*   if (!find_vme (addr)){ */
-/*     if (!verify_stack ((int32_t) addr, (int32_t) esp)) */
-/*       exit (-1); */
-/*     expand_stack (addr) */
-/*   } */
-/* } */
 static bool check_right_add(void * add){
   bool right = 1;
   int i;
@@ -90,7 +81,6 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-  /* if(!(is_user_vaddr((int)&f->esp)) && (&f->esp >= 0x40000000)){ */
   if(!check_right_add(f->esp)){
     syscall_exit(-1);
   }
@@ -290,14 +280,20 @@ syscall_handler (struct intr_frame *f UNUSED)
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
+      bool valid_fd = 0;
 
       for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *_fd = list_entry(e, struct fd, elem);
         if(_fd->fd == fd){
+          valid_fd = 1;
           list_remove(e);
           free(_fd);
           break;
         }
+      }
+      if (!valid_fd) {
+        syscall_exit(-1);
+        break;
       }
       break;
     }
@@ -448,7 +444,9 @@ int syscall_read(int fd, void *buffer, unsigned size) {
   /* To change the read only file handler */
   file_deny_write(_fd->file_p);
 
+  lock_acquire(&_fd->file_p->file_lock);
   int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);
+  lock_release(&_fd->file_p->file_lock);
 
   return bytes_read;
 }
@@ -480,7 +478,10 @@ int syscall_write(int fd, void *buffer, unsigned size) {
     return -1;
   }
 
-  return (int)file_write(_fd->file_p, buffer, (off_t)size);
+  lock_acquire(&_fd->file_p->file_lock);
+  int bytes_write = (int)file_write(_fd->file_p, buffer, (off_t)size);
+  lock_release(&_fd->file_p->file_lock);
+  return bytes_write;
 }
 
 bool valid_file_ptr(char *file) {

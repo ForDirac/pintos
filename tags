@@ -231,16 +231,16 @@ PANIC	src/lib/debug.h	14;"	d
 PDBITS	src/threads/pte.h	28;"	d
 PDMASK	src/threads/pte.h	29;"	d
 PDSHIFT	src/threads/pte.h	27;"	d
-PE32Ax	src/userprog/process.c	260;"	d	file:
-PE32Hx	src/userprog/process.c	262;"	d	file:
-PE32Ox	src/userprog/process.c	261;"	d	file:
-PE32Wx	src/userprog/process.c	259;"	d	file:
+PE32Ax	src/userprog/process.c	298;"	d	file:
+PE32Hx	src/userprog/process.c	300;"	d	file:
+PE32Ox	src/userprog/process.c	299;"	d	file:
+PE32Wx	src/userprog/process.c	297;"	d	file:
 PF_P	src/userprog/exception.h	5;"	d
-PF_R	src/userprog/process.c	312;"	d	file:
+PF_R	src/userprog/process.c	350;"	d	file:
 PF_U	src/userprog/exception.h	7;"	d
 PF_W	src/userprog/exception.h	6;"	d
-PF_W	src/userprog/process.c	311;"	d	file:
-PF_X	src/userprog/process.c	310;"	d	file:
+PF_W	src/userprog/process.c	349;"	d	file:
+PF_X	src/userprog/process.c	348;"	d	file:
 PGBITS	src/threads/vaddr.h	19;"	d
 PGMASK	src/threads/vaddr.h	21;"	d
 PGSHIFT	src/threads/vaddr.h	18;"	d
@@ -315,14 +315,14 @@ PTRDIFF_MAX	src/lib/stdint.h	47;"	d
 PTRDIFF_MIN	src/lib/stdint.h	46;"	d
 PTSHIFT	src/threads/pte.h	21;"	d
 PTSPAN	src/threads/pte.h	23;"	d
-PT_DYNAMIC	src/userprog/process.c	302;"	d	file:
-PT_INTERP	src/userprog/process.c	303;"	d	file:
-PT_LOAD	src/userprog/process.c	301;"	d	file:
-PT_NOTE	src/userprog/process.c	304;"	d	file:
-PT_NULL	src/userprog/process.c	300;"	d	file:
-PT_PHDR	src/userprog/process.c	306;"	d	file:
-PT_SHLIB	src/userprog/process.c	305;"	d	file:
-PT_STACK	src/userprog/process.c	307;"	d	file:
+PT_DYNAMIC	src/userprog/process.c	340;"	d	file:
+PT_INTERP	src/userprog/process.c	341;"	d	file:
+PT_LOAD	src/userprog/process.c	339;"	d	file:
+PT_NOTE	src/userprog/process.c	342;"	d	file:
+PT_NULL	src/userprog/process.c	338;"	d	file:
+PT_PHDR	src/userprog/process.c	344;"	d	file:
+PT_SHLIB	src/userprog/process.c	343;"	d	file:
+PT_STACK	src/userprog/process.c	345;"	d	file:
 Prev	src/tests/Algorithm/Diff.pm	/^sub Prev {$/;"	s
 QUEUE	src/devices/serial.c	/^static enum { UNINIT, POLL, QUEUE } mode;$/;"	e	enum:__anon4	file:
 RBR_REG	src/devices/serial.c	21;"	d	file:
@@ -1297,6 +1297,8 @@ load_segment	src/userprog/process.c	/^load_segment (struct file *file, off_t ofs
 load_thread	src/tests/threads/mlfqs-fair.c	/^load_thread (void *ti_) $/;"	f	file:
 load_thread	src/tests/threads/mlfqs-load-60.c	/^load_thread (void *aux UNUSED) $/;"	f	file:
 load_thread	src/tests/threads/mlfqs-load-avg.c	/^load_thread (void *seq_no_) $/;"	f	file:
+loading_result	src/userprog/process.c	/^static void loading_result(bool success) {$/;"	f	file:
+loading_sema	src/userprog/syscall.h	/^  struct semaphore loading_sema;$/;"	m	struct:member	typeref:struct:member::semaphore
 locate_block_device	src/threads/init.c	/^locate_block_device (enum block_type role, const char *name)$/;"	f	file:
 locate_block_devices	src/threads/init.c	/^locate_block_devices (void)$/;"	f	file:
 lock	src/devices/ide.c	/^    struct lock lock;           \/* Must acquire to access the controller. *\/$/;"	m	struct:channel	typeref:struct:channel::lock	file:
@@ -1787,6 +1789,7 @@ strtok	src/lib/string.h	33;"	d
 strtok_r	src/lib/string.c	/^strtok_r (char *s, const char *delimiters, char **save_ptr) $/;"	f
 stuff	src/examples/insult.c	/^char *stuff[] =$/;"	v
 stuffLoc	src/examples/insult.c	/^char stuffLoc[] = { 14, 0, 1, 3, 4, 5, 6, 8, 10, 11, 12, 13, 14, 15, 17, 18 };$/;"	v
+success	src/userprog/syscall.h	/^  bool success;$/;"	m	struct:member
 swap	src/lib/kernel/list.c	/^swap (struct list_elem **a, struct list_elem **b) $/;"	f	file:
 swap	src/tests/lib.c	/^swap (void *a_, void *b_, size_t size) $/;"	f	file:
 swap	src/tests/vm/qsort.c	/^swap (unsigned char *a, unsigned char *b) $/;"	f	file:
@@ -2080,6 +2083,7 @@ va_copy	src/lib/stdarg.h	12;"	d
 va_end	src/lib/stdarg.h	10;"	d
 va_list	src/lib/stdarg.h	/^typedef __builtin_va_list va_list;$/;"	t
 va_start	src/lib/stdarg.h	9;"	d
+valid_file_ptr	src/userprog/syscall.c	/^bool valid_file_ptr(char *file) {$/;"	f
 validate_segment	src/userprog/process.c	/^validate_segment (const struct Elf32_Phdr *phdr, struct file *file) $/;"	f	file:
 value	src/tests/internal/list.c	/^    int value;                  \/* Item value. *\/$/;"	m	struct:value	file:
 value	src/tests/internal/list.c	/^struct value $/;"	s	file:
