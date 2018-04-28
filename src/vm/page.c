@@ -2,7 +2,7 @@
 #include <hash.h>
 #include <bitmap.h>
 #include "vm/page.h"
-#include "threads/threads.h"
+#include "threads/thread.h"
 #include "threads/palloc.h"
 #include "userprog/pagedir.h"
 

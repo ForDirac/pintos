@@ -563,9 +563,6 @@ init_thread (struct thread *t, const char *name, int priority)
   /* list_push_back(&t->file_list, &std_in->elem); */
   /* list_push_back(&t->file_list, &std_out->elem); */
 
-  // For Proj.#3
-  t->pagedir = pagedir_create();
-
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
 }

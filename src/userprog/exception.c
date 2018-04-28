@@ -151,17 +151,17 @@ page_fault (struct intr_frame *f)
   user = (f->error_code & PF_U) != 0;
   // Invalid reference => abort
   // Just not in memory
-  printf("not_present: %d\n", not_present);
-  printf("write: %d\n", write);
-  printf("user: %d\n", user);
+  // printf("not_present: %d\n", not_present);
+  // printf("write: %d\n", write);
+  // printf("user: %d\n", user);
 
-  if (not_present) {
-    // Get empty frame
-    // Swap page into frame
-    // Reset page tables
-    // Restart the instruction that caused the page fault
-    return;
-  }
+  // if (not_present) {
+  //   // Get empty frame
+  //   // Swap page into frame
+  //   // Reset page tables
+  //   // Restart the instruction that caused the page fault
+  //   return;
+  // }
 
   // if this thread accesse the abnormal stack pointer, thread_exit call!
   if ((int)fault_addr <= 4 || (int)fault_addr >= (int)PHYS_BASE){
