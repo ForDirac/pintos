@@ -162,8 +162,9 @@ page_fault (struct intr_frame *f)
     // Restart the instruction that caused the page fault
     return;
   }
-  // Abnormal exiting
-  if (fault_addr <= (uintptr_t)4 || fault_addr >= (uintptr_t)PHYS_BASE){
+
+  // if this thread accesse the abnormal stack pointer, thread_exit call!
+  if ((int)fault_addr <= 4 || (int)fault_addr >= (int)PHYS_BASE){
     struct thread *t = thread_current();
     struct member *member = lookup_child(t->tid);
     if (member) {
@@ -171,6 +172,7 @@ page_fault (struct intr_frame *f)
       member->exit_status = -1;
       sema_up(&member->sema);
     }
+
     printf("%s: exit(%d)\n", t->file_name, -1);
     thread_exit();
     return;

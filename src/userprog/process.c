@@ -36,7 +36,7 @@ process_execute (const char *file_name)
   char *fn_copy;
 
   /* For proj.#2 */
-  struct thread *t = thread_current();
+  // struct thread *t = thread_current();
 
   tid_t tid;
 
@@ -49,32 +49,15 @@ process_execute (const char *file_name)
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
-  if (tid == TID_ERROR)
-    palloc_free_page (fn_copy);
-
-  /* For proj.#2 */
-  struct member *new_member = (struct member *) malloc(sizeof(struct member));
-  /* init the member's property */
-  new_member->child_tid = tid;
-  new_member->parent = t;
-  new_member->exit_status = 0;
-  new_member->is_exit = 0;
-  new_member->success = 0;
-  sema_init(&new_member->sema, 0);
-  sema_init(&new_member->loading_sema, 0);
-
-  lock_acquire(&family_lock);
-  list_push_back(&family, &new_member->elem);
-  lock_release(&family_lock);
-
-  sema_down(&new_member->loading_sema);
-
-  if (!new_member->success)
-    tid = -1;
+  
+  // Original code, but if this code is exited, it can make error
+  // if (tid == TID_ERROR)
+  //   palloc_free_page (fn_copy);
 
  return tid;
 }
 
+/* Find the right member in the family list */
 struct member *lookup_child(tid_t tid) {
   struct list_elem *e;
   struct member *member;
@@ -93,22 +76,18 @@ struct member *lookup_child(tid_t tid) {
   return member;
 }
 
+/* Return the loading_result which success or not */
 static void loading_result(bool success) {
   struct list_elem *e;
   struct member *member;
   struct thread *t = thread_current();
+
   lock_acquire(&family_lock);
-  ASSERT(!list_empty(&family));
   for (e = list_begin(&family); e != list_end(&family); e = list_next(e)) {
     member = list_entry(e, struct member, elem);
     if (t->tid == member->child_tid) {
       member->success = success;
       sema_up(&member->loading_sema);
-      if (!success) {
-        member->is_exit = 1;
-        member->exit_status = -1;
-        sema_up(&member->sema);
-      }
       break;
     }
   }
@@ -180,21 +159,25 @@ start_process (void *file_name_)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
 
+  lock_acquire(&filesys_lock);
   success = load (file_rename, &if_.eip, &if_.esp);
-  loading_result(success);
+  lock_release(&filesys_lock);
+
+  if(thread_current()->tid != 1 || thread_current()->tid != 0)
+    loading_result(success);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
 
-  /* For Proj.#2 */
+  /* For Proj.#2 
+  If don't success, this thread must be exited*/
   if (!success) {
     printf("%s: exit(%d)\n", exit_file_name, -1);
     free(exit_file_name);
     thread_exit();
   }
-  free(exit_file_name);
-  /* if (!success) */
-  /*   thread_exit (); */
+  else
+    free(exit_file_name);
 
   memcpy((char *)(PHYS_BASE-(void *)total), (char *)esp, (size_t)total);
   if_.esp = PHYS_BASE - total;
@@ -226,7 +209,6 @@ process_wait (tid_t child_tid UNUSED)
   struct member *member;
 
   lock_acquire(&family_lock);
-  ASSERT(!list_empty(&family));
   for(e=list_begin(&family); e != list_end(&family); e = list_next(e)){
     member = list_entry(e, struct member, elem);
     if(child_tid == member->child_tid){
@@ -238,33 +220,27 @@ process_wait (tid_t child_tid UNUSED)
 
   if (child_exists)
     sema_down(&member->sema);
-  else
+  else{
     return -1;
+  }
 
+  //child is alive yet!(error)
   if(!member->is_exit){
+    lock_acquire(&family_lock);
+    list_remove(&member->elem);
+    lock_release(&family_lock);
     free(member);
     return -1;
   }
 
   int exit_status = member->exit_status;
 
+  lock_acquire(&family_lock);
   list_remove(&member->elem);
+  lock_release(&family_lock);
   free(member);
 
   return exit_status;
-  /* return member->exit_status; */
-  /* struct thread *t = thread_current(); */
-  /* struct list *list = &t->children; */
-  /* struct list_elem *e; */
-
-  /* for(e=list_begin(list); e!=list_end(list); e=list_next(e)){ */
-  /*   struct child *child = list_entry(e, struct child, elem); */
-  /*   if(child_tid == child->tid){ */
-  /*     sema_down(&child->sema); */
-  /*     break; */
-  /*   } */
-  /* } */
-  /* return -1; */
 }
 
 /* Free the current process's resources. */
@@ -274,31 +250,41 @@ process_exit (void)
   struct thread *cur = thread_current ();
   uint32_t *pd;
 
+  /* Find the remain member which current thread is same as member's parents in family_list */
+  struct list_elem *e; 
+  struct member *member;
+
+  lock_acquire(&family_lock); 
+  for (e = list_begin(&family); e !=list_end(&family); e = list_next(e)){ 
+    member = list_entry(e, struct member, elem); 
+    if (cur == member->parent) { 
+      list_remove(&member->elem); 
+      free(member);
+      break;
+    } 
+  }
+  lock_release(&family_lock); 
+  
+  /* Find the remain fd structure, and execute file_close and free
+  if fd->file_p is NULL(it means fd is std_in or std_out), we just execute free */
+  struct fd *fd;
+
+  while(!list_empty(&cur->file_list)){
+    fd = list_entry(list_pop_front(&cur->file_list), struct fd, elem);
+    if(fd->file_p == NULL){
+      free(fd);
+    }
+    else{
+      file_close(fd->file_p);
+      free(fd);
+    }
+  } 
+
+  /* If current thread has execute_file, we execute allow_write and file_close for read_only_child cases */
   if(cur->execute_f){
     file_allow_write(cur->execute_f);
     file_close(cur->execute_f);
   }
-
-  /* For Proj.#2 Multi-oom */
-  /* struct list_elem *e; */
-  /* struct member *member; */
-  /* for (e = list_begin(&family); e !=list_end(&family); e = list_next(e)){ */
-  /*   member = list_entry(e, struct member, elem); */
-  /*   if (cur->tid == member->child_tid){ */
-  /*     list_remove(&member->elem); */
-  /*     free(member); */
-  /*   } */
-  /*   if (cur == member->parent) { */
-  /*     list_remove(&member->elem); */
-  /*     free(member); */
-  /*   } */
-  /* } */
-  /* struct list_elem *l; */
-  /* struct fd *fd; */
-  /* for (l = list_begin(&cur->file_list); e != list_end(&cur->file_list); e = list_next(e)) { */
-  /*   fd = list_entry(e, struct member, elem); */
-  /*   free(fd); */
-  /* } */
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -511,6 +497,8 @@ load (const char *file_name, void (**eip) (void), void **esp)
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
 
+  /* Set up the file_deny because this file is opened at this time. 
+  And this file is regarded as current thread's execute_file */
   file_deny_write(file);
   thread_current()->execute_f = file;
 
@@ -518,7 +506,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
  done:
   /* We arrive here whether the load is successful or not. */
-  /* file_close (file); */
   return success;
 }
 
