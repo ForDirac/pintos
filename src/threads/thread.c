@@ -13,6 +13,7 @@
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#include "userprog/syscall.h"
 #include "threads/malloc.h"
 #endif
 
@@ -224,18 +225,41 @@ thread_create (const char *name, int priority,
 
   struct thread *t_cur = thread_current();
 
-  /* For Proj. #2 */
-  /* t->parent = t_cur; */
+  /* If this thread is init thread's child thread, we don't make member structure */
+  if(tid == 2){
+    thread_unblock(t);
+    if (t_cur->priority <= t->priority)
+      thread_yield();
+    return tid;
+  }
 
+  /*Else if, we make member structure which stores child_tid, parent thread and other things. 
+  And this member is stored in family list */
+  struct member *new_member = (struct member *) malloc(sizeof(struct member));
+  /* init the member's property */
+  new_member->child_tid = tid;
+  new_member->parent = t_cur;
+  new_member->exit_status = 0;
+  new_member->is_exit = 0;
+  new_member->success = 0;
+  sema_init(&new_member->sema, 0);
+  sema_init(&new_member->loading_sema, 0);
+
+  lock_acquire(&family_lock);
+  list_push_back(&family, &new_member->elem);
+  lock_release(&family_lock);
 
   /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
   if (t_cur->priority <= t->priority)
     thread_yield();
-  /* else */
-  /*   thread_unblock (t); */
-
-  /* (Original code) Add to run queue. */
+  
+  sema_down(&new_member->loading_sema);
+  
+  if (!new_member->success)
+    tid = -1;
+  
+ /* (Original code) Add to run queue. */
   /* thread_unblock (t); */
 
   return tid;
