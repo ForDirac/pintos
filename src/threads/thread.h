@@ -96,6 +96,10 @@ struct thread
     struct lock file_list_lock;
     struct file *execute_f;
 #endif
+#ifdef VM
+    struct hash swap_table;
+    struct hash page_table;
+#endif
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */
