@@ -97,8 +97,7 @@ struct thread
     struct file *execute_f;
 #endif
 #ifdef VM
-    struct hash swap_table;
-    struct hash page_table;
+    struct hash sup_page_table;
 #endif
 
     /* Owned by thread.c. */

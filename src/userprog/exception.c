@@ -155,13 +155,13 @@ page_fault (struct intr_frame *f)
   // printf("write: %d\n", write);
   // printf("user: %d\n", user);
 
-  // if (not_present) {
-  //   // Get empty frame
-  //   // Swap page into frame
-  //   // Reset page tables
-  //   // Restart the instruction that caused the page fault
-  //   return;
-  // }
+  if (not_present) {
+    // Get empty frame
+    // Swap page into frame
+    // Reset page tables
+    // Restart the instruction that caused the page fault
+    return;
+  }
 
   // if this thread accesse the abnormal stack pointer, thread_exit call!
   if ((int)fault_addr <= 4 || (int)fault_addr >= (int)PHYS_BASE){

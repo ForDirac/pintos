@@ -5,6 +5,7 @@
 #include "threads/thread.h"
 #include "threads/palloc.h"
 #include "userprog/pagedir.h"
+#include "userprog/process.h"
 
 // pagedir_set_page()
 // pagedir_get_page()
@@ -34,31 +35,36 @@ static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void
 }
 
 
-bool new_page(uint32_t *pd, void *vaddr, bool user, bool writable) {
-  void *page = pagedir_get_page(pd, vaddr);
-  void *frame;
+bool new_page(void *vaddr, bool user, bool writable) {
+	struct thread *t = thread_current();
+  void *upage = pg_round_down(vaddr);
+  void *kpage;
   bool success;
   // Obtain a frame to store the page
   if (user)
-    frame = palloc_get_page(PAL_USER | PAL_ZERO);
+    kpage = (void *)palloc_get_page(PAL_USER | PAL_ZERO);
   else
-    frame = palloc_get_page(PAL_ZERO);
+    kpage = (void *)palloc_get_page(PAL_ZERO);
+  if (!kpage) {
+  	// swap and get kpage
+  }
   // Locate the page that faulted in the supplemental page table.
-  locate_page(void *page, void *vaddr, void *frame);
-  success = pagedir_set_page(pd, page, frame, writable);
-  printf("pagedir_set_page result in get_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
+  locate_page(upage, vaddr, kpage);
+  // Reset page table
+  success = install_page(upage, kpage, writable);
+  printf("install_page result in new_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
 }
 
-static void locate_page(void *page, void *vaddr, void *frame) {
+static void locate_page(void *upage, void *vaddr, void *kpage) {
 	struct thread *t = thread_current();
-	struct hash *page_table = &t->page_table;
 	struct hash_elem *old;
-	struct page_entry pe;
-	pe.page = page;
+	struct page_entry pe; // TODO: malloc??
 	pe.vaddr = vaddr;
-	pe.frame = frame;
-	old = hash_insert(page_table, &pe.elem);
+	// TODO
+	// pe.dirty = ;
+	// pe.accessed = ;
+	old = hash_insert(&t->sup_page_table, &pe.elem);
 	if (old)
-		hash_replace(page_table, &pe.elem);
+		hash_replace(&t->sup_page_table, &pe.elem);
 }

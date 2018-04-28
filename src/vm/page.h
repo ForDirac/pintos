@@ -2,11 +2,11 @@
 
 
 struct page_entry {
-	void *page;
-	void *vaddr;
-	void *frame;
+	uint32_t* vaddr;
+	bool dirty;
+	bool accessed;
 	struct hash_elem elem;
 }
 
 bool page_init(struct hash *h);
-bool new_page(uint32_t *pd, void *vaddr, bool user, bool writable);
+bool new_page(void *vaddr, bool user, bool writable);
