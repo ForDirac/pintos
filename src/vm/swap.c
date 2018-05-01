@@ -1,36 +1,25 @@
 #include <stdio.h>
-// #include <hash.h>
 #include "vm/swap.h"
+#include "devices/block.h"
 
 
-// auxiliary functions
-// static unsigned hash_func(const struct hash_elem *e, void *aux NULL);
-// static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void *aux NULL);
+static struct block* swap_block;
 
 
-// bool swap_init(struct hash *h) {
-// 	return hash_init(h, hash_func, less_func, NULL);
-// }
+void swap_init() {
+	swap_block = block_get_role(BLOCK_SWAP);
+}
 
-// static unsigned hash_func(const struct hash_elem *e, void *aux NULL) {
-// 	struct swap_entry *se = hash_entry(e, struct swap_entry, elem);
-// 	return hash_bytes((unsigned)se->page, sizeof(unsigned));
-// }
+void read_block(block *block, uint8_t *frame, int index) {
+	int i;
+	for (i = 0; i < 8; ++i) {
+		block_read(block, index + i, frame + (i*BLOCK_SECTOR_SIZE));
+	}
+}
 
-// static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void *aux NULL) {
-// 	struct swap_entry *pe_a = hash_entry(a, struct swap_entry, elem);
-// 	struct swap_entry *pe_b = hash_entry(b, struct swap_entry, elem);
-// 	return pe_a->page < pe_b->page;
-// }
-
-
-// void set_swap_entry(struct hash *h, void *page, void *frame) {
-// 	struct swap_entry se;
-// 	struct hash_elem *old;
-// 	se.valid = 1;
-// 	se.page = page;
-// 	se.frame = frame;
-// 	old = hash_insert(h, &se->elem);
-// 	if (old)
-// 		hash_replace(h, &se->elem);
-// }
+void write_block(block *block, uint8_t *frame, int index) {
+	int i;
+	for (i = 0; i < 8; ++i) {
+		block_write(block, index + i, frame + (i*BLOCK_SECTOR_SIZE));
+	}
+}

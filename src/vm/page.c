@@ -64,7 +64,7 @@ static void locate_page(void *upage, void *vaddr, void *kpage) {
 	// TODO
 	// pe.dirty = ;
 	// pe.accessed = ;
-	old = hash_insert(&t->sup_page_table, &pe.elem);
-	if (old)
-		hash_replace(&t->sup_page_table, &pe.elem);
+	// old = hash_insert(&t->sup_page_table, &pe.elem);
+	// if (old)
+	hash_replace(&t->sup_page_table, &pe.elem);
 }
