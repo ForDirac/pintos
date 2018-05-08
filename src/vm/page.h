@@ -11,3 +11,4 @@ struct page_entry {
 bool page_init(struct hash *h);
 bool new_page(void *vaddr, bool user, bool writable);
 void free_page(void *vaddr);
+struct page_entry *lookup_page(uint32_t *vaddr);

@@ -31,8 +31,8 @@ bool page_init(struct list *list) {
 
 bool new_page(void *vaddr, bool user, bool writable) {
 	struct thread *t = thread_current();
-  void *upage = pg_round_down(vaddr);
-  void *kpage;
+  void *upage = pg_round_down(vaddr); // vaddr's page_num
+  void *kpage; // frame
   bool success;
   // Obtain a frame to store the page
   if (user)
@@ -61,15 +61,14 @@ void free_page(void *vaddr) {
 static void locate_page(void *vaddr) {
 	struct thread *t = thread_current();
   struct list *page_table = &t->sup_page_table;
-	struct hash_elem *old;
 	struct page_entry *pe = (struct page_entry *)malloc(sizeof(struct page_entry));
 	pe.vaddr = vaddr;
-	pe.dirty = !!(vaddr & PTE_D);
-	pe.access = !!(vaddr & PTE_A);
+	pe.dirty = !!(vaddr & PTE_D); // change to boolen_type
+	pe.access = !!(vaddr & PTE_A); // change to boolen_type
 	list_push_back(page_table, &pe.elem);
 }
 
-static struct page_entry *lookup_page(uint32_t *vaddr) {
+struct page_entry *lookup_page(uint32_t *vaddr) {
   void *upage = pg_round_down(vaddr);
   struct thread *t = thread_current();
   struct list *page_table = &t->sup_page_table;
@@ -81,4 +80,19 @@ static struct page_entry *lookup_page(uint32_t *vaddr) {
       break;
   }
   return pe;
+}
+
+void stack_growth(void *vaddr){
+  return new_page(vaddr, 1, 1);
+  // struct thread *cur = thread_current();
+  // frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
+  // if(frame == NULL)
+  //   return;
+  // else{
+  //   //add the page to the process's address space
+  //   if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
+  //     //free the frame - set failure
+  //     palloc_free_page(frame);
+  //   }
+  // }
 }

@@ -6,6 +6,7 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "userprog/syscall.h"
+#include "vm/page.h"
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -128,6 +129,7 @@ page_fault (struct intr_frame *f)
   bool write;        /* True: access was write, false: access was read. */
   bool user;         /* True: access by user, false: access by kernel. */
   void *fault_addr;  /* Fault address. */
+  struct thread *cur = thread_current();
 
   /* Obtain faulting address, the virtual address that was
      accessed to cause the fault.  It may point to code or to
@@ -149,43 +151,49 @@ page_fault (struct intr_frame *f)
   not_present = (f->error_code & PF_P) == 0;
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
-  // Invalid reference => abort
-  // Just not in memory
-  // printf("not_present: %d\n", not_present);
-  // printf("write: %d\n", write);
-  // printf("user: %d\n", user);
 
-  if (not_present) {
-    // Get empty frame
-    // Swap page into frame
-    // Reset page tables
-    // Restart the instruction that caused the page fault
-    return;
+  if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
+    syscall_exit(-1);
+    return 0;
   }
 
-  // if this thread accesse the abnormal stack pointer, thread_exit call!
-  if ((int)fault_addr <= 4 || (int)fault_addr >= (int)PHYS_BASE){
-    struct thread *t = thread_current();
-    struct member *member = lookup_child(t->tid);
-    if (member) {
-      member->is_exit = 1;
-      member->exit_status = -1;
-      sema_up(&member->sema);
+  struct page_entry *new_entry;
+
+  new_entry = lookup_page(fault_addr);
+  
+  if(new_entry != NULL)
+    success = new_page(fault_addr, user, write);
+    //swap handling
+  
+  else if(new_entry == NULL && fault_addr >= (f->esp - 32)) 
+    if(!stack_growth(fault_addr)){
+      syscall_exit(-1);
+      return 0;
     }
 
-    printf("%s: exit(%d)\n", t->file_name, -1);
-    thread_exit();
-    return;
+  else{
+    if(!pagedir_get_page (cur->pagedir, fault_addr)){
+      syscall_exit(-1);
+      return 0;
+    }
+
+    printf ("Page fault at %p: %s error %s page in %s context.\n",
+        fault_addr,
+        not_present ? "not present" : "rights violation",
+        write ? "writing" : "reading",
+        user ? "user" : "kernel");
+    kill (f);
   }
 
+  //original_code
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
      which fault_addr refers. */
-  printf ("Page fault at %p: %s error %s page in %s context.\n",
-          fault_addr,
-          not_present ? "not present" : "rights violation",
-          write ? "writing" : "reading",
-          user ? "user" : "kernel");
-  kill (f);
+  // printf ("Page fault at %p: %s error %s page in %s context.\n",
+  //         fault_addr,
+  //         not_present ? "not present" : "rights violation",
+  //         write ? "writing" : "reading",
+  //         user ? "user" : "kernel");
+  // kill (f);
 }
 
