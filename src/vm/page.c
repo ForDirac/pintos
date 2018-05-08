@@ -9,6 +9,7 @@
 
 // static unsigned hash_func(const struct hash_elem *e, void *aux NULL);
 // static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void *aux NULL);
+static bool install_page(void *upage, void *kpage, bool writable);
 static void locate_page(void *vaddr);
 static struct page_entry *lookup_page(uint32_t *vaddr);
 
@@ -48,6 +49,16 @@ bool new_page(void *vaddr, bool user, bool writable) {
   success = install_page(upage, kpage, writable);
   printf("install_page result in new_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
+}
+
+static bool install_page (void *upage, void *kpage, bool writable)
+{
+  struct thread *t = thread_current ();
+
+  /* Verify that there's not already a page at that virtual
+     address, then map our page there. */
+  return (pagedir_get_page (t->pagedir, upage) == NULL
+          && pagedir_set_page (t->pagedir, upage, kpage, writable));
 }
 
 void free_page(void *vaddr) {
