@@ -6,6 +6,8 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "userprog/syscall.h"
+#include "userprog/pagedir.h"
+#include "threads/palloc.h"
 #include "vm/page.h"
 
 /* Number of page faults processed. */
@@ -152,26 +154,35 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  printf("fault_addr : %d\n", fault_addr);
+
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
     syscall_exit(-1);
     return 0;
   }
 
   struct page_entry *new_entry;
+  bool success = 0;
 
   new_entry = lookup_page(fault_addr);
   
-  if(new_entry != NULL)
-    success = new_page(fault_addr, user, write);
-    //swap handling
-  
-  else if(new_entry == NULL && fault_addr >= (f->esp - 32)) 
+  if(new_entry != NULL){
+    if(new_entry->location == DISK){
+      //reclamation
+      success = reclamation(new_entry, user, write);
+    }
+    else if(new_entry->location == PHYS){
+      success = new_page(new_entry, user, write);
+    }
+    // else{
+    //   //location is in FILE
+    // }
+  } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
     if(!stack_growth(fault_addr)){
       syscall_exit(-1);
       return 0;
     }
-
-  else{
+  } else {
     if(!pagedir_get_page (cur->pagedir, fault_addr)){
       syscall_exit(-1);
       return 0;

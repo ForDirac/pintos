@@ -1,6 +1,5 @@
 #include <list.h>
 #include "threads/thread.h"
-#include "vm/page.h"
 
 struct frame_entry {
 	uint32_t* frame;
@@ -10,5 +9,6 @@ struct frame_entry {
 };
 
 void frame_init(void);
-void push_frame(struct frame_entry fe);
+void insert_frame_table(void* kpage, struct page_entry *pe);
+void push_frame(struct frame_entry *fe);
 struct frame_entry *pop_frame(void);

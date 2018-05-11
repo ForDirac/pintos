@@ -15,6 +15,7 @@
 #include "userprog/process.h"
 #include "userprog/syscall.h"
 #include "threads/malloc.h"
+#include "vm/page.h"
 #endif
 
 /* Random value for struct thread's `magic' member.
@@ -38,6 +39,8 @@ static struct thread *initial_thread;
 
 /* Lock used by allocate_tid(). */
 static struct lock tid_lock;
+
+#
 
 /* Stack frame for kernel_thread(). */
 struct kernel_thread_frame 
@@ -80,13 +83,6 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   struct thread *t_b = list_entry(b, struct thread, elem);
   return t_a->priority > t_b->priority;
 }
-
-/* static bool compare_m(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) { */
-/*   struct thread *t_a = list_entry(a, struct thread, elem); */
-/*   struct thread *t_b = list_entry(b, struct thread, elem); */
-/*   return t_a->priority <= t_b->priority; */
-/* } */
-
 
 /* Initializes the threading system by transforming the code
    that's currently running into a thread.  This can't work in
@@ -549,19 +545,12 @@ init_thread (struct thread *t, const char *name, int priority)
   /* For Proj.#2, To initialize the file_list about file descriptor*/
   list_init(&t->file_list);
   lock_init(&t->file_list_lock);
+
+#ifdef USERPROG
+  page_init(&t->sup_page_table);
+#endif
+
   t->execute_f = NULL;
-  /* struct fd std_in; */
-  /* struct fd std_out; */
-  /* struct fd *std_in = (struct fd *) malloc(sizeof(struct fd)); */
-  /* struct fd *std_out = (struct fd *) malloc(sizeof(struct fd)); */
-  /* std_in->fd = 0; */
-  /* std_in->file_name = "STD_IN"; */
-  /* /1* std_in.file_p = NULL; *1/ */
-  /* std_out->fd = 1; */
-  /* std_out->file_name = "STD_OUT"; */
-  /* /1* std_out.file_p = NULL; *1/ */
-  /* list_push_back(&t->file_list, &std_in->elem); */
-  /* list_push_back(&t->file_list, &std_out->elem); */
 
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
