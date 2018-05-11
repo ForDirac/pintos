@@ -188,50 +188,16 @@ perl -I../.. ../../tests/userprog/bad-jump2.ck tests/userprog/bad-jump2 tests/us
 pass tests/userprog/bad-jump2
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-grow-stack -a pt-grow-stack --swap-size=4 -- -q  -f run pt-grow-stack < /dev/null 2> tests/vm/pt-grow-stack.errors > tests/vm/pt-grow-stack.output
 perl -I../.. ../../tests/vm/pt-grow-stack.ck tests/vm/pt-grow-stack tests/vm/pt-grow-stack.result
-FAIL tests/vm/pt-grow-stack
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-grow-stack) begin
-  (pt-grow-stack) cksum: 3424492700
-  (pt-grow-stack) end
-Differences in `diff -u' format:
-  (pt-grow-stack) begin
-- (pt-grow-stack) cksum: 3424492700
-- (pt-grow-stack) end
-
-(Process exit codes are excluded for matching purposes.)
+pass tests/vm/pt-grow-stack
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-grow-pusha -a pt-grow-pusha --swap-size=4 -- -q  -f run pt-grow-pusha < /dev/null 2> tests/vm/pt-grow-pusha.errors > tests/vm/pt-grow-pusha.output
 perl -I../.. ../../tests/vm/pt-grow-pusha.ck tests/vm/pt-grow-pusha tests/vm/pt-grow-pusha.result
-FAIL tests/vm/pt-grow-pusha
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-grow-pusha) begin
-  (pt-grow-pusha) end
-Differences in `diff -u' format:
-  (pt-grow-pusha) begin
-- (pt-grow-pusha) end
-
-(Process exit codes are excluded for matching purposes.)
+pass tests/vm/pt-grow-pusha
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-grow-bad -a pt-grow-bad --swap-size=4 -- -q  -f run pt-grow-bad < /dev/null 2> tests/vm/pt-grow-bad.errors > tests/vm/pt-grow-bad.output
 perl -I../.. ../../tests/vm/pt-grow-bad.ck tests/vm/pt-grow-bad tests/vm/pt-grow-bad.result
 pass tests/vm/pt-grow-bad
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-big-stk-obj -a pt-big-stk-obj --swap-size=4 -- -q  -f run pt-big-stk-obj < /dev/null 2> tests/vm/pt-big-stk-obj.errors > tests/vm/pt-big-stk-obj.output
 perl -I../.. ../../tests/vm/pt-big-stk-obj.ck tests/vm/pt-big-stk-obj tests/vm/pt-big-stk-obj.result
-FAIL tests/vm/pt-big-stk-obj
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-big-stk-obj) begin
-  (pt-big-stk-obj) cksum: 3256410166
-  (pt-big-stk-obj) end
-Differences in `diff -u' format:
-  (pt-big-stk-obj) begin
-- (pt-big-stk-obj) cksum: 3256410166
-- (pt-big-stk-obj) end
-
-(Process exit codes are excluded for matching purposes.)
+pass tests/vm/pt-big-stk-obj
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-bad-addr -a pt-bad-addr --swap-size=4 -- -q  -f run pt-bad-addr < /dev/null 2> tests/vm/pt-bad-addr.errors > tests/vm/pt-bad-addr.output
 perl -I../.. ../../tests/vm/pt-bad-addr.ck tests/vm/pt-bad-addr tests/vm/pt-bad-addr.result
 pass tests/vm/pt-bad-addr
@@ -260,11 +226,11 @@ Acceptable output:
   (pt-grow-stk-sc) end
 Differences in `diff -u' format:
   (pt-grow-stk-sc) begin
-- (pt-grow-stk-sc) create "sample.txt"
-- (pt-grow-stk-sc) open "sample.txt"
-- (pt-grow-stk-sc) write "sample.txt"
-- (pt-grow-stk-sc) 2nd open "sample.txt"
-- (pt-grow-stk-sc) read "sample.txt"
+  (pt-grow-stk-sc) create "sample.txt"
+  (pt-grow-stk-sc) open "sample.txt"
+  (pt-grow-stk-sc) write "sample.txt"
+  (pt-grow-stk-sc) 2nd open "sample.txt"
+  (pt-grow-stk-sc) read "sample.txt"
 - (pt-grow-stk-sc) compare written data against read data
 - (pt-grow-stk-sc) end
 
@@ -869,7 +835,7 @@ pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/syn-write -a s
 perl -I../.. ../../tests/filesys/base/syn-write.ck tests/filesys/base/syn-write tests/filesys/base/syn-write.result
 pass tests/filesys/base/syn-write
 ../../tests/make-grade ../.. results ../../tests/vm/Grading | tee grade
-TOTAL TESTING SCORE: 50.8%
+TOTAL TESTING SCORE: 59.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -877,13 +843,13 @@ SUMMARY BY TEST SET
 
 Test Set                                      Pts Max  % Ttl  % Max
 --------------------------------------------- --- --- ------ ------
-tests/vm/Rubric.functionality                   8/ 55   7.3%/ 50.0%
+tests/vm/Rubric.functionality                  17/ 55  15.5%/ 50.0%
 tests/vm/Rubric.robustness                     16/ 28   8.6%/ 15.0%
 tests/userprog/Rubric.functionality           108/108  10.0%/ 10.0%
 tests/userprog/Rubric.robustness               88/ 88   5.0%/  5.0%
 tests/filesys/base/Rubric                      30/ 30  20.0%/ 20.0%
 --------------------------------------------- --- --- ------ ------
-Total                                                  50.8%/100.0%
+Total                                                  59.0%/100.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -891,10 +857,10 @@ SUMMARY OF INDIVIDUAL TESTS
 
 Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	- Test stack growth.
-	  ** 0/ 3 tests/vm/pt-grow-stack
+	     3/ 3 tests/vm/pt-grow-stack
 	  ** 0/ 3 tests/vm/pt-grow-stk-sc
-	  ** 0/ 3 tests/vm/pt-big-stk-obj
-	  ** 0/ 3 tests/vm/pt-grow-pusha
+	     3/ 3 tests/vm/pt-big-stk-obj
+	     3/ 3 tests/vm/pt-grow-pusha
 
 	- Test paging behavior.
 	  ** 0/ 3 tests/vm/page-linear
@@ -921,8 +887,8 @@ Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	  ** 0/ 2 tests/vm/mmap-remove
 
 	- Section summary.
-	      3/ 20 tests passed
-	      8/ 55 points subtotal
+	      6/ 20 tests passed
+	     17/ 55 points subtotal
 
 Robustness of virtual memory subsystem (tests/vm/Rubric.robustness):
 	- Test robustness of page table support.
@@ -1087,61 +1053,6 @@ Functionality of base file system (tests/filesys/base/Rubric):
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-DETAILS OF tests/vm/pt-grow-stack FAILURE:
-
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-grow-stack) begin
-  (pt-grow-stack) cksum: 3424492700
-  (pt-grow-stack) end
-Differences in `diff -u' format:
-  (pt-grow-stack) begin
-- (pt-grow-stack) cksum: 3424492700
-- (pt-grow-stack) end
-
-(Process exit codes are excluded for matching purposes.)
-
-OUTPUT FROM tests/vm/pt-grow-stack:
-
-Copying tests/vm/pt-grow-stack to scratch partition...
-qemu -hda /tmp/user/1002/yX9epqGnqg.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run pt-grow-stack
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  235,520,000 loops/s.
-hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 155 sectors (77 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 117 sectors (58 kB), Pintos scratch (22)
-hda4: 8,192 sectors (4 MB), Pintos swap (23)
-filesys: using hda2
-scratch: using hda3
-swap: using hda4
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'pt-grow-stack' into the file system...
-Erasing ustar archive...
-Executing 'pt-grow-stack':
-(pt-grow-stack) begin
-pt-grow-stack: exit(-1)
-Execution of 'pt-grow-stack' complete.
-Timer: 95 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 59 reads, 238 writes
-hda3 (scratch): 116 reads, 2 writes
-hda4 (swap): 0 reads, 0 writes
-Console: 987 characters output
-Keyboard: 0 keys pressed
-Exception: 2 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 DETAILS OF tests/vm/pt-grow-stk-sc FAILURE:
 
 Test output failed to match any acceptable form.
@@ -1157,11 +1068,11 @@ Acceptable output:
   (pt-grow-stk-sc) end
 Differences in `diff -u' format:
   (pt-grow-stk-sc) begin
-- (pt-grow-stk-sc) create "sample.txt"
-- (pt-grow-stk-sc) open "sample.txt"
-- (pt-grow-stk-sc) write "sample.txt"
-- (pt-grow-stk-sc) 2nd open "sample.txt"
-- (pt-grow-stk-sc) read "sample.txt"
+  (pt-grow-stk-sc) create "sample.txt"
+  (pt-grow-stk-sc) open "sample.txt"
+  (pt-grow-stk-sc) write "sample.txt"
+  (pt-grow-stk-sc) 2nd open "sample.txt"
+  (pt-grow-stk-sc) read "sample.txt"
 - (pt-grow-stk-sc) compare written data against read data
 - (pt-grow-stk-sc) end
 
@@ -1170,7 +1081,7 @@ Differences in `diff -u' format:
 OUTPUT FROM tests/vm/pt-grow-stk-sc:
 
 Copying tests/vm/pt-grow-stk-sc to scratch partition...
-qemu -hda /tmp/user/1002/wbXogz7CaG.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/cZG64z1MRQ.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run pt-grow-stk-sc
@@ -1193,124 +1104,21 @@ Putting 'pt-grow-stk-sc' into the file system...
 Erasing ustar archive...
 Executing 'pt-grow-stk-sc':
 (pt-grow-stk-sc) begin
+(pt-grow-stk-sc) create "sample.txt"
+(pt-grow-stk-sc) open "sample.txt"
+(pt-grow-stk-sc) write "sample.txt"
+(pt-grow-stk-sc) 2nd open "sample.txt"
+(pt-grow-stk-sc) read "sample.txt"
 pt-grow-stk-sc: exit(-1)
 Execution of 'pt-grow-stk-sc' complete.
-Timer: 87 ticks
+Timer: 88 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 65 reads, 224 writes
+hda2 (filesys): 94 reads, 232 writes
 hda3 (scratch): 109 reads, 2 writes
 hda4 (swap): 0 reads, 0 writes
-Console: 993 characters output
+Console: 1175 characters output
 Keyboard: 0 keys pressed
-Exception: 2 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/vm/pt-big-stk-obj FAILURE:
-
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-big-stk-obj) begin
-  (pt-big-stk-obj) cksum: 3256410166
-  (pt-big-stk-obj) end
-Differences in `diff -u' format:
-  (pt-big-stk-obj) begin
-- (pt-big-stk-obj) cksum: 3256410166
-- (pt-big-stk-obj) end
-
-(Process exit codes are excluded for matching purposes.)
-
-OUTPUT FROM tests/vm/pt-big-stk-obj:
-
-Copying tests/vm/pt-big-stk-obj to scratch partition...
-qemu -hda /tmp/user/1002/B769tYhdSL.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run pt-big-stk-obj
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 155 sectors (77 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 117 sectors (58 kB), Pintos scratch (22)
-hda4: 8,192 sectors (4 MB), Pintos swap (23)
-filesys: using hda2
-scratch: using hda3
-swap: using hda4
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'pt-big-stk-obj' into the file system...
-Erasing ustar archive...
-Executing 'pt-big-stk-obj':
-(pt-big-stk-obj) begin
-pt-big-stk-obj: exit(-1)
-Execution of 'pt-big-stk-obj' complete.
-Timer: 86 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 59 reads, 238 writes
-hda3 (scratch): 116 reads, 2 writes
-hda4 (swap): 0 reads, 0 writes
-Console: 993 characters output
-Keyboard: 0 keys pressed
-Exception: 2 page faults
-Powering off...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/vm/pt-grow-pusha FAILURE:
-
-Test output failed to match any acceptable form.
-
-Acceptable output:
-  (pt-grow-pusha) begin
-  (pt-grow-pusha) end
-Differences in `diff -u' format:
-  (pt-grow-pusha) begin
-- (pt-grow-pusha) end
-
-(Process exit codes are excluded for matching purposes.)
-
-OUTPUT FROM tests/vm/pt-grow-pusha:
-
-Copying tests/vm/pt-grow-pusha to scratch partition...
-qemu -hda /tmp/user/1002/A3k5P5YifT.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading.........
-Kernel command line: -q -f extract run pt-grow-pusha
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  251,904,000 loops/s.
-hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 155 sectors (77 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 107 sectors (53 kB), Pintos scratch (22)
-hda4: 8,192 sectors (4 MB), Pintos swap (23)
-filesys: using hda2
-scratch: using hda3
-swap: using hda4
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'pt-grow-pusha' into the file system...
-Erasing ustar archive...
-Executing 'pt-grow-pusha':
-(pt-grow-pusha) begin
-pt-grow-pusha: exit(-1)
-Execution of 'pt-grow-pusha' complete.
-Timer: 91 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hda2 (filesys): 61 reads, 218 writes
-hda3 (scratch): 106 reads, 2 writes
-hda4 (swap): 0 reads, 0 writes
-Console: 987 characters output
-Keyboard: 0 keys pressed
-Exception: 2 page faults
+Exception: 1 page faults
 Powering off...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1341,7 +1149,7 @@ Differences in `diff -u' format:
 OUTPUT FROM tests/vm/page-linear:
 
 Copying tests/vm/page-linear to scratch partition...
-qemu -hda /tmp/user/1002/3DXzkDOZGM.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/uxwAIrHYim.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run page-linear
@@ -1434,7 +1242,7 @@ OUTPUT FROM tests/vm/page-merge-seq:
 
 Copying tests/vm/page-merge-seq to scratch partition...
 Copying tests/vm/child-sort to scratch partition...
-qemu -hda /tmp/user/1002/47mcHxDqOh.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/ykpbZdgMzB.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run page-merge-seq
@@ -1528,7 +1336,7 @@ OUTPUT FROM tests/vm/page-merge-par:
 
 Copying tests/vm/page-merge-par to scratch partition...
 Copying tests/vm/child-sort to scratch partition...
-qemu -hda /tmp/user/1002/qtw7eephiE.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Jod2pBARFB.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run page-merge-par
@@ -1622,7 +1430,7 @@ OUTPUT FROM tests/vm/page-merge-mm:
 
 Copying tests/vm/page-merge-mm to scratch partition...
 Copying tests/vm/child-qsort-mm to scratch partition...
-qemu -hda /tmp/user/1002/tZVbktpCRu.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/2ETJG5QNb8.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run page-merge-mm
@@ -1647,7 +1455,7 @@ Erasing ustar archive...
 Executing 'page-merge-mm':
 page-merge-mm: exit(-1)
 Execution of 'page-merge-mm' complete.
-Timer: 96 ticks
+Timer: 94 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 83 reads, 466 writes
 hda3 (scratch): 229 reads, 2 writes
@@ -1716,7 +1524,7 @@ OUTPUT FROM tests/vm/page-merge-stk:
 
 Copying tests/vm/page-merge-stk to scratch partition...
 Copying tests/vm/child-qsort to scratch partition...
-qemu -hda /tmp/user/1002/r6HH1PRgo9.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/sJ2AFDixDQ.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run page-merge-stk
@@ -1741,7 +1549,7 @@ Erasing ustar archive...
 Executing 'page-merge-stk':
 page-merge-stk: exit(-1)
 Execution of 'page-merge-stk' complete.
-Timer: 93 ticks
+Timer: 92 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 83 reads, 466 writes
 hda3 (scratch): 229 reads, 2 writes
@@ -1774,7 +1582,7 @@ OUTPUT FROM tests/vm/mmap-read:
 
 Copying tests/vm/mmap-read to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/nGCGQO6VUV.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/397_jPcRZE.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-read
@@ -1802,7 +1610,7 @@ Executing 'mmap-read':
 (mmap-read) mmap "sample.txt"
 mmap-read: exit(-1)
 Execution of 'mmap-read' complete.
-Timer: 87 ticks
+Timer: 85 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 94 reads, 232 writes
 hda3 (scratch): 112 reads, 2 writes
@@ -1838,14 +1646,14 @@ Differences in `diff -u' format:
 OUTPUT FROM tests/vm/mmap-write:
 
 Copying tests/vm/mmap-write to scratch partition...
-qemu -hda /tmp/user/1002/QVDPe0WYnZ.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/qc2gFZX5O3.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-write
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  235,520,000 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -1866,7 +1674,7 @@ Executing 'mmap-write':
 (mmap-write) mmap "sample.txt"
 mmap-write: exit(-1)
 Execution of 'mmap-write' complete.
-Timer: 88 ticks
+Timer: 90 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 89 reads, 230 writes
 hda3 (scratch): 109 reads, 2 writes
@@ -1922,7 +1730,7 @@ Differences in `diff -u' format:
 OUTPUT FROM tests/vm/mmap-shuffle:
 
 Copying tests/vm/mmap-shuffle to scratch partition...
-qemu -hda /tmp/user/1002/kvE92rscxC.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/51Vjw44rEo.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-shuffle
@@ -1950,7 +1758,7 @@ Executing 'mmap-shuffle':
 (mmap-shuffle) mmap "buffer"
 mmap-shuffle: exit(-1)
 Execution of 'mmap-shuffle' complete.
-Timer: 94 ticks
+Timer: 87 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 85 reads, 500 writes
 hda3 (scratch): 117 reads, 2 writes
@@ -1991,7 +1799,7 @@ OUTPUT FROM tests/vm/mmap-twice:
 
 Copying tests/vm/mmap-twice to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/rvFiRuzKan.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/MNpOPHt3I3.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-twice
@@ -2019,7 +1827,7 @@ Executing 'mmap-twice':
 (mmap-twice) mmap "sample.txt" #0 at 0x10000000
 mmap-twice: exit(-1)
 Execution of 'mmap-twice' complete.
-Timer: 86 ticks
+Timer: 89 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 93 reads, 232 writes
 hda3 (scratch): 112 reads, 2 writes
@@ -2039,7 +1847,7 @@ OUTPUT FROM tests/vm/mmap-exit:
 
 Copying tests/vm/mmap-exit to scratch partition...
 Copying tests/vm/child-mm-wrt to scratch partition...
-qemu -hda /tmp/user/1002/FPdztiz_M1.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/lYObg0laMX.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-exit
@@ -2071,7 +1879,7 @@ child-mm-wrt: exit(-1)
 (mmap-exit) wait for child (should return 0): FAILED
 mmap-exit: exit(1)
 Execution of 'mmap-exit' complete.
-Timer: 97 ticks
+Timer: 92 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 154 reads, 448 writes
 hda3 (scratch): 217 reads, 2 writes
@@ -2114,14 +1922,14 @@ OUTPUT FROM tests/vm/mmap-clean:
 
 Copying tests/vm/mmap-clean to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/jLCeXWmEkE.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/HpkB8iio5r.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-clean
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  294,502,400 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -2142,7 +1950,7 @@ Executing 'mmap-clean':
 (mmap-clean) mmap "sample.txt"
 mmap-clean: exit(-1)
 Execution of 'mmap-clean' complete.
-Timer: 88 ticks
+Timer: 91 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 95 reads, 234 writes
 hda3 (scratch): 113 reads, 2 writes
@@ -2175,14 +1983,14 @@ OUTPUT FROM tests/vm/mmap-close:
 
 Copying tests/vm/mmap-close to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/uTxrJFPO8R.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/rDl6i94mX0.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-close
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  308,428,800 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -2203,7 +2011,7 @@ Executing 'mmap-close':
 (mmap-close) mmap "sample.txt"
 mmap-close: exit(-1)
 Execution of 'mmap-close' complete.
-Timer: 85 ticks
+Timer: 92 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 93 reads, 232 writes
 hda3 (scratch): 112 reads, 2 writes
@@ -2242,7 +2050,7 @@ OUTPUT FROM tests/vm/mmap-remove:
 
 Copying tests/vm/mmap-remove to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/q59QTbHrGd.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/v8YaKpF2xX.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-remove
@@ -2270,7 +2078,7 @@ Executing 'mmap-remove':
 (mmap-remove) mmap "sample.txt"
 mmap-remove: exit(-1)
 Execution of 'mmap-remove' complete.
-Timer: 85 ticks
+Timer: 90 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 94 reads, 234 writes
 hda3 (scratch): 113 reads, 2 writes
@@ -2315,7 +2123,7 @@ OUTPUT FROM tests/vm/mmap-inherit:
 Copying tests/vm/mmap-inherit to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
 Copying tests/vm/child-inherit to scratch partition...
-qemu -hda /tmp/user/1002/5412m8kk8t.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/y_1ydFKbvi.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-inherit
@@ -2344,7 +2152,7 @@ Executing 'mmap-inherit':
 (mmap-inherit) mmap "sample.txt"
 mmap-inherit: exit(-1)
 Execution of 'mmap-inherit' complete.
-Timer: 94 ticks
+Timer: 92 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 121 reads, 450 writes
 hda3 (scratch): 220 reads, 2 writes
@@ -2377,7 +2185,7 @@ OUTPUT FROM tests/vm/mmap-null:
 
 Copying tests/vm/mmap-null to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/RyFg0ia8Fb.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/SzExgwZxCc.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-null
@@ -2405,7 +2213,7 @@ Executing 'mmap-null':
 (mmap-null) try to mmap at address 0
 mmap-null: exit(-1)
 Execution of 'mmap-null' complete.
-Timer: 88 ticks
+Timer: 89 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 91 reads, 226 writes
 hda3 (scratch): 109 reads, 2 writes
@@ -2438,7 +2246,7 @@ OUTPUT FROM tests/vm/mmap-misalign:
 
 Copying tests/vm/mmap-misalign to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/sRqdR13ekV.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/yCCAEyZX3e.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-misalign
@@ -2499,14 +2307,14 @@ OUTPUT FROM tests/vm/mmap-over-code:
 
 Copying tests/vm/mmap-over-code to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/oUcfgPkiAq.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/DSdqbyDB4G.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-over-code
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -2527,7 +2335,7 @@ Executing 'mmap-over-code':
 (mmap-over-code) try to mmap over code segment
 mmap-over-code: exit(-1)
 Execution of 'mmap-over-code' complete.
-Timer: 88 ticks
+Timer: 83 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 91 reads, 228 writes
 hda3 (scratch): 110 reads, 2 writes
@@ -2560,14 +2368,14 @@ OUTPUT FROM tests/vm/mmap-over-data:
 
 Copying tests/vm/mmap-over-data to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/ZvJu0GHHqW.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/IJ96BTndCJ.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-over-data
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  235,520,000 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -2588,7 +2396,7 @@ Executing 'mmap-over-data':
 (mmap-over-data) try to mmap over data segment
 mmap-over-data: exit(-1)
 Execution of 'mmap-over-data' complete.
-Timer: 88 ticks
+Timer: 92 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 91 reads, 228 writes
 hda3 (scratch): 110 reads, 2 writes
@@ -2621,14 +2429,14 @@ OUTPUT FROM tests/vm/mmap-over-stk:
 
 Copying tests/vm/mmap-over-stk to scratch partition...
 Copying ../../tests/vm/sample.txt to scratch partition...
-qemu -hda /tmp/user/1002/VTj3hmAIrn.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/n7mMrvkU_t.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-over-stk
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  235,520,000 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 155 sectors (77 kB), Pintos OS kernel (20)
 hda2: 4,096 sectors (2 MB), Pintos file system (21)
@@ -2649,7 +2457,7 @@ Executing 'mmap-over-stk':
 (mmap-over-stk) try to mmap over stack segment
 mmap-over-stk: exit(-1)
 Execution of 'mmap-over-stk' complete.
-Timer: 90 ticks
+Timer: 88 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 92 reads, 228 writes
 hda3 (scratch): 110 reads, 2 writes
@@ -2686,7 +2494,7 @@ OUTPUT FROM tests/vm/mmap-overlap:
 
 Copying tests/vm/mmap-overlap to scratch partition...
 Copying tests/vm/zeros to scratch partition...
-qemu -hda /tmp/user/1002/a7sYsKuNCm.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Kb2gCymxQ3.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading.........
 Kernel command line: -q -f extract run mmap-overlap
@@ -2714,7 +2522,7 @@ Executing 'mmap-overlap':
 (mmap-overlap) mmap "zeros"
 mmap-overlap: exit(-1)
 Execution of 'mmap-overlap' complete.
-Timer: 86 ticks
+Timer: 90 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hda2 (filesys): 92 reads, 252 writes
 hda3 (scratch): 122 reads, 2 writes

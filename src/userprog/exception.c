@@ -154,8 +154,6 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-  printf("fault_addr : %d\n", fault_addr);
-
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
     syscall_exit(-1);
     return 0;

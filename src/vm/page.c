@@ -131,16 +131,16 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
 }
 
 bool stack_growth(void *vaddr){
-  return new_page(vaddr, 1, 1);
-  // struct thread *cur = thread_current();
-  // frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
-  // if(frame == NULL)
-  //   return;
-  // else{
-  //   //add the page to the process's address space
-  //   if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
-  //     //free the frame - set failure
-  //     palloc_free_page(frame);
-  //   }
-  // }
+  struct thread *cur = thread_current();
+  void* frame = NULL;
+  frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
+  if(frame == NULL)
+    return;
+  else{
+    //add the page to the process's address space
+    if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
+      //free the frame - set failure
+      palloc_free_page(frame);
+    }
+  }
 }
