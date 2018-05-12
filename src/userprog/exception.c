@@ -169,7 +169,6 @@ page_fault (struct intr_frame *f)
   }
 
   struct page_entry *new_entry;
-  bool success = 0;
 
   new_entry = lookup_page(fault_addr);
 
@@ -177,16 +176,19 @@ page_fault (struct intr_frame *f)
     if(new_entry->location == DISK){
       //reclamation
       printf("the address is in DISK %p\n", fault_addr);
-      success = reclamation(new_entry, user, write);
+      if(!reclamation(new_entry, user, write)){
+        syscall_exit(-1);
+        return;
+      }
     }
-    if(new_entry->location == FILE){
+    if(new_entry->lazy_loading){
       printf("the address is in FILE %p\n", fault_addr);
-      success = new_page(fault_addr, user, write);
+      if(!lazy_load_segment(fault_addr, user, write, new_entry->lazy_type, new_entry->file)){
+        syscall_exit(-1);
+        return;
+      }
     }
     printf("location %d\n", new_entry->location);
-    // else{
-    //   //location is in FILE
-    // }
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
     printf("Stack growth %p\n", fault_addr);
     if(!stack_growth(fault_addr)){

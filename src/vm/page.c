@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <list.h>
+#include <string.h>
 #include <bitmap.h>
+#include "filesys/file.h"
 #include "vm/page.h"
 #include "vm/swap.h"
 #include "vm/frame.h"
@@ -103,6 +105,65 @@ struct page_entry *locate_page(void *vaddr, int location) {
   return pe;
 }
 
+struct page_entry *locate_lazy_page(void *vaddr, int lazy_type, struct file *file) {
+  struct thread *t = thread_current();
+  struct list *page_table = &t->sup_page_table;
+  struct page_entry *pe = (struct page_entry *)malloc(sizeof(struct page_entry));
+  pe->vaddr = vaddr;
+  pe->lazy_loading = 1;
+  pe->lazy_type = lazy_type;
+  pe->file = file;
+  pe->dirty = !!((unsigned)vaddr & PTE_D); // change to boolen_type
+  pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
+  pe->location = FILE;
+  list_push_back(page_table, &pe->elem);
+  return pe;
+}
+
+bool lazy_load_segment(void *vaddr, bool user, bool writable, int lazy_type, struct file *file){
+  void *upage = pg_round_down(vaddr);
+  void *kpage;
+  size_t page_read_bytes;
+  size_t page_zero_bytes;
+
+  if(lazy_type == ALL_ZERO){
+    page_zero_bytes = PGSIZE;
+    page_read_bytes = 0;  
+  }
+  else if(lazy_type == EXE_FILE){
+    page_zero_bytes = 0;
+    page_read_bytes = PGSIZE; 
+  }
+  else{
+    ASSERT(0);
+  }
+  /* Get a page of memory. */
+  if (user)
+    kpage = (void *)palloc_get_page(PAL_USER);
+  else
+    kpage = (void *)palloc_get_page(0);
+  
+  if (kpage == NULL)
+    return 0;
+
+  /* Load this page. */
+  if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
+    {
+      palloc_free_page (kpage);
+      return 0; 
+    }
+  memset (kpage + page_read_bytes, 0, page_zero_bytes);
+
+  /* Add the page to the process's address space. */
+  if (!install_page (upage, kpage, writable)) 
+    {
+      palloc_free_page (kpage);
+      return 0; 
+    }
+  return 1;
+}
+
+
 struct page_entry *lookup_page(uint32_t *vaddr) {
   void *upage = pg_round_down(vaddr);
   struct thread *t = thread_current();
@@ -123,7 +184,6 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
 bool stack_growth(void *vaddr){
   struct thread *cur = thread_current();
   void* frame = NULL;
-  bool success = 0;
   frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
   if(frame == NULL)
     return 0;
