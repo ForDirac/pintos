@@ -160,9 +160,7 @@ page_fault (struct intr_frame *f)
   printf("user %d\n", user);
   printf("fault_addr %p\n", fault_addr);
 
-  if (!not_present || !is_user_vaddr(fault_addr)){
-  // if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
-    printf("not present %d\n", not_present);
+  if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
     printf("Invaid  address %p\n", fault_addr);
     syscall_exit(-1);
     return;
