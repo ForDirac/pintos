@@ -590,37 +590,35 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
       size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-      if (page_zero_bytes == PGSIZE){
-        locate_lazy_page(upage, ALL_ZERO, file);
-      }
-      else if(page_read_bytes == PGSIZE){
-        locate_lazy_page(upage, EXE_FILE, file);
-      }
-      else{
-        /* Get a page of memory. */
-        uint8_t *kpage = palloc_get_page (PAL_USER);
-        if (kpage == NULL)
-          return false;
+      if(!locate_lazy_page(file, ofs, upage, read_bytes, zero_bytes, writable))
+        return false;
 
-        /* Load this page. */
-        if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
-          {
-            palloc_free_page (kpage);
-            return false; 
-          }
-        memset (kpage + page_read_bytes, 0, page_zero_bytes);
+      /* Get a page of memory. */
+      // uint8_t *kpage = palloc_get_page (PAL_USER);
+      // if (kpage == NULL){
+      //   printf("2\n");
+      //   return false;
+      // }
 
-        /* Add the page to the process's address space. */
-        if (!install_page (upage, kpage, writable)) 
-          {
-            palloc_free_page (kpage);
-            return false; 
-          }
-        }
+      // /* Load this page. */
+      // if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
+      //   {
+      //     palloc_free_page (kpage);
+      //     return false; 
+      //   }
+      // memset (kpage + page_read_bytes, 0, page_zero_bytes);
+
+      // /* Add the page to the process's address space. */
+      // if (!install_page (upage, kpage, writable)) 
+      //   {
+      //     palloc_free_page (kpage);
+      //     return false; 
+      //   }
 
       /* Advance. */
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;
+      ofs += page_read_bytes;
       upage += PGSIZE;
     }
   return true;

@@ -173,17 +173,17 @@ page_fault (struct intr_frame *f)
   new_entry = lookup_page(fault_addr);
 
   if(new_entry != NULL){
-    if(new_entry->location == DISK){
-      //reclamation
-      printf("the address is in DISK %p\n", fault_addr);
-      if(!reclamation(new_entry, user, write)){
+    if(new_entry->lazy_loading){
+      printf("the address is in FILE %p\n", fault_addr);
+      if(!lazy_load_segment(new_entry)){
         syscall_exit(-1);
         return;
       }
     }
-    if(new_entry->lazy_loading){
-      printf("the address is in FILE %p\n", fault_addr);
-      if(!lazy_load_segment(fault_addr, user, write, new_entry->lazy_type, new_entry->file)){
+    else if(new_entry->location == DISK){
+      //reclamation
+      printf("the address is in DISK %p\n", fault_addr);
+      if(!reclamation(new_entry, user, write)){
         syscall_exit(-1);
         return;
       }
