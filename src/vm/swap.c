@@ -1,4 +1,5 @@
 #include <list.h>
+#include <stdio.h>
 #include "vm/frame.h"
 #include "vm/swap.h"
 #include "vm/page.h"
@@ -10,7 +11,7 @@ static struct block *swap_block;
 static struct lock swap_block_lock;
 static struct list swap_table;
 static struct lock swap_table_lock;
-static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux);
+static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
 static int allocate_index(void);
 
 void swap_init(void) {
@@ -91,7 +92,7 @@ static int allocate_index(void){
 	return index;
 }
 
-static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux) {
+static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
 	struct swap_entry *se_a = list_entry(a, struct swap_entry, elem);
 	struct swap_entry *se_b = list_entry(b, struct swap_entry, elem);
 	return se_a->index < se_b->index;

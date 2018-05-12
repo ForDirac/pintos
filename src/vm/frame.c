@@ -3,6 +3,7 @@
 #include "threads/synch.h"
 #include "threads/thread.h"
 #include "threads/malloc.h"
+#include "threads/palloc.h"
 #include "vm/frame.h"
 #include "vm/page.h"
 
@@ -21,6 +22,30 @@ void insert_frame_table(void* kpage, struct page_entry *pe){
 	new_fe->owner = cur;
 	new_fe->pe = pe;
 	push_frame(new_fe);
+}
+
+void table_free_frame(void *kpage) {
+	lock_acquire(&frame_table_lock);
+	struct frame_entry *fe = lookup_frame(kpage);
+	list_remove(&fe->elem);
+	palloc_free_page(kpage);
+	free(fe);
+	lock_release(&frame_table_lock);
+}
+
+struct frame_entry *lookup_frame(void *kpage) {
+	struct thread *t = thread_current();
+	struct list_elem *e;
+	struct frame_entry *fe = NULL;
+	struct frame_entry *found = NULL;
+	for (e = list_begin(&frame_table); e != list_end(&frame_table); e = list_next(e)) {
+		fe = list_entry(e, struct frame_entry, elem);
+		if (kpage == fe->frame && t == fe->owner) {
+			found = fe;
+			break;
+		}
+	}
+	return found;
 }
 
 void push_frame(struct frame_entry *fe) {

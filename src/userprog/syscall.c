@@ -64,6 +64,7 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
+  printf("--------syscall_handler()-----------\n");
   if(!check_right_add(f->esp)){
     syscall_exit(-1);
     return;
@@ -80,7 +81,6 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_EXIT:
     {
       int status = ((int *)f->esp)[1];
-
       syscall_exit(status);
       break;
     }
@@ -336,8 +336,9 @@ int syscall_exit(int status){
   }
   lock_release(&family_lock);
 
-  if(!find)
+  if(!find){
     status = -1;
+  }
   else
     sema_up(&member->sema);
 
