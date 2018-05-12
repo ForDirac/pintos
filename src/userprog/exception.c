@@ -142,6 +142,8 @@ page_fault (struct intr_frame *f)
      (#PF)". */
   asm ("movl %%cr2, %0" : "=r" (fault_addr));
 
+  printf("fault_addr : %p\n", fault_addr);
+
   /* Turn interrupts back on (they were only off so that we could
      be assured of reading CR2 before it changed). */
   intr_enable ();
@@ -156,7 +158,7 @@ page_fault (struct intr_frame *f)
 
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
     syscall_exit(-1);
-    return 0;
+    return;
   }
 
   struct page_entry *new_entry;
@@ -167,10 +169,8 @@ page_fault (struct intr_frame *f)
   if(new_entry != NULL){
     if(new_entry->location == DISK){
       //reclamation
-      success = reclamation(new_entry, user, write);
-    }
-    else if(new_entry->location == PHYS){
-      success = new_page(new_entry, user, write);
+      if(!reclamation(new_entry, user, write))
+        syscall_exit(-1);
     }
     // else{
     //   //location is in FILE
@@ -178,12 +178,14 @@ page_fault (struct intr_frame *f)
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
     if(!stack_growth(fault_addr)){
       syscall_exit(-1);
-      return 0;
+      return;
     }
   } else {
     if(!pagedir_get_page (cur->pagedir, fault_addr)){
-      syscall_exit(-1);
-      return 0;
+
+      if(!new_page(fault_addr, user, write))
+        syscall_exit(-1);
+      return;
     }
 
     printf ("Page fault at %p: %s error %s page in %s context.\n",

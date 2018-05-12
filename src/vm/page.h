@@ -14,7 +14,7 @@ struct page_entry {
 };
 
 void page_init(struct list *list);
-bool new_page(struct page_entry *pe, bool user, bool writable);
+bool new_page(void* vaddr, bool user, bool writable);
 bool reclamation(struct page_entry *pe, bool user, bool writable);
 void free_page(void *vaddr);
 struct page_entry *lookup_page(uint32_t *vaddr);

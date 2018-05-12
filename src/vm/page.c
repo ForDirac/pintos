@@ -33,8 +33,8 @@ void page_init(struct list *list) {
 // }
 
 
-bool new_page(struct page_entry *pe, bool user, bool writable) {
-  void *upage = pg_round_down(pe->vaddr); // vaddr's page_num
+bool new_page(void* vaddr, bool user, bool writable) {
+  void *upage = pg_round_down(vaddr); // vaddr's page_num
   void *kpage; // frame
   bool success;
   int location;
@@ -49,11 +49,11 @@ bool new_page(struct page_entry *pe, bool user, bool writable) {
     kpage = swap_out();
   }
   else{
-    location = PHYS;
-    insert_frame_table(kpage, pe);
+    // location = PHYS;
+    // insert_frame_table(kpage, pe);
   }
   // Locate the page that faulted in the supplemental page table.
-  locate_page(pe->vaddr, location);
+  locate_page(vaddr, location);
   // Reset page table
   success = install_page(upage, kpage, writable);
   printf("install_page result in new_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
@@ -133,14 +133,18 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
 bool stack_growth(void *vaddr){
   struct thread *cur = thread_current();
   void* frame = NULL;
+  bool success = 0;
   frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
   if(frame == NULL)
-    return;
+    return success;
   else{
     //add the page to the process's address space
     if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
       //free the frame - set failure
       palloc_free_page(frame);
+      return success;
     }
   }
+  success = 1;
+  return success;
 }

@@ -130,6 +130,7 @@ verify (void)
 void
 test_main (void)
 {
+  msg("start\n");
   init ();
   sort_chunks ();
   merge ();
