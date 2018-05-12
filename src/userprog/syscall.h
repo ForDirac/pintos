@@ -20,12 +20,13 @@ struct member
 struct list family;
 
 struct lock family_lock;
+struct lock filesys_lock;
 
 int syscall_exit(int status);
 int syscall_open(const char *file);
 int syscall_read(int fd, void *buffer, unsigned size);
 int syscall_write(int fd, void *buffer, unsigned size);
 void syscall_close(int fd);
-bool valid_file_ptr(char *file);
+bool valid_file_ptr(const char *file);
 
 #endif /* userprog/syscall.h */

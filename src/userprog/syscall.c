@@ -13,6 +13,7 @@
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #include "threads/malloc.h"
+#include "userprog/pagedir.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -24,24 +25,6 @@ static bool compare(const struct list_elem *a, const struct list_elem *b, void *
   return fd_a->fd < fd_b->fd;
 }
 
-/* static struct fd find_right_fd(int fd){ */
-/*   struct list_elem *e; */
-/*   struct thread *t = thread_current(); */
-/*   struct fd *_fd = NULL; */
-/*   bool find = 0; */
-
-/*   for (e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){ */
-/*     _fd = list_entry(e, struct fd, elem); */
-/*     if(_fd->fd == fd){ */
-/*       find = 1; */
-/*       return *_fd; */
-/*     } */
-/*   } */
-/*   if(!find){ */
-/*     return *_fd; */
-/*   } */
-/* } */
-
 static bool check_right_add(void * add){
   bool right = 1;
   int i;
@@ -50,17 +33,17 @@ static bool check_right_add(void * add){
     return 0;
   if( add > PHYS_BASE - 12)
     return 0;
-  if(add < 0x8048000)
+  if(add < (void *)0x8048000)
     return 0;
 
   for (i = 0; i < 4; i++){
-    void * p = pagedir_get_page(t->pagedir, add+i);
+    void *p = (void *)pagedir_get_page(t->pagedir, add+i);
 
     if( add+i > PHYS_BASE - 12)
       right = 0;
     if(!p)
       right = 0;
-    if(add+i < 0x8048000)
+    if(add+i < (void *)0x8048000)
       right = 0;
     if(!(add+i))
       right = 0;
@@ -75,6 +58,7 @@ syscall_init (void)
   /* For proj.#2 */
   list_init(&family); // To store the parent, child_tid, exit_status, sema
   lock_init(&family_lock);
+  lock_init(&filesys_lock);
 }
 
 static void
@@ -89,14 +73,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_HALT:
     {
-      /* printf("halt\n"); */
       shutdown_power_off();
       break;
     }
 
     case SYS_EXIT:
     {
-      /* printf("exit\n"); */
       int status = ((int *)f->esp)[1];
 
       syscall_exit(status);
@@ -105,7 +87,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_EXEC:
     {
-      /* printf("exec\n"); */
       /* We suppose that pintos have single thread system! */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
@@ -126,7 +107,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_WAIT:
     {
-      /* printf("wait\n"); */
       tid_t tid = ((int *)f->esp)[1];
 
       int exit_status = process_wait(tid);
@@ -137,7 +117,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CREATE:
     {
-      /* printf("create\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -149,7 +128,9 @@ syscall_handler (struct intr_frame *f UNUSED)
         break;
       }
       off_t initial_size = (off_t)((unsigned int *)f->esp)[2];
+      lock_acquire(&filesys_lock);
       bool success = filesys_create(file, initial_size);
+      lock_release(&filesys_lock);
       f->eax = 0;
       f->eax = success;
       break;
@@ -157,7 +138,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_REMOVE:
     {
-      /* printf("remove\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -168,7 +148,10 @@ syscall_handler (struct intr_frame *f UNUSED)
         syscall_exit(-1);
         break;
       }
+
+      lock_acquire(&filesys_lock);
       bool success = filesys_remove(file);
+      lock_release(&filesys_lock);
       f->eax = 0;
       f->eax = success;
       break;
@@ -176,7 +159,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_OPEN:
     {
-      /* printf("open\n"); */
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -187,14 +169,16 @@ syscall_handler (struct intr_frame *f UNUSED)
         syscall_exit(-1);
         break;
       }
+
+      lock_acquire(&filesys_lock);
       int fd = syscall_open(file);
+      lock_release(&filesys_lock);
       f->eax = fd;
       break;
     }
 
     case SYS_FILESIZE:
     {
-      /* printf("filesize\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -207,14 +191,14 @@ syscall_handler (struct intr_frame *f UNUSED)
         }
       }
 
+      lock_acquire(&filesys_lock);
       f->eax = file_length(_fd->file_p);
-
+      lock_release(&filesys_lock);
       break;
     }
 
     case SYS_READ:
     {
-      /* printf("read\n"); */
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_add((void *)(((int*)f->esp)[2]))){
@@ -236,7 +220,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_WRITE:
     {
-      /* printf("write\n"); */
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_add((void *)(((int*)f->esp)[2]))){
@@ -253,7 +236,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_SEEK:
     {
-      /* printf("seek\n"); */
       int fd = ((int *)f->esp)[1];
       off_t position = ((off_t *)f->esp)[2];
       struct list_elem *e;
@@ -262,7 +244,9 @@ syscall_handler (struct intr_frame *f UNUSED)
       for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *_fd = list_entry(e, struct fd, elem);
         if(_fd->fd == fd){
+          lock_acquire(&filesys_lock);
           file_seek(_fd->file_p, position);
+          lock_release(&filesys_lock);
           break;
         }
       }
@@ -271,7 +255,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_TELL:
     {
-      /* printf("tell\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -280,7 +263,9 @@ syscall_handler (struct intr_frame *f UNUSED)
       for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
         struct fd *_fd = list_entry(e, struct fd, elem);
         if(_fd->fd == fd){
+          lock_acquire(&filesys_lock);
           cur_p = file_tell(_fd->file_p);
+          lock_release(&filesys_lock);
           break;
         }
       }
@@ -292,7 +277,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CLOSE:
     {
-      /* printf("close\n"); */
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -302,6 +286,10 @@ syscall_handler (struct intr_frame *f UNUSED)
         struct fd *_fd = list_entry(e, struct fd, elem);
         if(_fd->fd == fd){
           valid_fd = 1;
+          lock_acquire(&filesys_lock);
+          file_close(_fd->file_p);
+          lock_release(&filesys_lock);
+
           list_remove(e);
           free(_fd);
           break;
@@ -316,12 +304,10 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     default:
     {
-      /* printf("default\n"); */
       syscall_exit(-1);
       break;
     }
   }
-  /* thread_exit (); */
 }
 
 int syscall_exit(int status){
@@ -380,9 +366,11 @@ int syscall_open(const char *file){
 
     std_in->fd = 0;
     std_in->file_name = "STD_IN";
+    std_in->file_p = NULL;
 
     std_out->fd = 1;
     std_out->file_name = "STD_OUT";
+    std_out->file_p = NULL;
 
     list_push_back(&t->file_list, &std_in->elem);
     list_push_back(&t->file_list, &std_out->elem);
@@ -390,6 +378,7 @@ int syscall_open(const char *file){
 
   struct fd *new_fd = (struct fd *)malloc(sizeof(struct fd));
 
+  //Insert the file_list in this opened file info
   for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
     struct fd *__fd = list_entry(e, struct fd, elem);
     if (__fd->fd != i){
@@ -424,7 +413,6 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     return -2;
   }
 
-  /* ASSERT(fd != 1); */
   if (fd == 1){
     return -1;
   }
@@ -454,14 +442,13 @@ int syscall_read(int fd, void *buffer, unsigned size) {
     }
   }
 
-  /* is it right to return -1? */
   if(!find){
     return -2;
   }
 
-  lock_acquire(&_fd->file_p->file_lock);
+  lock_acquire(&filesys_lock);
   int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);
-  lock_release(&_fd->file_p->file_lock);
+  lock_release(&filesys_lock);
 
   return bytes_read;
 }
@@ -493,16 +480,16 @@ int syscall_write(int fd, void *buffer, unsigned size) {
     return -1;
   }
 
-  lock_acquire(&_fd->file_p->file_lock);
+  lock_acquire(&filesys_lock);
   int bytes_write = (int)file_write(_fd->file_p, buffer, (off_t)size);
-  lock_release(&_fd->file_p->file_lock);
+  lock_release(&filesys_lock);
   return bytes_write;
 }
 
-bool valid_file_ptr(char *file) {
+bool valid_file_ptr(const char *file) {
   if (!file)
     return 0;
-  if(file > (uintptr_t)0x8084000 && file < (uintptr_t)0x40000000)
+  if((int)file > 0x8084000 && (int)file < 0x40000000)
     return 0;
   return 1;
 }

@@ -6,6 +6,10 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "userprog/syscall.h"
+#include "userprog/pagedir.h"
+#include "threads/palloc.h"
+#include "vm/page.h"
+#include "threads/malloc.h"
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -128,6 +132,7 @@ page_fault (struct intr_frame *f)
   bool write;        /* True: access was write, false: access was read. */
   bool user;         /* True: access by user, false: access by kernel. */
   void *fault_addr;  /* Fault address. */
+  struct thread *cur = thread_current();
 
   /* Obtain faulting address, the virtual address that was
      accessed to cause the fault.  It may point to code or to
@@ -149,27 +154,73 @@ page_fault (struct intr_frame *f)
   not_present = (f->error_code & PF_P) == 0;
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
-  if (fault_addr <= (uintptr_t)4 || fault_addr >= (uintptr_t)PHYS_BASE){
-    struct thread *t = thread_current();
-    struct member *member = lookup_child(t->tid);
-    if (member) {
-      member->is_exit = 1;
-      member->exit_status = -1;
-      sema_up(&member->sema);
-    }
-    printf("%s: exit(%d)\n", t->file_name, -1);
-    thread_exit();
+
+  printf("not_present %d\n", not_present);
+  printf("write %d\n", write);
+  printf("user %d\n", user);
+  printf("fault_addr %p\n", fault_addr);
+
+  if (!not_present || !is_user_vaddr(fault_addr)){
+  // if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
+    printf("not present %d\n", not_present);
+    printf("Invaid  address %p\n", fault_addr);
+    syscall_exit(-1);
     return;
   }
 
+  struct page_entry *new_entry;
+  bool success = 0;
+
+  new_entry = lookup_page(fault_addr);
+
+  if(new_entry != NULL){
+    if(new_entry->location == DISK){
+      //reclamation
+      printf("the address is in DISK %p\n", fault_addr);
+      success = reclamation(new_entry, user, write);
+    }
+    if(new_entry->location == FILE){
+      printf("the address is in FILE %p\n", fault_addr);
+      success = new_page(fault_addr, user, write);
+    }
+    printf("location %d\n", new_entry->location);
+    // else{
+    //   //location is in FILE
+    // }
+  } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
+    printf("Stack growth %p\n", fault_addr);
+    if(!stack_growth(fault_addr)){
+      syscall_exit(-1);
+      return;
+    }
+  } else {
+    printf("Else cases %p\n", fault_addr);
+    // if(!pagedir_get_page (cur->pagedir, fault_addr)){
+    //   syscall_exit(-1); 
+    //   return;
+    // }
+    if(new_page(fault_addr, user, write)){
+      return;
+    }
+
+
+    printf ("Page fault at %p: %s error %s page in %s context.\n",
+        fault_addr,
+        not_present ? "not present" : "rights violation",
+        write ? "writing" : "reading",
+        user ? "user" : "kernel");
+    kill (f);
+  }
+
+  //original_code
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
      which fault_addr refers. */
-  printf ("Page fault at %p: %s error %s page in %s context.\n",
-          fault_addr,
-          not_present ? "not present" : "rights violation",
-          write ? "writing" : "reading",
-          user ? "user" : "kernel");
-  kill (f);
+  // printf ("Page fault at %p: %s error %s page in %s context.\n",
+  //         fault_addr,
+  //         not_present ? "not present" : "rights violation",
+  //         write ? "writing" : "reading",
+  //         user ? "user" : "kernel");
+  // kill (f);
 }
 
