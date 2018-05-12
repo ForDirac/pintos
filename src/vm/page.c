@@ -183,6 +183,7 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
 bool stack_growth(void *vaddr){
   struct thread *cur = thread_current();
   void* frame = NULL;
+  bool success = 0;
   frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
   if(frame == NULL)
     return 0;
