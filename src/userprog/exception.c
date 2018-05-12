@@ -9,6 +9,7 @@
 #include "userprog/pagedir.h"
 #include "threads/palloc.h"
 #include "vm/page.h"
+#include "threads/malloc.h"
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -156,7 +157,13 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  printf("not_present %d\n", not_present);
+  printf("write %d\n", write);
+  printf("user %d\n", user);
+  printf("fault_addr %p\n", fault_addr);
+
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
+    printf("Invaid  address %p\n", fault_addr);
     syscall_exit(-1);
     return;
   }
@@ -165,29 +172,36 @@ page_fault (struct intr_frame *f)
   bool success = 0;
 
   new_entry = lookup_page(fault_addr);
-  
+
   if(new_entry != NULL){
     if(new_entry->location == DISK){
       //reclamation
-      if(!reclamation(new_entry, user, write))
-        syscall_exit(-1);
+      printf("the address is in DISK %p\n", fault_addr);
+      success = reclamation(new_entry, user, write);
     }
+    if(new_entry->location == FILE){
+      printf("the address is in FILE %p\n", fault_addr);
+      success = new_page(fault_addr, user, write);
+    }
+    printf("location %d\n", new_entry->location);
     // else{
     //   //location is in FILE
     // }
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
+    printf("Stack growth %p\n", fault_addr);
     if(!stack_growth(fault_addr)){
       syscall_exit(-1);
       return;
     }
   } else {
-    if(!pagedir_get_page (cur->pagedir, fault_addr)){
-
-      if(!new_page(fault_addr, user, write))
-        syscall_exit(-1);
+    printf("Else cases %p\n", fault_addr);
+    // if(!pagedir_get_page (cur->pagedir, fault_addr)){
+    //   syscall_exit(-1); 
+    //   return;
+    // }
+    if(new_page(fault_addr, user, write)){
       return;
     }
-
     printf ("Page fault at %p: %s error %s page in %s context.\n",
         fault_addr,
         not_present ? "not present" : "rights violation",

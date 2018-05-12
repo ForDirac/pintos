@@ -12,32 +12,17 @@
 #include "userprog/pagedir.h"
 #include "userprog/process.h"
 
-// static unsigned hash_func(const struct hash_elem *e, void *aux NULL);
-// static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void *aux NULL);
 static bool install_page(void *upage, void *kpage, bool writable);
-static void locate_page(void *vaddr, int location);
 
 void page_init(struct list *list) {
 	list_init(list);
 }
 
-// static unsigned hash_func(const struct hash_elem *e, void *aux NULL) {
-// 	struct page_entry *pe = hash_entry(e, struct page_entry, elem);
-// 	return hash_bytes((unsigned)pe->vaddr, sizeof(unsigned));
-// }
-
-// static bool less_func(const struct hash_elem *a, const struct hash_elem *b, void *aux NULL) {
-// 	struct page_entry *pe_a = hash_entry(a, struct page_entry, elem);
-// 	struct page_entry *pe_b = hash_entry(b, struct page_entry, elem);
-// 	return pe_a->vaddr < pe_b->vaddr;
-// }
-
-
-bool new_page(void* vaddr, bool user, bool writable) {
+bool new_page(void *vaddr, bool user, bool writable) {
   void *upage = pg_round_down(vaddr); // vaddr's page_num
   void *kpage; // frame
   bool success;
-  int location;
+  // int location;
   // Obtain a frame to store the page
   if (user)
     kpage = (void *)palloc_get_page(PAL_USER | PAL_ZERO);
@@ -45,44 +30,45 @@ bool new_page(void* vaddr, bool user, bool writable) {
     kpage = (void *)palloc_get_page(PAL_ZERO);
   if (!kpage) {
   	// swap and get kpage
-    location = DISK;
+    // location = DISK;
     kpage = swap_out();
   }
   else{
     // location = PHYS;
-    // insert_frame_table(kpage, pe);
+    struct page_entry *pe = locate_page(vaddr, PHYS);
+    insert_frame_table(kpage, pe);
   }
   // Locate the page that faulted in the supplemental page table.
-  locate_page(vaddr, location);
+  // locate_page(vaddr, location);
   // Reset page table
   success = install_page(upage, kpage, writable);
   printf("install_page result in new_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
 }
 
-bool reclamation(struct page_entry *pe, bool user, bool writable){
-  void *upage = pg_round_down(pe->vaddr);
+bool reclamation(void *vaddr, bool user, bool writable){
+  void *upage = pg_round_down(vaddr);
   void *kpage;
   bool success;
   int location;
-  
+  struct page_entry *pe;
   if (user)
     kpage = (void *)palloc_get_page(PAL_USER | PAL_ZERO);
   else
     kpage = (void *)palloc_get_page(PAL_ZERO);
   if (!kpage) {
     // swap and get kpage
-    location = DISK;
+    // location = DISK;
     kpage = swap_out();
   }
   else{
     location = PHYS;
+    pe = locate_page(vaddr, location);
     insert_frame_table(kpage, pe);
   }
 
   swap_in(kpage);
-  locate_page(pe->vaddr, location);
-  success = install_page(upage, kpage, writable); 
+  success = install_page(upage, kpage, writable);
   printf("install_page result in reclamation: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
 }
@@ -105,7 +91,7 @@ void free_page(void *vaddr) {
   free(pe);
 }
 
-static void locate_page(void *vaddr, int location) {
+struct page_entry *locate_page(void *vaddr, int location) {
 	struct thread *t = thread_current();
   struct list *page_table = &t->sup_page_table;
 	struct page_entry *pe = (struct page_entry *)malloc(sizeof(struct page_entry));
@@ -114,6 +100,7 @@ static void locate_page(void *vaddr, int location) {
 	pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
   pe->location = location;
 	list_push_back(page_table, &pe->elem);
+  return pe;
 }
 
 struct page_entry *lookup_page(uint32_t *vaddr) {
@@ -122,12 +109,15 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
   struct list *page_table = &t->sup_page_table;
   struct list_elem *e;
   struct page_entry *pe = NULL;
+  struct page_entry *found = NULL;
   for (e = list_begin(page_table); e != list_end(page_table); e = list_next(e)) {
     pe = list_entry(e, struct page_entry, elem);
-    if (upage == pg_round_down(pe->vaddr))
+    if (upage == pg_round_down(pe->vaddr)) {
+      found = pe;
       break;
+    }
   }
-  return pe;
+  return found;
 }
 
 bool stack_growth(void *vaddr){
@@ -136,15 +126,14 @@ bool stack_growth(void *vaddr){
   bool success = 0;
   frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
   if(frame == NULL)
-    return success;
+    return 0;
   else{
     //add the page to the process's address space
     if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
       //free the frame - set failure
       palloc_free_page(frame);
-      return success;
+      return 0;
     }
   }
-  success = 1;
-  return success;
+  return 1;
 }
