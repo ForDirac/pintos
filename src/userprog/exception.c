@@ -128,7 +128,7 @@ kill (struct intr_frame *f)
 static void
 page_fault (struct intr_frame *f) 
 {
-  bool not_present;  /* True: not-present page, false: writing r/o page. */
+  bool not_present;  /* True: ngot-present pae, false: writing r/o page. */
   bool write;        /* True: access was write, false: access was read. */
   bool user;         /* True: access by user, false: access by kernel. */
   void *fault_addr;  /* Fault address. */
@@ -189,7 +189,7 @@ page_fault (struct intr_frame *f)
       }
     }
     printf("location %d\n", new_entry->location);
-  } else if (new_entry == NULL && fault_addr >= (f->esp - 32)){ 
+  } else if (new_entry == NULL && fault_addr >= (f->esp - 32) && (PHYS_BASE - pg_round_down (fault_addr)) <= (8 * (1 << 20))){ 
     printf("Stack growth %p\n", fault_addr);
     if(!stack_growth(fault_addr)){
       syscall_exit(-1);

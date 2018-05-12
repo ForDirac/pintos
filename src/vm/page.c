@@ -163,7 +163,6 @@ bool lazy_load_segment(void *vaddr, bool user, bool writable, int lazy_type, str
   return 1;
 }
 
-
 struct page_entry *lookup_page(uint32_t *vaddr) {
   void *upage = pg_round_down(vaddr);
   struct thread *t = thread_current();
