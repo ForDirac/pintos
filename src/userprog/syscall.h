@@ -17,6 +17,13 @@ struct member
   struct semaphore loading_sema;
 };
 
+// For proj #3
+struct mmap_entry {
+	struct mapid_t mapid;
+	struct fd *fd;
+	struct list_elem elem;
+}
+
 struct list family;
 
 struct lock family_lock;
@@ -27,6 +34,8 @@ int syscall_open(const char *file);
 int syscall_read(int fd, void *buffer, unsigned size);
 int syscall_write(int fd, void *buffer, unsigned size);
 void syscall_close(int fd);
+mapid_t syscall_mmap(int fd, void *addr);
+void *syscall_munmap(mapid_t mapid);
 bool valid_file_ptr(const char *file);
 
 #endif /* userprog/syscall.h */

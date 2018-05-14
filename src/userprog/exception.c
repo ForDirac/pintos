@@ -143,8 +143,6 @@ page_fault (struct intr_frame *f)
      (#PF)". */
   asm ("movl %%cr2, %0" : "=r" (fault_addr));
 
-  printf("fault_addr : %p\n", fault_addr);
-
   /* Turn interrupts back on (they were only off so that we could
      be assured of reading CR2 before it changed). */
   intr_enable ();
@@ -157,13 +155,15 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-  printf("not_present %d\n", not_present);
-  printf("write %d\n", write);
-  printf("user %d\n", user);
-  printf("fault_addr %p\n", fault_addr);
+  // printf("-----------page_fault()------------\n");
+  // printf("not_present %d\n", not_present);
+  // printf("write %d\n", write);
+  // printf("user %d\n", user);
+  // printf("fault_addr %p\n", fault_addr);
+  // printf("page %p\n", pg_round_down(fault_addr));
 
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
-    printf("Invaid  address %p\n", fault_addr);
+    // printf("exception.c: Invaid address %p\n", fault_addr);
     syscall_exit(-1);
     return;
   }
@@ -173,37 +173,47 @@ page_fault (struct intr_frame *f)
   new_entry = lookup_page(fault_addr);
 
   if(new_entry != NULL){
-    if(new_entry->lazy_loading){
-      printf("the address is in FILE %p\n", fault_addr);
-      if(!lazy_load_segment(new_entry)){
-        syscall_exit(-1);
-        return;
-      }
-    }
-    else if(new_entry->location == DISK){
+    if(new_entry->location == DISK){
       //reclamation
-      printf("the address is in DISK %p\n", fault_addr);
-      if(!reclamation(new_entry, user, write)){
+      // printf("exception.c: The address is in DISK %p\n", fault_addr);
+      if(!reclamation(fault_addr, user, write)){
+        syscall_exit(-1);
+        return;
+      }
+      return;
+    }
+    if(new_entry->lazy_loading){
+      // printf("exception.c: The address is in FILE %p\n", fault_addr);
+      if(!lazy_load_segment(fault_addr, user, new_entry->writable, new_entry->file, new_entry->offset, new_entry->page_zero_bytes)){
+        // printf("%s\n", "fail to lazy load segment");
+        syscall_exit(-1);
+        return;
+      }
+      new_entry->lazy_loading = 0;
+      return;
+    }
+    if(new_entry->is_mmap){
+      if(!load_mmap_file(fault_addr, user, new_entry->me->fd)){
         syscall_exit(-1);
         return;
       }
     }
-    printf("location %d\n", new_entry->location);
+    // printf("%s\n", "new entry exists but page faulted??");
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32) && (PHYS_BASE - pg_round_down (fault_addr)) <= (8 * (1 << 20))){ 
-    printf("Stack growth %p\n", fault_addr);
+    // printf("exception.c: Stack growth %p\n", fault_addr);
     if(!stack_growth(fault_addr)){
       syscall_exit(-1);
       return;
     }
+    return;
   } else {
-    printf("Else cases %p\n", fault_addr);
-    // if(!pagedir_get_page (cur->pagedir, fault_addr)){
-    //   syscall_exit(-1); 
-    //   return;
-    // }
-    if(new_page(fault_addr, user, write)){
+    // printf("exception.c: Else cases %p\n", fault_addr);
+    if(!pagedir_get_page (cur->pagedir, fault_addr)){
+      // new_page(fault_addr, user, write);
+      syscall_exit(-1);
       return;
     }
+
     printf ("Page fault at %p: %s error %s page in %s context.\n",
         fault_addr,
         not_present ? "not present" : "rights violation",

@@ -546,8 +546,9 @@ init_thread (struct thread *t, const char *name, int priority)
   list_init(&t->file_list);
   lock_init(&t->file_list_lock);
 
-#ifdef USERPROG
+#ifdef VM
   page_init(&t->sup_page_table);
+  list_init(&t->mmap_table);
 #endif
 
   t->execute_f = NULL;
