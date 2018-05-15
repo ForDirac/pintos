@@ -1,7 +1,7 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
 #include <syscall-nr.h>
-#include <syscall.h>
+#include "lib/user/syscall.h"
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "filesys/filesys.h"
@@ -540,15 +540,17 @@ mapid_t syscall_mmap(int fd, void *addr){
 
   size_t filesize = file_length(found->file_p);
   size_t offset = 0;
-  while(offset < filesize){
-    // check 
+  while(filesize > 0){
+    size_t page_zero_bytes = filesize < PGSIZE ? PGSIZE-filesize : 0;    
+    locate_mmap_page(addr, me->fd->file_p, offset, page_zero_bytes);
     offset += PGSIZE;
+    filesize -= PGSIZE;
+    addr += PGSIZE;
   }
-  locate_mmap_page(addr, me);
   return me->mapid;
 }
 
-void *syscall_munmap(mapid_t mapid) {
+void syscall_munmap(mapid_t mapid) {
   struct mmap_entry *me = NULL;
   me = lookup_mmap(mapid);
   if(!me)
@@ -571,11 +573,10 @@ static struct mmap_entry *allocate_mmap(struct fd *fd) {
       continue;
     }
   }
-  struct mmap_entry *me = (struct mmap_entry)calloc(1, sizeof(struct mmap_entry));
+  me = (struct mmap_entry *)calloc(1, sizeof(struct mmap_entry));
   me->mapid = mapid;
-  me->fd = found;
+  me->fd = fd;
   list_push_back(mmap_table, &me->elem);
-
   return me;
 }
 

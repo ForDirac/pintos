@@ -189,14 +189,14 @@ page_fault (struct intr_frame *f)
         syscall_exit(-1);
         return;
       }
-      new_entry->lazy_loading = 0;
       return;
     }
     if(new_entry->is_mmap){
-      if(!load_mmap_file(fault_addr, user, new_entry->me->fd)){
+      if(!lazy_load_segment(fault_addr, user, 1, new_entry->file, new_entry->offset, new_entry->page_zero_bytes)){
         syscall_exit(-1);
         return;
       }
+      return;
     }
     // printf("%s\n", "new entry exists but page faulted??");
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32) && (PHYS_BASE - pg_round_down (fault_addr)) <= (8 * (1 << 20))){ 

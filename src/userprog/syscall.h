@@ -1,5 +1,6 @@
 #ifndef USERPROG_SYSCALL_H
 #define USERPROG_SYSCALL_H
+#include "lib/user/syscall.h"
 #include "threads/thread.h"
 
 void syscall_init (void);
@@ -19,10 +20,10 @@ struct member
 
 // For proj #3
 struct mmap_entry {
-	struct mapid_t mapid;
+	mapid_t mapid;
 	struct fd *fd;
 	struct list_elem elem;
-}
+};
 
 struct list family;
 
@@ -35,7 +36,7 @@ int syscall_read(int fd, void *buffer, unsigned size);
 int syscall_write(int fd, void *buffer, unsigned size);
 void syscall_close(int fd);
 mapid_t syscall_mmap(int fd, void *addr);
-void *syscall_munmap(mapid_t mapid);
+void syscall_munmap(mapid_t mapid);
 bool valid_file_ptr(const char *file);
 
 #endif /* userprog/syscall.h */
