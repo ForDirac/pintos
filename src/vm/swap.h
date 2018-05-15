@@ -1,5 +1,6 @@
 #include <list.h>
 #include "threads/thread.h"
+#include "threads/palloc.h"
 
 struct swap_entry
 {
@@ -11,8 +12,8 @@ struct swap_entry
 };
 
 void swap_init(void);
-void* swap_out(void);
-void swap_in(void *frame);
+void* swap_out(enum palloc_flags);
+void swap_in(void* frame, struct page_entry *pe);
 void read_block(uint8_t *frame, int index);
 void write_block(uint8_t *frame, int index);
 void push_swap(struct swap_entry *se);

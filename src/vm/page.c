@@ -24,6 +24,8 @@ bool new_page(void *vaddr, bool user, bool writable) {
   void *upage = pg_round_down(vaddr); // vaddr's page_num
   void *kpage; // frame
   bool success;
+  struct page_entry *pe = locate_page(upage, PHYS);
+
   // int location;
   // Obtain a frame to store the page
   if (user)
@@ -33,13 +35,9 @@ bool new_page(void *vaddr, bool user, bool writable) {
   if (!kpage) {
   	// swap and get kpage
     // location = DISK;
-    kpage = swap_out();
+    kpage = swap_out(user?PAL_USER|PAL_ZERO:PAL_ZERO);
   }
-  else{
-    // location = PHYS;
-    struct page_entry *pe = locate_page(upage, PHYS);
-    insert_frame_table(kpage, pe);
-  }
+  insert_frame_table(kpage, pe);
   // Locate the page that faulted in the supplemental page table.
   // locate_page(vaddr, location);
   // Reset page table
@@ -47,7 +45,6 @@ bool new_page(void *vaddr, bool user, bool writable) {
     table_free_page(upage);
     table_free_frame(kpage);
   }
-  printf("install_page result in new_page: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
 }
 
@@ -55,8 +52,7 @@ bool reclamation(void *vaddr, bool user, bool writable){
   void *upage = pg_round_down(vaddr);
   void *kpage;
   bool success;
-  int location;
-  struct page_entry *pe;
+  struct page_entry *pe = locate_page(upage, PHYS);
   if (user)
     kpage = (void *)palloc_get_page(PAL_USER | PAL_ZERO);
   else
@@ -64,20 +60,13 @@ bool reclamation(void *vaddr, bool user, bool writable){
   if (!kpage) {
     // swap and get kpage
     // location = DISK;
-    kpage = swap_out();
+    kpage = swap_out(user?PAL_USER|PAL_ZERO:PAL_ZERO);
   }
-  else{
-    location = PHYS;
-    pe = locate_page(upage, location);
-    insert_frame_table(kpage, pe);
-  }
-
-  swap_in(kpage);
+  swap_in(kpage, pe);
   if (!(success = install_page(upage, kpage, writable))) {
     table_free_page(upage);
     table_free_frame(kpage);
   }
-  printf("install_page result in reclamation: %s\n", success ? "SUCCESS" : "FAILURE");  // for debugging
   return success;
 }
 
@@ -92,9 +81,12 @@ static bool install_page (void *upage, void *kpage, bool writable)
 }
 
 void table_free_page(void *vaddr) {
+  if (!vaddr)
+    return;
   void *upage = pg_round_down(vaddr);
   struct page_entry *pe = lookup_page(upage);
   list_remove(&pe->elem);
+  pagedir_clear_page(thread_current()->pagedir, upage);
   free(pe);
 }
 
@@ -107,7 +99,8 @@ struct page_entry *locate_page(void *vaddr, int location) {
     pe->lazy_loading = 0;
     return pe;
   }
-	pe = (struct page_entry *)malloc(sizeof(struct page_entry));
+  pe = (struct page_entry *)calloc(1, sizeof(struct page_entry));
+	// pe = (struct page_entry *)malloc(sizeof(struct page_entry));
 	pe->vaddr = pg_round_down(vaddr);
 	pe->dirty = !!((unsigned)vaddr & PTE_D); // change to boolen_type
 	pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
@@ -130,7 +123,8 @@ struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset
     pe->writable = writable;
     return pe;
   }
-  pe = (struct page_entry *)malloc(sizeof(struct page_entry));
+  pe = (struct page_entry *)calloc(1, sizeof(struct page_entry));
+  // pe = (struct page_entry *)malloc(sizeof(struct page_entry));
   pe->vaddr = pg_round_down(vaddr);
   pe->dirty = !!((unsigned)vaddr & PTE_D); // change to boolen_type
   pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
@@ -149,30 +143,34 @@ bool lazy_load_segment(void *vaddr, bool user, bool writable, struct file *file,
   void *kpage;
   size_t page_read_bytes = PGSIZE - page_zero_bytes;
   file_seek(file, offset);
+  struct page_entry *pe = locate_page(upage, PHYS);
 
   /* Get a page of memory. */
   if (user)
-    kpage = (void *)palloc_get_page(PAL_USER);
+    kpage = (void *)palloc_get_page (PAL_USER | PAL_ZERO);
   else
     kpage = (void *)palloc_get_page(PAL_ZERO);
-  
-  if (kpage == NULL)
-    return 0;
+
+  if (kpage == NULL){
+    kpage = swap_out(user?PAL_USER|PAL_ZERO:PAL_ZERO);
+  }
 
   /* Load this page. */
   if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
     {
       // palloc_free_page (kpage);
+      table_free_page(upage);
       table_free_frame(kpage);
-      return 0; 
+      return 0;
     }
   memset (kpage + page_read_bytes, 0, page_zero_bytes);
 
-  struct page_entry *pe = locate_page(upage, PHYS);
-  insert_frame_table(kpage, pe);
+  // struct page_entry *pe = locate_page(upage, PHYS);
+  // insert_frame_table(kpage, pe);
 
+  insert_frame_table(kpage, pe);
   /* Add the page to the process's address space. */
-  if (!install_page (upage, kpage, writable)) 
+  if (!install_page(upage, kpage, writable))
     {
       // palloc_free_page (kpage);
       table_free_page(upage);

@@ -16,7 +16,8 @@ void frame_init(void) {
 }
 
 void insert_frame_table(void* kpage, struct page_entry *pe){
-	struct frame_entry *new_fe = (struct frame_entry *)malloc(sizeof(struct frame_entry));
+	struct frame_entry *new_fe = (struct frame_entry *)calloc(1, sizeof(struct frame_entry));
+	// struct frame_entry *new_fe = (struct frame_entry *)malloc(sizeof(struct frame_entry));
 	struct thread *cur = thread_current();
 	new_fe->frame = kpage;
 	new_fe->owner = cur;
@@ -27,6 +28,8 @@ void insert_frame_table(void* kpage, struct page_entry *pe){
 void table_free_frame(void *kpage) {
 	lock_acquire(&frame_table_lock);
 	struct frame_entry *fe = lookup_frame(kpage);
+	if (!fe)
+		return;
 	list_remove(&fe->elem);
 	palloc_free_page(kpage);
 	free(fe);
@@ -38,6 +41,7 @@ struct frame_entry *lookup_frame(void *kpage) {
 	struct list_elem *e;
 	struct frame_entry *fe = NULL;
 	struct frame_entry *found = NULL;
+	lock_acquire(&frame_table_lock);
 	for (e = list_begin(&frame_table); e != list_end(&frame_table); e = list_next(e)) {
 		fe = list_entry(e, struct frame_entry, elem);
 		if (kpage == fe->frame && t == fe->owner) {
@@ -45,6 +49,7 @@ struct frame_entry *lookup_frame(void *kpage) {
 			break;
 		}
 	}
+	lock_release(&frame_table_lock);
 	return found;
 }
 

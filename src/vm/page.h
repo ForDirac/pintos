@@ -1,6 +1,7 @@
 #include <list.h>
 #include "filesys/file.h"
-
+#include "threads/thread.h"
+#include "userprog/syscall.h"
 
 #define PHYS 0
 #define DISK 1
@@ -21,6 +22,9 @@ struct page_entry {
 	off_t offset;
 	size_t page_zero_bytes;
 	bool writable;
+	// mmap
+	bool is_mmap;
+	struct mmap_entry *me;
 };
 
 void page_init(struct list *list);

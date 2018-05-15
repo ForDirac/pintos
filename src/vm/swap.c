@@ -6,6 +6,7 @@
 #include "devices/block.h"
 #include "threads/synch.h"
 #include "threads/malloc.h"
+#include "threads/palloc.h"
 
 static struct block *swap_block;
 static struct lock swap_block_lock;
@@ -21,32 +22,38 @@ void swap_init(void) {
 	lock_init(&swap_table_lock);
 }
 
-void* swap_out(void){
+void* swap_out(enum palloc_flags flags){
 	struct frame_entry *fe = pop_frame(); //FIFO, Eviction
-  struct swap_entry *new_frame = (struct swap_entry *)malloc(sizeof(struct swap_entry));
-  new_frame->frame = fe->frame;
+  struct swap_entry *se = (struct swap_entry *)calloc(1, sizeof(struct swap_entry));
+  // struct swap_entry *se = (struct swap_entry *)malloc(sizeof(struct swap_entry));
+  se->frame = fe->frame;
   fe->pe->location = DISK;
-  new_frame->pe = fe->pe;
-  new_frame->owner = fe->owner;
-  new_frame->index = allocate_index();
-  write_block((uint8_t*)fe->frame, new_frame->index);
-  push_swap(new_frame);
+  se->pe = fe->pe;
+  se->owner = fe->owner;
+  se->index = allocate_index();
+  write_block((uint8_t*)fe->frame, se->index);
+  push_swap(se);
+  palloc_free_page(fe->frame);
   free(fe);
-  return new_frame->frame;
+  return palloc_get_page(flags);
+  // return se->frame;
 }
 
-void swap_in(void* frame){
+void swap_in(void* frame, struct page_entry *pe){
 	struct swap_entry *se = lookup_swap(frame);
 	read_block((uint8_t*)frame, se->index);
-	struct swap_entry *se_old = pop_swap();
-	free(se_old);
+  insert_frame_table(frame, pe);
+  lock_acquire(&swap_table_lock);
+  list_remove(&se->elem);
+  lock_release(&swap_table_lock);
+  free(se);
 }
 
 void read_block(uint8_t *frame, int index) {
 	int i;
 	lock_acquire(&swap_block_lock);
-	for (i = 0; i < 8; ++i) {
-		block_read(swap_block, index + i, frame + (i * BLOCK_SECTOR_SIZE));
+	for (i = 0; i < 8; i++) {
+		block_read(swap_block, index + i, (uint8_t *)frame + (i * BLOCK_SECTOR_SIZE));
 	}
 	lock_release(&swap_block_lock);
 }
@@ -54,8 +61,8 @@ void read_block(uint8_t *frame, int index) {
 void write_block(uint8_t *frame, int index) {
 	int i;
 	lock_acquire(&swap_block_lock);
-	for (i = 0; i < 8; ++i) {
-		block_write(swap_block, index + i, frame + (i * BLOCK_SECTOR_SIZE));
+	for (i = 0; i < 8; i++) {
+		block_write(swap_block, index + i, (uint8_t *)frame + (i * BLOCK_SECTOR_SIZE));
 	}
 	lock_release(&swap_block_lock);
 }
@@ -81,7 +88,7 @@ static int allocate_index(void){
 	list_sort(&swap_table, &sort, NULL);
 	for(e = list_begin(&swap_table); e != list_end(&swap_table); e = list_next(e)){
 		se = list_entry(e, struct swap_entry, elem);
-		printf("allocate_index se->index: %d\n", se->index);
+		// printf("allocate_index se->index: %d\n", se->index);
 		if(se->index == index){
 			index += 8;
 			continue;

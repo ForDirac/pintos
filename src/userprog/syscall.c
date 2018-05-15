@@ -1,6 +1,7 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
 #include <syscall-nr.h>
+#include <syscall.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "filesys/filesys.h"
@@ -14,8 +15,12 @@
 #include "threads/vaddr.h"
 #include "threads/malloc.h"
 #include "userprog/pagedir.h"
+#include "vm/page.h"
 
 static void syscall_handler (struct intr_frame *);
+static struct mmap_entry *allocate_mmap(struct fd *fd);
+static struct mmap_entry *lookup_mmap(mapid_t mapid);
+static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
 
 
 /* For Proj.#2 */
@@ -64,7 +69,7 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-  printf("--------syscall_handler()-----------\n");
+  // printf("--------syscall_handler()-----------\n");
   if(!check_right_add(f->esp)){
     syscall_exit(-1);
     return;
@@ -302,6 +307,32 @@ syscall_handler (struct intr_frame *f UNUSED)
       break;
     }
 
+    case SYS_MMAP:
+    {
+      int fd = ((int *)f->esp)[1];
+
+      if(!check_right_add(f->esp + 4)){
+        syscall_exit(-1);
+        break;
+      }
+
+      void *addr = (void *)(((int*)f->esp)[1]);
+      if (!valid_file_ptr(addr)) {
+        syscall_exit(-1);
+        break;
+      }
+
+      f->eax = (mapid_t)syscall_mmap(fd, addr);
+      break;
+    }
+
+    case SYS_MUNMAP:
+    {
+      mapid_t mapid = (mapid_t)((int *)f->esp)[1];
+      syscall_munmap(mapid);
+      break;
+    }
+
     default:
     {
       syscall_exit(-1);
@@ -485,6 +516,90 @@ int syscall_write(int fd, void *buffer, unsigned size) {
   int bytes_write = (int)file_write(_fd->file_p, buffer, (off_t)size);
   lock_release(&filesys_lock);
   return bytes_write;
+}
+
+mapid_t syscall_mmap(int fd, void *addr){
+  struct thread *t = thread_current();
+  struct list_elem *e;
+  struct fd *_fd = NULL;
+  struct fd *found = NULL;
+
+  if (fd == 1 || fd == 0)
+    return -1;
+
+  for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
+    _fd = list_entry(e, struct fd, elem);
+    if(_fd->fd == fd){
+      found = _fd;
+      break;
+    }
+  }
+  if (!found)
+    return -1;
+  struct mmap_entry *me = allocate_mmap(found);
+
+  size_t filesize = file_length(found->file_p);
+  size_t offset = 0;
+  while(offset < filesize){
+    // check 
+    offset += PGSIZE;
+  }
+  locate_mmap_page(addr, me);
+  return me->mapid;
+}
+
+void *syscall_munmap(mapid_t mapid) {
+  struct mmap_entry *me = NULL;
+  me = lookup_mmap(mapid);
+  if(!me)
+    return;
+  list_remove(&me->elem);
+  free(me);
+}
+
+static struct mmap_entry *allocate_mmap(struct fd *fd) {
+  struct list_elem *e;
+  struct thread *t = thread_current();
+  struct list *mmap_table = &t->mmap_table;
+  struct mmap_entry *me = NULL;
+  mapid_t mapid = 0;
+  list_sort(mmap_table, sort, NULL);
+  for (e = list_begin(mmap_table); e != list_end(mmap_table); e = list_next(e)) {
+    me = list_entry(e, struct mmap_entry, elem);
+    if (me->mapid == mapid) {
+      mapid++;
+      continue;
+    }
+  }
+  struct mmap_entry *me = (struct mmap_entry)calloc(1, sizeof(struct mmap_entry));
+  me->mapid = mapid;
+  me->fd = found;
+  list_push_back(mmap_table, &me->elem);
+
+  return me;
+}
+
+static struct mmap_entry *lookup_mmap(mapid_t mapid) {
+  struct mmap_entry *me = NULL;
+  struct mmap_entry *found = NULL;
+  struct thread *t = thread_current();
+  struct list *mmap_table = &t->mmap_table;
+  struct list_elem *e;
+
+  for(e = list_begin(mmap_table); e != list_end(mmap_table); e = list_next(e)){
+    me = list_entry(e, struct mmap_entry, elem);
+    if(me->mapid == mapid){
+      found = me;
+      break;
+    }
+  }
+  return found;
+}
+
+static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  struct mmap_entry *me_a = list_entry(a, struct mmap_entry, elem);
+  struct mmap_entry *me_b = list_entry(b, struct mmap_entry, elem);
+  return me_a->mapid < me_b->mapid;
 }
 
 bool valid_file_ptr(const char *file) {

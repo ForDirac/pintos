@@ -98,6 +98,7 @@ struct thread
 #endif
 #ifdef VM
     struct list sup_page_table;
+    struct list mmap_table;
 #endif
 
     /* Owned by thread.c. */
