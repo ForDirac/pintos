@@ -189,6 +189,7 @@ page_fault (struct intr_frame *f)
         syscall_exit(-1);
         return;
       }
+      new_entry->lazy_loading = 0;
       return;
     }
     printf("%s\n", "new entry exists but page faulted??");
