@@ -35,9 +35,11 @@ void* swap_out(enum palloc_flags flags){
   fe->pe->location = DISK;
   se->pe = fe->pe;
   se->owner = fe->owner;
+	lock_acquire(&swap_block_lock);
   se->index = allocate_index();
   // printf("Swap out index = %d, %p, %p\n", se->index, se->frame, se->pe->vaddr);
   write_block((void *)fe->frame, se->index);
+	lock_release(&swap_block_lock);
   push_swap(se);
   pagedir_clear_page(t->pagedir, fe->pe->vaddr);
   palloc_free_page(fe->frame);
@@ -70,11 +72,11 @@ void read_block(void *frame, int index) {
 
 void write_block(void *frame, int index) {
 	int i;
-	lock_acquire(&swap_block_lock);
+	// lock_acquire(&swap_block_lock);
 	for (i = 0; i < 8; i++) {
 		block_write(swap_block, index + i, (void *)frame + (i * BLOCK_SECTOR_SIZE));
 	}
-	lock_release(&swap_block_lock);
+	// lock_release(&swap_block_lock);
 }
 
 void push_swap(struct swap_entry *se) {

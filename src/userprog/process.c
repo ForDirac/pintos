@@ -20,6 +20,8 @@
 #include "userprog/syscall.h"
 #include "threads/malloc.h"
 #include "vm/page.h"
+#include "vm/swap.h"
+#include "vm/frame.h"
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -596,7 +598,8 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
       size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-      locate_lazy_page(upage, file, ofs, page_zero_bytes, writable);
+      if (!locate_lazy_page(upage, file, ofs, page_zero_bytes, writable))
+        return false;
 
       // if (page_zero_bytes == PGSIZE){
       //   locate_lazy_page(upage, ALL_ZERO, file);
@@ -652,8 +655,9 @@ setup_stack (void **esp)
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
         *esp = PHYS_BASE;
-      else
+      else{
         palloc_free_page (kpage);
+      }
     }
   return success;
 }

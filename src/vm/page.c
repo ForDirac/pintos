@@ -232,18 +232,18 @@ struct page_entry *lookup_page(uint32_t *vaddr) {
   return found;
 }
 
-bool stack_growth(void *vaddr){
+bool stack_growth(void *vaddr, bool user, bool writable){
   void *upage = pg_round_down(vaddr);
   struct thread *cur = thread_current();
-  void* frame = NULL;
-  frame = palloc_get_page(PAL_USER | PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
-  if(frame == NULL)
+  void* frame = palloc_get_page(user?PAL_USER|PAL_ZERO:PAL_ZERO); // allocate a page from a USER_POOL, and add an entry to frame_table
+  if(frame == NULL){
     return 0;
+  }
   else{
     struct page_entry *pe = locate_page(upage, PHYS);
     insert_frame_table(frame, pe);
     //add the page to the process's address space
-    if(!pagedir_set_page(cur->pagedir, pg_round_down(vaddr), frame, true)){
+    if(!pagedir_set_page(cur->pagedir, upage, frame, writable)){
       //free the frame - set failure
       // palloc_free_page(frame);
       table_free_page(upage);

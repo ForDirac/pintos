@@ -36,4 +36,4 @@ bool new_page(void *vaddr, bool user, bool writable);
 bool reclamation(void *vaddr, bool user, bool writable);
 void table_free_page(void *vaddr);
 struct page_entry *lookup_page(uint32_t *vaddr);
-bool stack_growth(void *vaddr);
+bool stack_growth(void *vaddr, bool user, bool writable);
