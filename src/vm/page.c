@@ -73,6 +73,7 @@ bool reclamation(void *vaddr, bool user, bool writable){
 static bool install_page (void *upage, void *kpage, bool writable)
 {
   struct thread *t = thread_current ();
+  // writable = 1;
 
   /* Verify that there's not already a page at that virtual
      address, then map our page there. */
@@ -86,7 +87,7 @@ void table_free_page(void *vaddr) {
   void *upage = pg_round_down(vaddr);
   struct page_entry *pe = lookup_page(upage);
   list_remove(&pe->elem);
-  pagedir_clear_page(thread_current()->pagedir, upage);
+  // pagedir_clear_page(thread_current()->pagedir, upage);
   free(pe);
 }
 
@@ -97,6 +98,7 @@ struct page_entry *locate_page(void *vaddr, int location) {
   if (pe) {
     pe->location = location;
     pe->lazy_loading = 0;
+    pe->is_mmap = 0;
     return pe;
   }
   pe = (struct page_entry *)calloc(1, sizeof(struct page_entry));
@@ -106,6 +108,7 @@ struct page_entry *locate_page(void *vaddr, int location) {
 	pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
   pe->location = location;
   pe->lazy_loading = 0;
+  pe->is_mmap = 0;
 	list_push_back(page_table, &pe->elem);
   return pe;
 }
@@ -117,6 +120,7 @@ struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset
   if (pe) {
     pe->location = FILE;
     pe->lazy_loading = 1;
+    pe->is_mmap = 0;
     pe->file = file;
     pe->offset = offset;
     pe->page_zero_bytes = page_zero_bytes;
@@ -130,6 +134,7 @@ struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset
   pe->access = !!((unsigned)vaddr & PTE_A); // change to boolen_type
   pe->location = FILE;
   pe->lazy_loading = 1;
+  pe->is_mmap = 0;
   pe->file = file;
   pe->offset = offset;
   pe->page_zero_bytes = page_zero_bytes;
@@ -138,12 +143,42 @@ struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset
   return pe;
 }
 
+struct page_entry *locate_mmap_page(void *vaddr, struct file *file, off_t offset, size_t page_zero_bytes) {
+  struct thread *t = thread_current();
+  struct list *page_table = &t->sup_page_table;
+  struct page_entry *pe = lookup_page(vaddr);
+  if (pe) {
+    pe->location = FILE;
+    pe->is_mmap = 1;
+    pe->lazy_loading = 0;
+    pe->file = file;
+    pe->offset = offset;
+    pe->page_zero_bytes = page_zero_bytes;
+    pe->writable = 1;
+    return pe;
+  }
+  pe = (struct page_entry *)calloc(1, sizeof(struct page_entry));
+  pe->vaddr = pg_round_down(vaddr);
+  pe->dirty = !!((unsigned)vaddr & PTE_D);
+  pe->access = !!((unsigned)vaddr & PTE_A);
+  pe->location = FILE;
+  pe->is_mmap = 1;
+  pe->lazy_loading = 0;
+  pe->file = file;
+  pe->offset = offset;
+  pe->page_zero_bytes = page_zero_bytes;
+  pe->writable = 1;
+  list_push_back(page_table, &pe->elem);
+  return pe;
+}
+
 bool lazy_load_segment(void *vaddr, bool user, bool writable, struct file *file, off_t offset, size_t page_zero_bytes){
   void *upage = pg_round_down(vaddr);
   void *kpage;
   size_t page_read_bytes = PGSIZE - page_zero_bytes;
-  file_seek(file, offset);
   struct page_entry *pe = locate_page(upage, PHYS);
+
+  file_seek(file, offset);
 
   /* Get a page of memory. */
   if (user)

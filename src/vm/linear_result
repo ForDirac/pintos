@@ -1,0 +1,2649 @@
+Copying build/tests/vm/page-linear to scratch partition...
+qemu -hda /tmp/user/1002/xikx6OEIfs.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run page-linear
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  235,520,000 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 113 sectors (56 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'page-linear' into the file system...
+Erasing ustar archive...
+Executing 'page-linear':
+-----------page_fault()------------
+not_present 1
+write 0
+user 1
+fault_addr 0x8048918
+page 0x8048000
+exception.c: The address is in FILE 0x8048918
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x824c344
+page 0x824c000
+exception.c: The address is in FILE 0x824c344
+-----------page_fault()------------
+not_present 1
+write 0
+user 1
+fault_addr 0x824be20
+page 0x824b000
+exception.c: The address is in FILE 0x824be20
+-----------page_fault()------------
+not_present 1
+write 0
+user 1
+fault_addr 0x804943d
+page 0x8049000
+exception.c: The address is in FILE 0x804943d
+-----------page_fault()------------
+not_present 1
+write 0
+user 1
+fault_addr 0x804a945
+page 0x804a000
+exception.c: The address is in FILE 0x804a945
+--------syscall_handler()-----------
+(page-linear) begin
+--------syscall_handler()-----------
+(page-linear) initialize
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x804be20
+page 0x804b000
+exception.c: The address is in FILE 0x804be20
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x804c000
+page 0x804c000
+exception.c: The address is in FILE 0x804c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x804d000
+page 0x804d000
+exception.c: The address is in FILE 0x804d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x804e000
+page 0x804e000
+exception.c: The address is in FILE 0x804e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x804f000
+page 0x804f000
+exception.c: The address is in FILE 0x804f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8050000
+page 0x8050000
+exception.c: The address is in FILE 0x8050000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8051000
+page 0x8051000
+exception.c: The address is in FILE 0x8051000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8052000
+page 0x8052000
+exception.c: The address is in FILE 0x8052000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8053000
+page 0x8053000
+exception.c: The address is in FILE 0x8053000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8054000
+page 0x8054000
+exception.c: The address is in FILE 0x8054000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8055000
+page 0x8055000
+exception.c: The address is in FILE 0x8055000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8056000
+page 0x8056000
+exception.c: The address is in FILE 0x8056000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8057000
+page 0x8057000
+exception.c: The address is in FILE 0x8057000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8058000
+page 0x8058000
+exception.c: The address is in FILE 0x8058000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8059000
+page 0x8059000
+exception.c: The address is in FILE 0x8059000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805a000
+page 0x805a000
+exception.c: The address is in FILE 0x805a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805b000
+page 0x805b000
+exception.c: The address is in FILE 0x805b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805c000
+page 0x805c000
+exception.c: The address is in FILE 0x805c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805d000
+page 0x805d000
+exception.c: The address is in FILE 0x805d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805e000
+page 0x805e000
+exception.c: The address is in FILE 0x805e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x805f000
+page 0x805f000
+exception.c: The address is in FILE 0x805f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8060000
+page 0x8060000
+exception.c: The address is in FILE 0x8060000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8061000
+page 0x8061000
+exception.c: The address is in FILE 0x8061000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8062000
+page 0x8062000
+exception.c: The address is in FILE 0x8062000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8063000
+page 0x8063000
+exception.c: The address is in FILE 0x8063000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8064000
+page 0x8064000
+exception.c: The address is in FILE 0x8064000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8065000
+page 0x8065000
+exception.c: The address is in FILE 0x8065000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8066000
+page 0x8066000
+exception.c: The address is in FILE 0x8066000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8067000
+page 0x8067000
+exception.c: The address is in FILE 0x8067000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8068000
+page 0x8068000
+exception.c: The address is in FILE 0x8068000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8069000
+page 0x8069000
+exception.c: The address is in FILE 0x8069000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806a000
+page 0x806a000
+exception.c: The address is in FILE 0x806a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806b000
+page 0x806b000
+exception.c: The address is in FILE 0x806b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806c000
+page 0x806c000
+exception.c: The address is in FILE 0x806c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806d000
+page 0x806d000
+exception.c: The address is in FILE 0x806d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806e000
+page 0x806e000
+exception.c: The address is in FILE 0x806e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x806f000
+page 0x806f000
+exception.c: The address is in FILE 0x806f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8070000
+page 0x8070000
+exception.c: The address is in FILE 0x8070000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8071000
+page 0x8071000
+exception.c: The address is in FILE 0x8071000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8072000
+page 0x8072000
+exception.c: The address is in FILE 0x8072000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8073000
+page 0x8073000
+exception.c: The address is in FILE 0x8073000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8074000
+page 0x8074000
+exception.c: The address is in FILE 0x8074000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8075000
+page 0x8075000
+exception.c: The address is in FILE 0x8075000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8076000
+page 0x8076000
+exception.c: The address is in FILE 0x8076000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8077000
+page 0x8077000
+exception.c: The address is in FILE 0x8077000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8078000
+page 0x8078000
+exception.c: The address is in FILE 0x8078000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8079000
+page 0x8079000
+exception.c: The address is in FILE 0x8079000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807a000
+page 0x807a000
+exception.c: The address is in FILE 0x807a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807b000
+page 0x807b000
+exception.c: The address is in FILE 0x807b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807c000
+page 0x807c000
+exception.c: The address is in FILE 0x807c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807d000
+page 0x807d000
+exception.c: The address is in FILE 0x807d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807e000
+page 0x807e000
+exception.c: The address is in FILE 0x807e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x807f000
+page 0x807f000
+exception.c: The address is in FILE 0x807f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8080000
+page 0x8080000
+exception.c: The address is in FILE 0x8080000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8081000
+page 0x8081000
+exception.c: The address is in FILE 0x8081000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8082000
+page 0x8082000
+exception.c: The address is in FILE 0x8082000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8083000
+page 0x8083000
+exception.c: The address is in FILE 0x8083000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8084000
+page 0x8084000
+exception.c: The address is in FILE 0x8084000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8085000
+page 0x8085000
+exception.c: The address is in FILE 0x8085000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8086000
+page 0x8086000
+exception.c: The address is in FILE 0x8086000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8087000
+page 0x8087000
+exception.c: The address is in FILE 0x8087000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8088000
+page 0x8088000
+exception.c: The address is in FILE 0x8088000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8089000
+page 0x8089000
+exception.c: The address is in FILE 0x8089000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808a000
+page 0x808a000
+exception.c: The address is in FILE 0x808a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808b000
+page 0x808b000
+exception.c: The address is in FILE 0x808b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808c000
+page 0x808c000
+exception.c: The address is in FILE 0x808c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808d000
+page 0x808d000
+exception.c: The address is in FILE 0x808d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808e000
+page 0x808e000
+exception.c: The address is in FILE 0x808e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x808f000
+page 0x808f000
+exception.c: The address is in FILE 0x808f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8090000
+page 0x8090000
+exception.c: The address is in FILE 0x8090000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8091000
+page 0x8091000
+exception.c: The address is in FILE 0x8091000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8092000
+page 0x8092000
+exception.c: The address is in FILE 0x8092000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8093000
+page 0x8093000
+exception.c: The address is in FILE 0x8093000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8094000
+page 0x8094000
+exception.c: The address is in FILE 0x8094000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8095000
+page 0x8095000
+exception.c: The address is in FILE 0x8095000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8096000
+page 0x8096000
+exception.c: The address is in FILE 0x8096000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8097000
+page 0x8097000
+exception.c: The address is in FILE 0x8097000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8098000
+page 0x8098000
+exception.c: The address is in FILE 0x8098000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8099000
+page 0x8099000
+exception.c: The address is in FILE 0x8099000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809a000
+page 0x809a000
+exception.c: The address is in FILE 0x809a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809b000
+page 0x809b000
+exception.c: The address is in FILE 0x809b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809c000
+page 0x809c000
+exception.c: The address is in FILE 0x809c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809d000
+page 0x809d000
+exception.c: The address is in FILE 0x809d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809e000
+page 0x809e000
+exception.c: The address is in FILE 0x809e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x809f000
+page 0x809f000
+exception.c: The address is in FILE 0x809f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a0000
+page 0x80a0000
+exception.c: The address is in FILE 0x80a0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a1000
+page 0x80a1000
+exception.c: The address is in FILE 0x80a1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a2000
+page 0x80a2000
+exception.c: The address is in FILE 0x80a2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a3000
+page 0x80a3000
+exception.c: The address is in FILE 0x80a3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a4000
+page 0x80a4000
+exception.c: The address is in FILE 0x80a4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a5000
+page 0x80a5000
+exception.c: The address is in FILE 0x80a5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a6000
+page 0x80a6000
+exception.c: The address is in FILE 0x80a6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a7000
+page 0x80a7000
+exception.c: The address is in FILE 0x80a7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a8000
+page 0x80a8000
+exception.c: The address is in FILE 0x80a8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80a9000
+page 0x80a9000
+exception.c: The address is in FILE 0x80a9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80aa000
+page 0x80aa000
+exception.c: The address is in FILE 0x80aa000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ab000
+page 0x80ab000
+exception.c: The address is in FILE 0x80ab000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ac000
+page 0x80ac000
+exception.c: The address is in FILE 0x80ac000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ad000
+page 0x80ad000
+exception.c: The address is in FILE 0x80ad000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ae000
+page 0x80ae000
+exception.c: The address is in FILE 0x80ae000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80af000
+page 0x80af000
+exception.c: The address is in FILE 0x80af000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b0000
+page 0x80b0000
+exception.c: The address is in FILE 0x80b0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b1000
+page 0x80b1000
+exception.c: The address is in FILE 0x80b1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b2000
+page 0x80b2000
+exception.c: The address is in FILE 0x80b2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b3000
+page 0x80b3000
+exception.c: The address is in FILE 0x80b3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b4000
+page 0x80b4000
+exception.c: The address is in FILE 0x80b4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b5000
+page 0x80b5000
+exception.c: The address is in FILE 0x80b5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b6000
+page 0x80b6000
+exception.c: The address is in FILE 0x80b6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b7000
+page 0x80b7000
+exception.c: The address is in FILE 0x80b7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b8000
+page 0x80b8000
+exception.c: The address is in FILE 0x80b8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80b9000
+page 0x80b9000
+exception.c: The address is in FILE 0x80b9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ba000
+page 0x80ba000
+exception.c: The address is in FILE 0x80ba000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80bb000
+page 0x80bb000
+exception.c: The address is in FILE 0x80bb000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80bc000
+page 0x80bc000
+exception.c: The address is in FILE 0x80bc000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80bd000
+page 0x80bd000
+exception.c: The address is in FILE 0x80bd000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80be000
+page 0x80be000
+exception.c: The address is in FILE 0x80be000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80bf000
+page 0x80bf000
+exception.c: The address is in FILE 0x80bf000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c0000
+page 0x80c0000
+exception.c: The address is in FILE 0x80c0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c1000
+page 0x80c1000
+exception.c: The address is in FILE 0x80c1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c2000
+page 0x80c2000
+exception.c: The address is in FILE 0x80c2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c3000
+page 0x80c3000
+exception.c: The address is in FILE 0x80c3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c4000
+page 0x80c4000
+exception.c: The address is in FILE 0x80c4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c5000
+page 0x80c5000
+exception.c: The address is in FILE 0x80c5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c6000
+page 0x80c6000
+exception.c: The address is in FILE 0x80c6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c7000
+page 0x80c7000
+exception.c: The address is in FILE 0x80c7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c8000
+page 0x80c8000
+exception.c: The address is in FILE 0x80c8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80c9000
+page 0x80c9000
+exception.c: The address is in FILE 0x80c9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ca000
+page 0x80ca000
+exception.c: The address is in FILE 0x80ca000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80cb000
+page 0x80cb000
+exception.c: The address is in FILE 0x80cb000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80cc000
+page 0x80cc000
+exception.c: The address is in FILE 0x80cc000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80cd000
+page 0x80cd000
+exception.c: The address is in FILE 0x80cd000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ce000
+page 0x80ce000
+exception.c: The address is in FILE 0x80ce000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80cf000
+page 0x80cf000
+exception.c: The address is in FILE 0x80cf000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d0000
+page 0x80d0000
+exception.c: The address is in FILE 0x80d0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d1000
+page 0x80d1000
+exception.c: The address is in FILE 0x80d1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d2000
+page 0x80d2000
+exception.c: The address is in FILE 0x80d2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d3000
+page 0x80d3000
+exception.c: The address is in FILE 0x80d3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d4000
+page 0x80d4000
+exception.c: The address is in FILE 0x80d4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d5000
+page 0x80d5000
+exception.c: The address is in FILE 0x80d5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d6000
+page 0x80d6000
+exception.c: The address is in FILE 0x80d6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d7000
+page 0x80d7000
+exception.c: The address is in FILE 0x80d7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d8000
+page 0x80d8000
+exception.c: The address is in FILE 0x80d8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80d9000
+page 0x80d9000
+exception.c: The address is in FILE 0x80d9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80da000
+page 0x80da000
+exception.c: The address is in FILE 0x80da000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80db000
+page 0x80db000
+exception.c: The address is in FILE 0x80db000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80dc000
+page 0x80dc000
+exception.c: The address is in FILE 0x80dc000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80dd000
+page 0x80dd000
+exception.c: The address is in FILE 0x80dd000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80de000
+page 0x80de000
+exception.c: The address is in FILE 0x80de000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80df000
+page 0x80df000
+exception.c: The address is in FILE 0x80df000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e0000
+page 0x80e0000
+exception.c: The address is in FILE 0x80e0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e1000
+page 0x80e1000
+exception.c: The address is in FILE 0x80e1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e2000
+page 0x80e2000
+exception.c: The address is in FILE 0x80e2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e3000
+page 0x80e3000
+exception.c: The address is in FILE 0x80e3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e4000
+page 0x80e4000
+exception.c: The address is in FILE 0x80e4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e5000
+page 0x80e5000
+exception.c: The address is in FILE 0x80e5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e6000
+page 0x80e6000
+exception.c: The address is in FILE 0x80e6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e7000
+page 0x80e7000
+exception.c: The address is in FILE 0x80e7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e8000
+page 0x80e8000
+exception.c: The address is in FILE 0x80e8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80e9000
+page 0x80e9000
+exception.c: The address is in FILE 0x80e9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ea000
+page 0x80ea000
+exception.c: The address is in FILE 0x80ea000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80eb000
+page 0x80eb000
+exception.c: The address is in FILE 0x80eb000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ec000
+page 0x80ec000
+exception.c: The address is in FILE 0x80ec000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ed000
+page 0x80ed000
+exception.c: The address is in FILE 0x80ed000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ee000
+page 0x80ee000
+exception.c: The address is in FILE 0x80ee000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ef000
+page 0x80ef000
+exception.c: The address is in FILE 0x80ef000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f0000
+page 0x80f0000
+exception.c: The address is in FILE 0x80f0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f1000
+page 0x80f1000
+exception.c: The address is in FILE 0x80f1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f2000
+page 0x80f2000
+exception.c: The address is in FILE 0x80f2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f3000
+page 0x80f3000
+exception.c: The address is in FILE 0x80f3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f4000
+page 0x80f4000
+exception.c: The address is in FILE 0x80f4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f5000
+page 0x80f5000
+exception.c: The address is in FILE 0x80f5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f6000
+page 0x80f6000
+exception.c: The address is in FILE 0x80f6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f7000
+page 0x80f7000
+exception.c: The address is in FILE 0x80f7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f8000
+page 0x80f8000
+exception.c: The address is in FILE 0x80f8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80f9000
+page 0x80f9000
+exception.c: The address is in FILE 0x80f9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80fa000
+page 0x80fa000
+exception.c: The address is in FILE 0x80fa000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80fb000
+page 0x80fb000
+exception.c: The address is in FILE 0x80fb000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80fc000
+page 0x80fc000
+exception.c: The address is in FILE 0x80fc000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80fd000
+page 0x80fd000
+exception.c: The address is in FILE 0x80fd000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80fe000
+page 0x80fe000
+exception.c: The address is in FILE 0x80fe000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x80ff000
+page 0x80ff000
+exception.c: The address is in FILE 0x80ff000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8100000
+page 0x8100000
+exception.c: The address is in FILE 0x8100000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8101000
+page 0x8101000
+exception.c: The address is in FILE 0x8101000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8102000
+page 0x8102000
+exception.c: The address is in FILE 0x8102000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8103000
+page 0x8103000
+exception.c: The address is in FILE 0x8103000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8104000
+page 0x8104000
+exception.c: The address is in FILE 0x8104000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8105000
+page 0x8105000
+exception.c: The address is in FILE 0x8105000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8106000
+page 0x8106000
+exception.c: The address is in FILE 0x8106000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8107000
+page 0x8107000
+exception.c: The address is in FILE 0x8107000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8108000
+page 0x8108000
+exception.c: The address is in FILE 0x8108000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8109000
+page 0x8109000
+exception.c: The address is in FILE 0x8109000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810a000
+page 0x810a000
+exception.c: The address is in FILE 0x810a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810b000
+page 0x810b000
+exception.c: The address is in FILE 0x810b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810c000
+page 0x810c000
+exception.c: The address is in FILE 0x810c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810d000
+page 0x810d000
+exception.c: The address is in FILE 0x810d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810e000
+page 0x810e000
+exception.c: The address is in FILE 0x810e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x810f000
+page 0x810f000
+exception.c: The address is in FILE 0x810f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8110000
+page 0x8110000
+exception.c: The address is in FILE 0x8110000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8111000
+page 0x8111000
+exception.c: The address is in FILE 0x8111000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8112000
+page 0x8112000
+exception.c: The address is in FILE 0x8112000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8113000
+page 0x8113000
+exception.c: The address is in FILE 0x8113000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8114000
+page 0x8114000
+exception.c: The address is in FILE 0x8114000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8115000
+page 0x8115000
+exception.c: The address is in FILE 0x8115000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8116000
+page 0x8116000
+exception.c: The address is in FILE 0x8116000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8117000
+page 0x8117000
+exception.c: The address is in FILE 0x8117000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8118000
+page 0x8118000
+exception.c: The address is in FILE 0x8118000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8119000
+page 0x8119000
+exception.c: The address is in FILE 0x8119000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811a000
+page 0x811a000
+exception.c: The address is in FILE 0x811a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811b000
+page 0x811b000
+exception.c: The address is in FILE 0x811b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811c000
+page 0x811c000
+exception.c: The address is in FILE 0x811c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811d000
+page 0x811d000
+exception.c: The address is in FILE 0x811d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811e000
+page 0x811e000
+exception.c: The address is in FILE 0x811e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x811f000
+page 0x811f000
+exception.c: The address is in FILE 0x811f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8120000
+page 0x8120000
+exception.c: The address is in FILE 0x8120000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8121000
+page 0x8121000
+exception.c: The address is in FILE 0x8121000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8122000
+page 0x8122000
+exception.c: The address is in FILE 0x8122000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8123000
+page 0x8123000
+exception.c: The address is in FILE 0x8123000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8124000
+page 0x8124000
+exception.c: The address is in FILE 0x8124000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8125000
+page 0x8125000
+exception.c: The address is in FILE 0x8125000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8126000
+page 0x8126000
+exception.c: The address is in FILE 0x8126000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8127000
+page 0x8127000
+exception.c: The address is in FILE 0x8127000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8128000
+page 0x8128000
+exception.c: The address is in FILE 0x8128000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8129000
+page 0x8129000
+exception.c: The address is in FILE 0x8129000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812a000
+page 0x812a000
+exception.c: The address is in FILE 0x812a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812b000
+page 0x812b000
+exception.c: The address is in FILE 0x812b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812c000
+page 0x812c000
+exception.c: The address is in FILE 0x812c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812d000
+page 0x812d000
+exception.c: The address is in FILE 0x812d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812e000
+page 0x812e000
+exception.c: The address is in FILE 0x812e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x812f000
+page 0x812f000
+exception.c: The address is in FILE 0x812f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8130000
+page 0x8130000
+exception.c: The address is in FILE 0x8130000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8131000
+page 0x8131000
+exception.c: The address is in FILE 0x8131000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8132000
+page 0x8132000
+exception.c: The address is in FILE 0x8132000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8133000
+page 0x8133000
+exception.c: The address is in FILE 0x8133000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8134000
+page 0x8134000
+exception.c: The address is in FILE 0x8134000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8135000
+page 0x8135000
+exception.c: The address is in FILE 0x8135000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8136000
+page 0x8136000
+exception.c: The address is in FILE 0x8136000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8137000
+page 0x8137000
+exception.c: The address is in FILE 0x8137000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8138000
+page 0x8138000
+exception.c: The address is in FILE 0x8138000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8139000
+page 0x8139000
+exception.c: The address is in FILE 0x8139000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813a000
+page 0x813a000
+exception.c: The address is in FILE 0x813a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813b000
+page 0x813b000
+exception.c: The address is in FILE 0x813b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813c000
+page 0x813c000
+exception.c: The address is in FILE 0x813c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813d000
+page 0x813d000
+exception.c: The address is in FILE 0x813d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813e000
+page 0x813e000
+exception.c: The address is in FILE 0x813e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x813f000
+page 0x813f000
+exception.c: The address is in FILE 0x813f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8140000
+page 0x8140000
+exception.c: The address is in FILE 0x8140000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8141000
+page 0x8141000
+exception.c: The address is in FILE 0x8141000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8142000
+page 0x8142000
+exception.c: The address is in FILE 0x8142000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8143000
+page 0x8143000
+exception.c: The address is in FILE 0x8143000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8144000
+page 0x8144000
+exception.c: The address is in FILE 0x8144000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8145000
+page 0x8145000
+exception.c: The address is in FILE 0x8145000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8146000
+page 0x8146000
+exception.c: The address is in FILE 0x8146000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8147000
+page 0x8147000
+exception.c: The address is in FILE 0x8147000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8148000
+page 0x8148000
+exception.c: The address is in FILE 0x8148000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8149000
+page 0x8149000
+exception.c: The address is in FILE 0x8149000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814a000
+page 0x814a000
+exception.c: The address is in FILE 0x814a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814b000
+page 0x814b000
+exception.c: The address is in FILE 0x814b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814c000
+page 0x814c000
+exception.c: The address is in FILE 0x814c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814d000
+page 0x814d000
+exception.c: The address is in FILE 0x814d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814e000
+page 0x814e000
+exception.c: The address is in FILE 0x814e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x814f000
+page 0x814f000
+exception.c: The address is in FILE 0x814f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8150000
+page 0x8150000
+exception.c: The address is in FILE 0x8150000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8151000
+page 0x8151000
+exception.c: The address is in FILE 0x8151000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8152000
+page 0x8152000
+exception.c: The address is in FILE 0x8152000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8153000
+page 0x8153000
+exception.c: The address is in FILE 0x8153000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8154000
+page 0x8154000
+exception.c: The address is in FILE 0x8154000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8155000
+page 0x8155000
+exception.c: The address is in FILE 0x8155000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8156000
+page 0x8156000
+exception.c: The address is in FILE 0x8156000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8157000
+page 0x8157000
+exception.c: The address is in FILE 0x8157000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8158000
+page 0x8158000
+exception.c: The address is in FILE 0x8158000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8159000
+page 0x8159000
+exception.c: The address is in FILE 0x8159000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815a000
+page 0x815a000
+exception.c: The address is in FILE 0x815a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815b000
+page 0x815b000
+exception.c: The address is in FILE 0x815b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815c000
+page 0x815c000
+exception.c: The address is in FILE 0x815c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815d000
+page 0x815d000
+exception.c: The address is in FILE 0x815d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815e000
+page 0x815e000
+exception.c: The address is in FILE 0x815e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x815f000
+page 0x815f000
+exception.c: The address is in FILE 0x815f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8160000
+page 0x8160000
+exception.c: The address is in FILE 0x8160000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8161000
+page 0x8161000
+exception.c: The address is in FILE 0x8161000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8162000
+page 0x8162000
+exception.c: The address is in FILE 0x8162000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8163000
+page 0x8163000
+exception.c: The address is in FILE 0x8163000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8164000
+page 0x8164000
+exception.c: The address is in FILE 0x8164000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8165000
+page 0x8165000
+exception.c: The address is in FILE 0x8165000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8166000
+page 0x8166000
+exception.c: The address is in FILE 0x8166000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8167000
+page 0x8167000
+exception.c: The address is in FILE 0x8167000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8168000
+page 0x8168000
+exception.c: The address is in FILE 0x8168000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8169000
+page 0x8169000
+exception.c: The address is in FILE 0x8169000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816a000
+page 0x816a000
+exception.c: The address is in FILE 0x816a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816b000
+page 0x816b000
+exception.c: The address is in FILE 0x816b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816c000
+page 0x816c000
+exception.c: The address is in FILE 0x816c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816d000
+page 0x816d000
+exception.c: The address is in FILE 0x816d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816e000
+page 0x816e000
+exception.c: The address is in FILE 0x816e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x816f000
+page 0x816f000
+exception.c: The address is in FILE 0x816f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8170000
+page 0x8170000
+exception.c: The address is in FILE 0x8170000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8171000
+page 0x8171000
+exception.c: The address is in FILE 0x8171000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8172000
+page 0x8172000
+exception.c: The address is in FILE 0x8172000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8173000
+page 0x8173000
+exception.c: The address is in FILE 0x8173000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8174000
+page 0x8174000
+exception.c: The address is in FILE 0x8174000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8175000
+page 0x8175000
+exception.c: The address is in FILE 0x8175000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8176000
+page 0x8176000
+exception.c: The address is in FILE 0x8176000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8177000
+page 0x8177000
+exception.c: The address is in FILE 0x8177000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8178000
+page 0x8178000
+exception.c: The address is in FILE 0x8178000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8179000
+page 0x8179000
+exception.c: The address is in FILE 0x8179000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817a000
+page 0x817a000
+exception.c: The address is in FILE 0x817a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817b000
+page 0x817b000
+exception.c: The address is in FILE 0x817b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817c000
+page 0x817c000
+exception.c: The address is in FILE 0x817c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817d000
+page 0x817d000
+exception.c: The address is in FILE 0x817d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817e000
+page 0x817e000
+exception.c: The address is in FILE 0x817e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x817f000
+page 0x817f000
+exception.c: The address is in FILE 0x817f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8180000
+page 0x8180000
+exception.c: The address is in FILE 0x8180000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8181000
+page 0x8181000
+exception.c: The address is in FILE 0x8181000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8182000
+page 0x8182000
+exception.c: The address is in FILE 0x8182000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8183000
+page 0x8183000
+exception.c: The address is in FILE 0x8183000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8184000
+page 0x8184000
+exception.c: The address is in FILE 0x8184000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8185000
+page 0x8185000
+exception.c: The address is in FILE 0x8185000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8186000
+page 0x8186000
+exception.c: The address is in FILE 0x8186000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8187000
+page 0x8187000
+exception.c: The address is in FILE 0x8187000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8188000
+page 0x8188000
+exception.c: The address is in FILE 0x8188000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8189000
+page 0x8189000
+exception.c: The address is in FILE 0x8189000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818a000
+page 0x818a000
+exception.c: The address is in FILE 0x818a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818b000
+page 0x818b000
+exception.c: The address is in FILE 0x818b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818c000
+page 0x818c000
+exception.c: The address is in FILE 0x818c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818d000
+page 0x818d000
+exception.c: The address is in FILE 0x818d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818e000
+page 0x818e000
+exception.c: The address is in FILE 0x818e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x818f000
+page 0x818f000
+exception.c: The address is in FILE 0x818f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8190000
+page 0x8190000
+exception.c: The address is in FILE 0x8190000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8191000
+page 0x8191000
+exception.c: The address is in FILE 0x8191000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8192000
+page 0x8192000
+exception.c: The address is in FILE 0x8192000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8193000
+page 0x8193000
+exception.c: The address is in FILE 0x8193000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8194000
+page 0x8194000
+exception.c: The address is in FILE 0x8194000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8195000
+page 0x8195000
+exception.c: The address is in FILE 0x8195000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8196000
+page 0x8196000
+exception.c: The address is in FILE 0x8196000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8197000
+page 0x8197000
+exception.c: The address is in FILE 0x8197000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8198000
+page 0x8198000
+exception.c: The address is in FILE 0x8198000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x8199000
+page 0x8199000
+exception.c: The address is in FILE 0x8199000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819a000
+page 0x819a000
+exception.c: The address is in FILE 0x819a000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819b000
+page 0x819b000
+exception.c: The address is in FILE 0x819b000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819c000
+page 0x819c000
+exception.c: The address is in FILE 0x819c000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819d000
+page 0x819d000
+exception.c: The address is in FILE 0x819d000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819e000
+page 0x819e000
+exception.c: The address is in FILE 0x819e000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x819f000
+page 0x819f000
+exception.c: The address is in FILE 0x819f000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a0000
+page 0x81a0000
+exception.c: The address is in FILE 0x81a0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a1000
+page 0x81a1000
+exception.c: The address is in FILE 0x81a1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a2000
+page 0x81a2000
+exception.c: The address is in FILE 0x81a2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a3000
+page 0x81a3000
+exception.c: The address is in FILE 0x81a3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a4000
+page 0x81a4000
+exception.c: The address is in FILE 0x81a4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a5000
+page 0x81a5000
+exception.c: The address is in FILE 0x81a5000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a6000
+page 0x81a6000
+exception.c: The address is in FILE 0x81a6000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a7000
+page 0x81a7000
+exception.c: The address is in FILE 0x81a7000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a8000
+page 0x81a8000
+exception.c: The address is in FILE 0x81a8000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81a9000
+page 0x81a9000
+exception.c: The address is in FILE 0x81a9000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81aa000
+page 0x81aa000
+exception.c: The address is in FILE 0x81aa000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81ab000
+page 0x81ab000
+exception.c: The address is in FILE 0x81ab000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81ac000
+page 0x81ac000
+exception.c: The address is in FILE 0x81ac000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81ad000
+page 0x81ad000
+exception.c: The address is in FILE 0x81ad000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81ae000
+page 0x81ae000
+exception.c: The address is in FILE 0x81ae000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81af000
+page 0x81af000
+exception.c: The address is in FILE 0x81af000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b0000
+page 0x81b0000
+exception.c: The address is in FILE 0x81b0000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b1000
+page 0x81b1000
+exception.c: The address is in FILE 0x81b1000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b2000
+page 0x81b2000
+exception.c: The address is in FILE 0x81b2000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b3000
+page 0x81b3000
+exception.c: The address is in FILE 0x81b3000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b4000
+page 0x81b4000
+exception.c: The address is in FILE 0x81b4000
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b5000
+page 0x81b5000
+exception.c: The address is in FILE 0x81b5000
+allocate_index se->index: 0
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b6000
+page 0x81b6000
+exception.c: The address is in FILE 0x81b6000
+allocate_index se->index: 0
+allocate_index se->index: 8
+-----------page_fault()------------
+not_present 1
+write 1
+user 1
+fault_addr 0x81b7000
+page 0x81b7000
+exception.c: The address is in FILE 0x81b7000
+allocate_index se->index: 0
+allocate_index se->index: 8
+allocate_index se->index: 16
+-----------page_fault()------------
+not_present 1
+write 0
+user 1
+fault_addr 0x16b1e0
+page 0x16b000
+exception.c: Else cases 0x16b1e0
+page-linear: exit(-1)
+Kernel PANIC at ../../threads/palloc.c:140 in palloc_free_multiple(): assertion `bitmap_all (pool->used_map, page_idx, page_cnt)' failed.
+Call stack: 0xc0028af9 0xc002357a 0xc00235bc 0xc002bc88 0xc002ab70 0xc002106a 0xc002c87c 0xc002c26a 0xc0021c4d 0xc0021d7f 0x80497d3-----------page_fault()------------
+not_present 1
+write 0
+user 0
+fault_addr 0xbffffe88
+page 0xbffff000
+exception.c: Else cases 0xbffffe88
+Kernel PANIC recursion at ../../userprog/pagedir.c:61 in lookup_page().
+Timer: 382 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 64 reads, 230 writes
+hda3 (scratch): 112 reads, 2 writes
+hda4 (swap): 0 reads, 32 writes
+Console: 56209 characters output
+Keyboard: 0 keys pressed
+Exception: 372 page faults
+Powering off...

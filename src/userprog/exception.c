@@ -176,7 +176,7 @@ page_fault (struct intr_frame *f)
     if(new_entry->location == DISK){
       //reclamation
       // printf("exception.c: The address is in DISK %p\n", fault_addr);
-      if(!reclamation(fault_addr, user, write)){
+      if(!reclamation(fault_addr, user, new_entry->writable)){
         syscall_exit(-1);
         return;
       }
@@ -191,13 +191,13 @@ page_fault (struct intr_frame *f)
       }
       return;
     }
-    // if(new_entry->is_mmap){
-    //   if(!load_mmap_file(fault_addr, user, new_entry->me->fd)){
-    //     syscall_exit(-1);
-    //     return;
-    //   }
-    //   new_entry->
-    // }
+    if(new_entry->is_mmap){
+      if(!lazy_load_segment(fault_addr, user, 1, new_entry->file, new_entry->offset, new_entry->page_zero_bytes)){
+        syscall_exit(-1);
+        return;
+      }
+      return;
+    }
     // printf("%s\n", "new entry exists but page faulted??");
   } else if (new_entry == NULL && fault_addr >= (f->esp - 32) && (PHYS_BASE - pg_round_down (fault_addr)) <= (8 * (1 << 20))){ 
     // printf("exception.c: Stack growth %p\n", fault_addr);
@@ -207,7 +207,7 @@ page_fault (struct intr_frame *f)
     }
     return;
   } else {
-    // printf("exception.c: Else cases %p\n", fault_addr);
+    // printf("excesption.c: Else cases %p\n", fault_addr);
     if(!pagedir_get_page (cur->pagedir, fault_addr)){
       // new_page(fault_addr, user, write);
       syscall_exit(-1);

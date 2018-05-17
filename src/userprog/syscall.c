@@ -56,6 +56,10 @@ static bool check_right_add(void * add){
   return right;
 }
 
+static bool check_right_uvaddr(void * add){
+  return (add != NULL && is_user_vaddr (add));
+}
+
 void
 syscall_init (void)
 {
@@ -71,6 +75,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 {
   // printf("--------syscall_handler()-----------\n");
   if(!check_right_add(f->esp)){
+    // printf("in the check_right_add\n");
     syscall_exit(-1);
     return;
   }
@@ -93,18 +98,22 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_EXEC:
     {
       /* We suppose that pintos have single thread system! */
+      printf("in the SYS_EXEC\n");
       if(!check_right_add(f->esp + 4)){
+        printf("in the check_right_add\n");
         syscall_exit(-1);
         break;
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
       if (!valid_file_ptr(file)) {
+        printf("in the valid_file_ptr\n");
         syscall_exit(-1);
         break;
       }
 
       tid_t tid = process_execute(file);
+      printf("tid in the SYS_EXEC : %d\n", tid);
 
       f->eax = tid;
       break;
@@ -113,6 +122,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_WAIT:
     {
       tid_t tid = ((int *)f->esp)[1];
+      // printf("in the SYS_WAIT\n");
 
       int exit_status = process_wait(tid);
 
@@ -122,6 +132,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CREATE:
     {
+      printf("in the SYS_CREATE\n");
       if(!check_right_add(f->esp + 4)){
         syscall_exit(-1);
         break;
@@ -164,13 +175,17 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_OPEN:
     {
+      printf("in the SYS_OPEN\n");
       if(!check_right_add(f->esp + 4)){
+        // printf("check_right_add\n");
         syscall_exit(-1);
         break;
       }
 
       const char *file = (char *)(((int*)f->esp)[1]);
+      printf("%s in the SYS_OPEN\n", file);
       if (!valid_file_ptr(file)) {
+        // printf("in the valid_file_ptr\n");
         syscall_exit(-1);
         break;
       }
@@ -179,6 +194,7 @@ syscall_handler (struct intr_frame *f UNUSED)
       int fd = syscall_open(file);
       lock_release(&filesys_lock);
       f->eax = fd;
+      // printf("fd in the open : %d\n", fd);
       break;
     }
 
@@ -204,9 +220,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_READ:
     {
+      printf("in the SYS_READ\n");
       int fd = ((int *)f->esp)[1];
 
-      if(!check_right_add((void *)(((int*)f->esp)[2]))){
+      if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
+      // if(!check_right_add((void *)(((int*)f->esp)[2]))){
+        // printf("in the check_right_add\n");
         syscall_exit(-1);
         break;
       }
@@ -215,6 +234,7 @@ syscall_handler (struct intr_frame *f UNUSED)
       unsigned size = ((unsigned int *)f->esp)[3];
       int count = syscall_read(fd, buffer, size);
       if (count == -2) {
+        // printf("in the wrong count\n");
         syscall_exit(-1);
         break;
       }
@@ -225,9 +245,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_WRITE:
     {
+      printf("in the SYS_WRITE\n");
       int fd = ((int *)f->esp)[1];
 
-      if(!check_right_add((void *)(((int*)f->esp)[2]))){
+      if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
+      // if(!check_right_add((void *)(((int*)f->esp)[2]))){
+        // printf("in the check_right_add\n");
         syscall_exit(-1);
         break;
       }
@@ -282,6 +305,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_CLOSE:
     {
+      printf("in the SYS_CLOSE\n");
       int fd = ((int *)f->esp)[1];
       struct list_elem *e;
       struct thread *t = thread_current();
@@ -374,6 +398,7 @@ int syscall_exit(int status){
     sema_up(&member->sema);
 
   /* return status; */
+  // printf("in the syscall\n");
   printf("%s: exit(%d)\n", file_name, status);
 
   thread_exit();
@@ -381,15 +406,19 @@ int syscall_exit(int status){
 
 int syscall_open(const char *file){
   struct thread *t = thread_current();
-  struct file* file_p = filesys_open(file);
-  struct list_elem *e;
-  int i = 0;
-
-  if(file_p == NULL){
-    return -1;
-  }
 
   lock_acquire(&t->file_list_lock);
+  
+  struct list_elem *e;
+  int i = 0;
+  struct file* file_p = filesys_open(file);
+
+  printf("in the open function : %s\n", file);
+
+  if(file_p == NULL){
+    // printf("file_p is NULL\n");
+    return -1;
+  }
 
   if(list_empty(&t->file_list)){
     /* Insert the Default values which are STD_IN & STD_OUT and initialize them */
@@ -539,12 +568,30 @@ mapid_t syscall_mmap(int fd, void *addr){
   struct mmap_entry *me = allocate_mmap(found);
 
   size_t filesize = file_length(found->file_p);
-  size_t offset = 0;
-  while(offset < filesize){
-    // check 
-    offset += PGSIZE;
+  size_t offset1 = 0;
+  size_t offset2 = 0;
+
+  while(filesize > offset1){
+    if(pagedir_get_page(t->pagedir, addr + offset1))
+      return -1;
+
+    offset1 += PGSIZE;
   }
-  // locate_mmap_page(addr, me);
+
+  lock_acquire(&filesys_lock);
+  struct file *re_file = file_reopen(found->file_p);
+  lock_release(&filesys_lock);
+  if(re_file == NULL)
+    return -1;
+  else{
+    while(filesize > 0){
+      size_t page_zero_bytes = filesize < PGSIZE ? PGSIZE-filesize : 0;    
+      locate_mmap_page(addr, re_file, offset2, page_zero_bytes);
+      offset2 += PGSIZE;
+      filesize -= PGSIZE;
+      addr += PGSIZE;
+    }
+  }
   return me->mapid;
 }
 
@@ -571,12 +618,11 @@ static struct mmap_entry *allocate_mmap(struct fd *fd) {
       continue;
     }
   }
-  struct mmap_entry *new_me = (struct mmap_entry *)calloc(1, sizeof(struct mmap_entry));
-  new_me->mapid = mapid;
-  new_me->fd = fd;
-  list_push_back(mmap_table, &new_me->elem);
-
-  return new_me;
+  me = (struct mmap_entry *)calloc(1, sizeof(struct mmap_entry));
+  me->mapid = mapid;
+  me->fd = fd;
+  list_push_back(mmap_table, &me->elem);
+  return me;
 }
 
 static struct mmap_entry *lookup_mmap(mapid_t mapid) {

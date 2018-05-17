@@ -14,8 +14,8 @@ struct swap_entry
 void swap_init(void);
 void* swap_out(enum palloc_flags);
 void swap_in(void* frame, struct page_entry *pe);
-void read_block(uint8_t *frame, int index);
-void write_block(uint8_t *frame, int index);
+void read_block(void *frame, int index);
+void write_block(void *frame, int index);
 void push_swap(struct swap_entry *se);
 struct swap_entry *pop_swap(void);
-struct swap_entry *lookup_swap(void* frame);
+struct swap_entry *lookup_swap(void* vaddr);

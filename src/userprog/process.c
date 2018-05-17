@@ -44,13 +44,14 @@ process_execute (const char *file_name)
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
   fn_copy = palloc_get_page (0);
-  if (fn_copy == NULL)
+  if (fn_copy == NULL){
     return TID_ERROR;
+  }
   strlcpy (fn_copy, file_name, PGSIZE);
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
-  
+
   // Original code, but if this code is exited, it can make error
   // if (tid == TID_ERROR)
   //   palloc_free_page (fn_copy);
@@ -173,7 +174,7 @@ start_process (void *file_name_)
   /* For Proj.#2 
   If don't success, this thread must be exited*/
   if (!success) {
-    printf("%s\n", "exit by loading failed");
+    // printf("%s\n", "exit by loading failed");
     printf("%s: exit(%d)\n", exit_file_name, -1);
     free(exit_file_name);
     thread_exit();
@@ -223,6 +224,7 @@ process_wait (tid_t child_tid UNUSED)
   if (child_exists)
     sema_down(&member->sema);
   else{
+    // printf("don't exist!\n");
     return -1;
   }
 
@@ -232,10 +234,12 @@ process_wait (tid_t child_tid UNUSED)
     list_remove(&member->elem);
     lock_release(&family_lock);
     free(member);
+    // printf("alive yet!\n");
     return -1;
   }
 
   int exit_status = member->exit_status;
+  // printf("in the wait function exit_status : %d\n",exit_status);
 
   lock_acquire(&family_lock);
   list_remove(&member->elem);
@@ -417,6 +421,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
+      file_close(file);
       goto done; 
     }
 
@@ -429,7 +434,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       || ehdr.e_phentsize != sizeof (struct Elf32_Phdr)
       || ehdr.e_phnum > 1024) 
     {
-      printf ("load: %s: error loading executable\n", file_name);
+      // printf ("load: %s: error loading executable\n", file_name);
       goto done; 
     }
 

@@ -18,18 +18,19 @@ struct page_entry {
 	int location;
 	// lazy_loading
 	bool lazy_loading;
+	// mmap
+	bool is_mmap;
+	// common
 	struct file *file;
 	off_t offset;
 	size_t page_zero_bytes;
 	bool writable;
-	// mmap
-	bool is_mmap;
-	struct mmap_entry *me;
 };
 
 void page_init(struct list *list);
 struct page_entry *locate_page(void *vaddr, int location);
 struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset, size_t page_zero_bytes, bool writable);
+struct page_entry *locate_mmap_page(void *vaddr, struct file *file, off_t offset, size_t page_zero_bytes);
 bool lazy_load_segment(void *vaddr, bool user, bool writable, struct file *file, off_t offset, size_t page_zero_bytes);
 bool new_page(void *vaddr, bool user, bool writable);
 bool reclamation(void *vaddr, bool user, bool writable);
