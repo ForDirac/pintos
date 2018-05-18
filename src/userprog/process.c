@@ -288,6 +288,15 @@ process_exit (void)
     }
   } 
 
+  struct list *mmap_table = &cur->mmap_table;
+  struct mmap_entry *me;
+  while(!list_empty(mmap_table)) {
+    e = list_pop_front(mmap_table);
+    me = list_entry(e, struct mmap_entry, elem);
+    file_unmap(me->file);
+    free(me);
+  }
+
   /* If current thread has execute_file, we execute allow_write and file_close for read_only_child cases */
   if(cur->execute_f){
     file_allow_write(cur->execute_f);

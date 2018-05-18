@@ -14,11 +14,13 @@
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #include "threads/malloc.h"
+#include "threads/palloc.h"
 #include "userprog/pagedir.h"
 #include "vm/page.h"
+#include "vm/frame.h"
 
 static void syscall_handler (struct intr_frame *);
-static struct mmap_entry *allocate_mmap(struct fd *fd);
+static struct mmap_entry *allocate_mmap(struct file *file);
 static struct mmap_entry *lookup_mmap(mapid_t mapid);
 static bool sort(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
 
@@ -532,7 +534,6 @@ int syscall_write(int fd, void *buffer, unsigned size) {
 }
 
 mapid_t syscall_mmap(int fd, void *addr){
-  // printf("syscall.c: syscall_mmap %p\n", addr);
   struct thread *t = thread_current();
   struct list_elem *e;
   struct fd *_fd = NULL;
@@ -551,9 +552,13 @@ mapid_t syscall_mmap(int fd, void *addr){
   }
   if (!found)
     return -1;
-  struct mmap_entry *me = allocate_mmap(found);
 
-  int filesize = file_length(found->file_p);
+  lock_acquire(&filesys_lock);
+  struct file *re_file = file_reopen(found->file_p);
+  lock_release(&filesys_lock);
+  struct mmap_entry *me = allocate_mmap(re_file);
+
+  int filesize = file_length(re_file);
   int offset1 = 0;
   int offset2 = 0;
 
@@ -564,9 +569,6 @@ mapid_t syscall_mmap(int fd, void *addr){
     offset1 += PGSIZE;
   }
 
-  lock_acquire(&filesys_lock);
-  struct file *re_file = file_reopen(found->file_p);
-  lock_release(&filesys_lock);
   if(re_file == NULL)
     return -1;
   else{
@@ -583,14 +585,49 @@ mapid_t syscall_mmap(int fd, void *addr){
 
 void syscall_munmap(mapid_t mapid) {
   struct mmap_entry *me = NULL;
+  struct file *file = NULL;
   me = lookup_mmap(mapid);
   if(!me)
     return;
+  file = me->file;
   list_remove(&me->elem);
   free(me);
+  file_unmap(file);
 }
 
-static struct mmap_entry *allocate_mmap(struct fd *fd) {
+void file_unmap(struct file *file) {
+  struct thread *t = thread_current();
+  struct list *page_table = &t->sup_page_table;
+  struct list_elem *e;
+  struct page_entry *pe;
+  size_t page_read_bytes;
+  bool is_dirty;
+  lock_acquire(&filesys_lock);
+  file_seek(file, 0);
+  for (e = list_begin(page_table); e != list_end(page_table); e = list_next(e)) {
+    pe = list_entry(e, struct page_entry, elem);
+    if (pe->file == file) {
+      is_dirty = pagedir_is_dirty(t->pagedir, pe->vaddr);
+      if (is_dirty) {
+        page_read_bytes = PGSIZE - pe->page_zero_bytes;
+        file_write(file, pe->vaddr, page_read_bytes);
+      }
+      /* void *frame = pagedir_get_page(t->pagedir, pe->vaddr); */
+      /* struct frame_entry *fe = lookup_frame(frame); */
+      /* pagedir_clear_page(t->pagedir, pe->vaddr); */
+      if (pe->location == FILE)
+        table_free_page(pe->vaddr);
+      /* palloc_free_page(frame); */
+      /* if (!fe) */
+      /*   continue; */
+      /* list_remove(&fe->elem); */
+      /* free(fe); */
+    }
+  }
+  lock_release(&filesys_lock);
+}
+
+static struct mmap_entry *allocate_mmap(struct file *file) {
   struct list_elem *e;
   struct thread *t = thread_current();
   struct list *mmap_table = &t->mmap_table;
@@ -608,7 +645,7 @@ static struct mmap_entry *allocate_mmap(struct fd *fd) {
   }
   me = (struct mmap_entry *)calloc(1, sizeof(struct mmap_entry));
   me->mapid = mapid;
-  me->fd = fd;
+  me->file = file;
   list_push_back(mmap_table, &me->elem);
   return me;
 }

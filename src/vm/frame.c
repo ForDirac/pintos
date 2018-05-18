@@ -28,10 +28,10 @@ void insert_frame_table(void* kpage, struct page_entry *pe){
 void table_free_frame(void *kpage) {
 	lock_acquire(&frame_table_lock);
 	struct frame_entry *fe = lookup_frame(kpage);
+	palloc_free_page(kpage);
 	if (!fe)
 		return;
 	list_remove(&fe->elem);
-	palloc_free_page(kpage);
 	free(fe);
 	lock_release(&frame_table_lock);
 }

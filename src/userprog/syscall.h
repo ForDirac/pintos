@@ -21,7 +21,7 @@ struct member
 // For proj #3
 struct mmap_entry {
 	mapid_t mapid;
-	struct fd *fd;
+	struct file *file;
 	struct list_elem elem;
 };
 
@@ -37,6 +37,7 @@ int syscall_write(int fd, void *buffer, unsigned size);
 void syscall_close(int fd);
 mapid_t syscall_mmap(int fd, void *addr);
 void syscall_munmap(mapid_t mapid);
+void file_unmap(struct file *file);
 bool valid_file_ptr(const char *file);
 
 #endif /* userprog/syscall.h */
