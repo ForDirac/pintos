@@ -286,8 +286,9 @@ process_exit (void)
       file_close(fd->file_p);
       free(fd);
     }
-  } 
+  }
 
+  /* Find the remain mmap_entry, then excute file_unmap and free them all. */
   struct list *mmap_table = &cur->mmap_table;
   struct mmap_entry *me;
   while(!list_empty(mmap_table)) {
@@ -295,6 +296,15 @@ process_exit (void)
     me = list_entry(e, struct mmap_entry, elem);
     file_unmap(me->file);
     free(me);
+  }
+
+  /* Find the remain sup_page_entry, then free them all. */
+  struct list *page_table = &cur->sup_page_table;
+  struct page_entry *pe;
+  while(!list_empty(page_table)) {
+    e = list_pop_front(page_table);
+    pe = list_entry(e, struct page_entry, elem);
+    free(pe);
   }
 
   /* If current thread has execute_file, we execute allow_write and file_close for read_only_child cases */

@@ -10,7 +10,7 @@ struct frame_entry {
 
 void frame_init(void);
 void insert_frame_table(void* kpage, struct page_entry *pe);
-void table_free_frame(void *kpage);
-struct frame_entry *lookup_frame(void *kpage);
 void push_frame(struct frame_entry *fe);
 struct frame_entry *pop_frame(void);
+void table_free_frame(void *kpage);
+struct frame_entry *lookup_frame(void *kpage);

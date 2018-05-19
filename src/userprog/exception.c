@@ -155,62 +155,53 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-  // printf("-----------page_fault()------------\n");
-  // printf("current tid %d\n", cur->tid);
-  // printf("not_present %d\n", not_present);
-  // printf("write %d\n", write);
-  // printf("user %d\n", user);
-  // printf("fault_addr %p\n", fault_addr);
-  // printf("page %p\n", pg_round_down(fault_addr));
-
+  /* For error handling */
   if (!not_present || fault_addr == NULL || !is_user_vaddr(fault_addr)){
-    // printf("exception.c: Invaid address %p\n", fault_addr);
     syscall_exit(-1);
     return;
   }
+
+  /* Handling for stack pointer in kernel_access */
   void *stack_ptr = user ? f->esp : cur->temp_stack;
+
+  /* Cases for user access */
   struct page_entry *new_entry = lookup_page(fault_addr);
 
   if(new_entry != NULL){
+    /* For reclamation(frame is in the DISK) */
     if(new_entry->location == DISK){
-      // printf("exception.c: The address is in DISK %p\n", fault_addr);
       if(!reclamation(fault_addr, user, new_entry->writable)){
         syscall_exit(-1);
         return;
       }
       return;
     }
+    /* For controlling the lazy_loading(in process.c) */
     if(new_entry->lazy_loading){
-      // printf("exception.c: The address is in FILE %p(lazy loading)\n", fault_addr);
       if(!lazy_load_segment(fault_addr, user, new_entry->writable, new_entry->file, new_entry->offset, new_entry->page_zero_bytes)){
-        // printf("%s\n", "fail to lazy load segment");
         syscall_exit(-1);
         return;
       }
       return;
     }
+    /* For controlling the mmap(in syscall.c) */
     if(new_entry->is_mmap){
-      // printf("exception.c: The address is in FILE %p(mmap)\n", fault_addr);
       if(!lazy_load_segment(fault_addr, user, 1, new_entry->file, new_entry->offset, new_entry->page_zero_bytes)){
-        // printf("%s\n", "fail to lazy load segment");
         syscall_exit(-1);
         return;
       }
       return;
     }
-    // printf("%s\n", "new entry exists but page faulted??");
+  /* For controlling the stack_growing */
   } else if (new_entry == NULL && fault_addr >= (stack_ptr - 32) && (PHYS_BASE - pg_round_down (fault_addr)) <= (8 * (1 << 20))){ 
-    // printf("exception.c: Stack growth %p\n", fault_addr);
     if(!stack_growth(fault_addr, true, write)){
-      // printf("%s\n", "fail to grow stack");
       syscall_exit(-1);
       return;
     }
     return;
   } else {
-    // printf("exception.c: Else cases %p\n", fault_addr);
+    /* For controlling the else case */
     if(!pagedir_get_page (cur->pagedir, fault_addr)){
-      // printf("%s\n", "fail to pagedir_get_page");
       syscall_exit(-1);
       return;
     }

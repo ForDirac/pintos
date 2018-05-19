@@ -75,7 +75,6 @@ syscall_init (void)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-  // printf("--------syscall_handler()-----------\n");
   thread_current()->temp_stack = f->esp;
   if(!check_right_add(f->esp)){
     syscall_exit(-1);
@@ -214,7 +213,6 @@ syscall_handler (struct intr_frame *f UNUSED)
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
-      // if(!check_right_add((void *)(((int*)f->esp)[2]))){
         syscall_exit(-1);
         break;
       }
@@ -236,7 +234,6 @@ syscall_handler (struct intr_frame *f UNUSED)
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
-      // if(!check_right_add((void *)(((int*)f->esp)[2]))){
         syscall_exit(-1);
         break;
       }
@@ -327,6 +324,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
       void *addr = (void *)(((int*)f->esp)[2]);
       void *overlapped = lookup_page(addr);
+      /* For base error case like NULL, overlapped and so on */
       if (!addr || !(addr == pg_round_down(addr)) || overlapped){
         f->eax = -1;
         break;
@@ -542,30 +540,33 @@ mapid_t syscall_mmap(int fd, void *addr){
   if (fd == 1 || fd == 0)
     return -1;
 
+  /* Find the right file */
   for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
     _fd = list_entry(e, struct fd, elem);
     if(_fd->fd == fd){
       found = _fd;
-      // printf("found file descriptor %d\n", found->fd);
       break;
     }
   }
   if (!found)
     return -1;
 
+  /* And check the re_open handling */
   lock_acquire(&filesys_lock);
   struct file *re_file = file_reopen(found->file_p);
   lock_release(&filesys_lock);
+
+  /* Allocate map_id and insert the mmap_table */
   struct mmap_entry *me = allocate_mmap(re_file);
 
   int filesize = file_length(re_file);
   int offset1 = 0;
   int offset2 = 0;
 
+  /* Check the right space which can be allocated */
   while(filesize > offset1){
     if(pagedir_get_page(t->pagedir, addr + offset1))
       return -1;
-
     offset1 += PGSIZE;
   }
 
@@ -586,12 +587,17 @@ mapid_t syscall_mmap(int fd, void *addr){
 void syscall_munmap(mapid_t mapid) {
   struct mmap_entry *me = NULL;
   struct file *file = NULL;
+
+  /* Find the right mapped_file */
   me = lookup_mmap(mapid);
   if(!me)
     return;
+
   file = me->file;
   list_remove(&me->elem);
   free(me);
+
+  /* For file_unmap handling */
   file_unmap(file);
 }
 
@@ -604,30 +610,26 @@ void file_unmap(struct file *file) {
   bool is_dirty;
   lock_acquire(&filesys_lock);
   file_seek(file, 0);
+
   for (e = list_begin(page_table); e != list_end(page_table); e = list_next(e)) {
     pe = list_entry(e, struct page_entry, elem);
     if (pe->file == file) {
       is_dirty = pagedir_is_dirty(t->pagedir, pe->vaddr);
       if (is_dirty) {
+        /* If we changed the file(check the dirty bit), we write them in that file */
         page_read_bytes = PGSIZE - pe->page_zero_bytes;
         file_write(file, pe->vaddr, page_read_bytes);
       }
-      /* void *frame = pagedir_get_page(t->pagedir, pe->vaddr); */
-      /* struct frame_entry *fe = lookup_frame(frame); */
-      /* pagedir_clear_page(t->pagedir, pe->vaddr); */
       if (pe->location == FILE)
+        /* Only free the page in sup_page_table, don't need to free the frame or page_dir */
         table_free_page(pe->vaddr);
-      /* palloc_free_page(frame); */
-      /* if (!fe) */
-      /*   continue; */
-      /* list_remove(&fe->elem); */
-      /* free(fe); */
     }
   }
   lock_release(&filesys_lock);
 }
 
 static struct mmap_entry *allocate_mmap(struct file *file) {
+  /* Allocate the map_id and insert me in the mmap_table */
   struct list_elem *e;
   struct thread *t = thread_current();
   struct list *mmap_table = &t->mmap_table;
@@ -636,7 +638,6 @@ static struct mmap_entry *allocate_mmap(struct file *file) {
   list_sort(mmap_table, sort, NULL);
   for (e = list_begin(mmap_table); e != list_end(mmap_table); e = list_next(e)) {
     me = list_entry(e, struct mmap_entry, elem);
-    // printf("mmap_entry: mapid %d\n", me->mapid);
     if (me->mapid == mapid) {
       mapid++;
       continue;

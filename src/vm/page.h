@@ -28,12 +28,11 @@ struct page_entry {
 };
 
 void page_init(struct list *list);
+bool reclamation(void *vaddr, bool user, bool writable);
 struct page_entry *locate_page(void *vaddr, int location);
 struct page_entry *locate_lazy_page(void *vaddr, struct file *file, off_t offset, size_t page_zero_bytes, bool writable);
 struct page_entry *locate_mmap_page(void *vaddr, struct file *file, off_t offset, size_t page_zero_bytes);
 bool lazy_load_segment(void *vaddr, bool user, bool writable, struct file *file, off_t offset, size_t page_zero_bytes);
-bool new_page(void *vaddr, bool user, bool writable);
-bool reclamation(void *vaddr, bool user, bool writable);
-void table_free_page(void *vaddr);
 struct page_entry *lookup_page(uint32_t *vaddr);
 bool stack_growth(void *vaddr, bool user, bool writable);
+void table_free_page(void *vaddr);

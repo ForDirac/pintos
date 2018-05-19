@@ -17,12 +17,24 @@ void frame_init(void) {
 
 void insert_frame_table(void* kpage, struct page_entry *pe){
 	struct frame_entry *new_fe = (struct frame_entry *)calloc(1, sizeof(struct frame_entry));
-	// struct frame_entry *new_fe = (struct frame_entry *)malloc(sizeof(struct frame_entry));
 	struct thread *cur = thread_current();
 	new_fe->frame = kpage;
 	new_fe->owner = cur;
 	new_fe->pe = pe;
 	push_frame(new_fe);
+}
+
+void push_frame(struct frame_entry *fe) {
+	lock_acquire(&frame_table_lock);
+	list_push_back(&frame_table, &fe->elem);
+	lock_release(&frame_table_lock);
+}
+
+struct frame_entry *pop_frame(void) {
+	lock_acquire(&frame_table_lock);
+	struct frame_entry *fe = list_entry(list_pop_front(&frame_table), struct frame_entry, elem);
+	lock_release(&frame_table_lock);
+	return fe;
 }
 
 void table_free_frame(void *kpage) {
@@ -51,17 +63,4 @@ struct frame_entry *lookup_frame(void *kpage) {
 	}
 	lock_release(&frame_table_lock);
 	return found;
-}
-
-void push_frame(struct frame_entry *fe) {
-	lock_acquire(&frame_table_lock);
-	list_push_back(&frame_table, &fe->elem);
-	lock_release(&frame_table_lock);
-}
-
-struct frame_entry *pop_frame(void) {
-	lock_acquire(&frame_table_lock);
-	struct frame_entry *fe = list_entry(list_pop_front(&frame_table), struct frame_entry, elem);
-	lock_release(&frame_table_lock);
-	return fe;
 }

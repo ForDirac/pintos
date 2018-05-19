@@ -1,5 +1,5 @@
 cd build && make grade
-make[1]: Entering directory '/home/team46b/temp/src/vm/build'
+make[1]: Entering directory '/home/team46a/pintos/src/vm/build'
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-none -a args-none --swap-size=4 -- -q  -f run args-none < /dev/null 2> tests/userprog/args-none.errors > tests/userprog/args-none.output
 perl -I../.. ../../tests/userprog/args-none.ck tests/userprog/args-none tests/userprog/args-none.result
 pass tests/userprog/args-none
@@ -544,4 +544,4 @@ Functionality of base file system (tests/filesys/base/Rubric):
 	     13/ 13 tests passed
 	     30/ 30 points subtotal
 
-make[1]: Leaving directory '/home/team46b/temp/src/vm/build'
+make[1]: Leaving directory '/home/team46a/pintos/src/vm/build'
