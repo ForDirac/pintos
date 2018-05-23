@@ -58,6 +58,7 @@ void* swap_out(enum palloc_flags flags){
 void swap_in(void* frame, struct page_entry *pe){
 	struct swap_entry *se = lookup_swap(pe->vaddr);
 	read_block((void *)frame, se->index);
+	// TODO: locate_page
   insert_frame_table(frame, pe);
   lock_acquire(&swap_table_lock);
   list_remove(&se->elem);
