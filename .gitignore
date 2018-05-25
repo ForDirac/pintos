@@ -2,3 +2,4 @@ src/utils/pintos
 .tags
 tags
 sftp-config.json
+.vscode
