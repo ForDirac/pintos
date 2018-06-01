@@ -232,7 +232,7 @@ thread_create (const char *name, int priority,
 
   struct member *new_member = NULL;
 
-  if(name != "flusher"){
+  if (name[0] != '_') {
     /*Else if, we make member structure which stores child_tid, parent thread and other things. 
     And this member is stored in family list */
     new_member = (struct member *) malloc(sizeof(struct member));
@@ -255,8 +255,9 @@ thread_create (const char *name, int priority,
   if (t_cur->priority <= t->priority)
     thread_yield();
   
-  if(name != "flusher"){
+  if (name[0] != '_') {
     sema_down(&new_member->loading_sema);
+    
     if (!new_member->success)
       tid = -1;
   }

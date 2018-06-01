@@ -345,6 +345,42 @@ syscall_handler (struct intr_frame *f UNUSED)
       break;
     }
 
+    case SYS_CHDIR:
+    {
+      const char *dir = (char *)(((int *)f->esp)[1]);
+      f->eax = (bool)syscall_chdir(dir);
+      break;
+    }
+
+    case SYS_MKDIR:
+    {
+      const char *dir = (char *)(((int *)f->esp)[1]);
+      f->eax = (bool)syscall_mkdir(dir);
+      break;
+    }
+
+    case SYS_READDIR:
+    {
+      int fd = ((int *)f->esp)[1];
+      char *name = (char *)(((int *)f->esp)[2]);
+      f->eax = (bool)syscall_readdir(fd, name);
+      break;
+    }
+
+    case SYS_ISDIR:
+    {
+      int fd = ((int *)f->esp)[1];
+      f->eax = (bool)syscall_isdir(fd);
+      break;
+    }
+
+    case SYS_INUMBER:
+    {
+      int fd = ((int *)f->esp)[1];
+      f->eax = (int)syscall_inumber(fd);
+      break;
+    }
+
     default:
     {
       syscall_exit(-1);
@@ -352,6 +388,27 @@ syscall_handler (struct intr_frame *f UNUSED)
     }
   }
 }
+
+bool syscall_chdir(const char *dir){
+
+}
+
+bool syscall_mkdir(const char *dir) {
+
+}
+
+bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
+
+}
+
+bool syscall_isdir(int fd) {
+
+}
+
+int syscall_inumber(int fd) {
+
+}
+
 
 int syscall_exit(int status){
   struct thread *t = thread_current();
@@ -681,3 +738,4 @@ bool valid_file_ptr(const char *file) {
     return 0;
   return 1;
 }
+
