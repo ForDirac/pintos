@@ -8,17 +8,19 @@
 #include <string.h>
 
 struct list cache_list;
+// struct lock cache_lock;
 
 void periodic_flush(void *aux UNUSED);
 
 void cache_init(void) {
   list_init(&cache_list);
+  // lock_init(&cache_lock);
 	thread_create("flusher", 0, periodic_flush, NULL);
 }
 
 void periodic_flush(void *aux UNUSED){
 	while(1){
-		printf("flush\n");
+		// printf("tid is %d\n", thread_current()->tid);
 		timer_sleep(5*TIMER_FREQ);
 		cache_flush();
 	}
@@ -32,39 +34,39 @@ void cache_push(struct cache_entry *ce) {
 }
 
 void cache_pop(void) {
+	// lock_acquire(&cache_lock);
   struct cache_entry *ce = NULL;
   ce = list_entry(list_pop_front(&cache_list), struct cache_entry, elem);
   cache_block_write(ce);
   free(ce);
+	// lock_release(&cache_lock);
 }
 
 void cache_flush(void){
-	printf("before the loop \n");
+	// lock_acquire(&cache_lock);
 	struct list_elem *e;
 	struct cache_entry *ce = NULL;
   for (e = list_begin(&cache_list); e != list_end(&cache_list); e = list_next(e)){
-  	printf("in the cache_flush\n");
+  	// printf("in the cache_flush\n");
     ce = list_entry(e, struct cache_entry, elem);
     cache_block_write(ce);
 	}
+	// lock_release(&cache_lock);
 }
 
 void cache_block_read(struct cache_entry *ce){
-	// lock_acquire(&ce->lock);
 	block_read(ce->block, ce->sector, ce->buffer);
-	// lock_release(&ce->lock);
 }
 
 void cache_block_write(struct cache_entry *ce){
-	// lock_acquire(&ce->lock);
 	if(ce->dirty){
 		block_write(ce->block, ce->sector, ce->buffer);
 		ce->dirty = 0;
 	}
-	// lock_release(&ce->lock);
 }
 
 void read_cache(struct block *block, block_sector_t sector, void *buffer){
+	// lock_acquire(&cache_lock);	
 	struct cache_entry *ce = lookup_cache(block, sector);
 	if(!ce){
 		ce = (struct cache_entry *)calloc(1, sizeof(struct cache_entry));
@@ -76,9 +78,11 @@ void read_cache(struct block *block, block_sector_t sector, void *buffer){
 		ce->dirty = 0;
 	}
 	memcpy(buffer, ce->buffer, BUF_SIZE);
+	// lock_release(&cache_lock);
 }
 
 void write_cache(struct block *block, block_sector_t sector, const void *buffer){
+	// lock_acquire(&cache_lock);
 	struct cache_entry *ce = lookup_cache(block, sector);
 
 	if(!ce){
@@ -91,6 +95,7 @@ void write_cache(struct block *block, block_sector_t sector, const void *buffer)
 	memcpy(ce->buffer, buffer, BUF_SIZE);
 	ce->dirty = 1;
 	cache_block_write(ce);
+	// lock_release(&cache_lock);
 }
 
 struct cache_entry *lookup_cache(struct block *block, block_sector_t sector){

@@ -129,9 +129,6 @@ main (void)
   timer_calibrate ();
 
 #ifdef FILESYS
-  // cache_init();
-
-
   /* Initialize file system. */
   ide_init ();
   locate_block_devices ();

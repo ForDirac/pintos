@@ -27,10 +27,10 @@ filesys_init (bool format)
   if (fs_device == NULL)
     PANIC ("No file system device found, can't initialize file system.");
 
-  inode_init ();
-
+  // for proj.#4
   cache_init();
 
+  inode_init ();
   free_map_init ();
 
   if (format) 
@@ -44,7 +44,6 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
-  printf("filesys_done\n");
   free_map_close ();
   // for Proj.#4
   cache_flush();
