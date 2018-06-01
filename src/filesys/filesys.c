@@ -8,6 +8,7 @@
 #include "filesys/directory.h"
 #include "threads/thread.h"
 #include "threads/synch.h"
+#include "filesys/cache.h"
 
 /* Partition that contains the file system. */
 struct block *fs_device;
@@ -28,6 +29,8 @@ filesys_init (bool format)
 
   inode_init ();
 
+  cache_init();
+
   free_map_init ();
 
   if (format) 
@@ -41,7 +44,10 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
+  printf("filesys_done\n");
   free_map_close ();
+  // for Proj.#4
+  cache_flush();
 }
 
 /* Creates a file named NAME with the given INITIAL_SIZE.
