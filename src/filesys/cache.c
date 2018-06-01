@@ -1,24 +1,24 @@
 #include "filesys/cache.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
-// #include "threads/interrupt.h"
+#include "userprog/syscall.h"
 #include "threads/malloc.h"
 #include "devices/timer.h"
 #include <list.h>
 #include <string.h>
+#include <stdio.h>
 
 struct list cache_list;
 
-void periodic_flush(void *aux UNUSED);
+static void periodic_flush(void *aux UNUSED);
 
 void cache_init(void) {
   list_init(&cache_list);
-	thread_create("flusher", 0, periodic_flush, NULL);
+	thread_create("_flusher", 0, periodic_flush, NULL);
 }
 
-void periodic_flush(void *aux UNUSED){
+static void periodic_flush(void *aux UNUSED){
 	while(1){
-		printf("flush\n");
 		timer_sleep(5*TIMER_FREQ);
 		cache_flush();
 	}
@@ -39,11 +39,9 @@ void cache_pop(void) {
 }
 
 void cache_flush(void){
-	printf("before the loop \n");
 	struct list_elem *e;
 	struct cache_entry *ce = NULL;
   for (e = list_begin(&cache_list); e != list_end(&cache_list); e = list_next(e)){
-  	printf("in the cache_flush\n");
     ce = list_entry(e, struct cache_entry, elem);
     cache_block_write(ce);
 	}

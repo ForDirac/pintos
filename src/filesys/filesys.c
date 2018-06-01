@@ -44,7 +44,6 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
-  printf("filesys_done\n");
   free_map_close ();
   // for Proj.#4
   cache_flush();
