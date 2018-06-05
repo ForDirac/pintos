@@ -10,6 +10,10 @@
 
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
+// For Proj.#4
+#define DIRECT_BLOCKS 10
+#define BLOCK_NUMBER 12
+#define INDIRECT_BLOCKS 128
 
 /* On-disk inode.
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
@@ -38,6 +42,8 @@ struct inode
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
     struct inode_disk data;             /* Inode content. */
+    // For Proj.#4
+    block_sector_t blocks[BLOCK_NUMBER];
   };
 
 /* Returns the block device sector that contains byte offset POS
@@ -88,6 +94,7 @@ inode_create (block_sector_t sector, off_t length)
       size_t sectors = bytes_to_sectors (length);
       disk_inode->length = length;
       disk_inode->magic = INODE_MAGIC;
+      memset(disk_inode->blocks, 0, BLOCK_NUMBER * sizeof block_sector_t)
       if (free_map_allocate (sectors, &disk_inode->start)) 
         {
           // block_write (fs_device, sector, disk_inode);
@@ -212,6 +219,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
     {
       /* Disk sector to read, starting byte offset within sector. */
       block_sector_t sector_idx = byte_to_sector (inode, offset);
+      // block_sector_t sector_idx = get_sector(inode, offset);
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
 
       /* Bytes left in inode, bytes left in sector, lesser of the two. */
@@ -274,7 +282,8 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   while (size > 0) 
     {
       /* Sector to write, starting byte offset within sector. */
-      block_sector_t sector_idx = byte_to_sector (inode, offset);
+      // block_sector_t sector_idx = byte_to_sector (inode, offset);
+      block_sector_t sector_idx = get_sector(inode, offset);
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
 
       /* Bytes left in inode, bytes left in sector, lesser of the two. */
@@ -324,6 +333,74 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   free (bounce);
 
   return bytes_written;
+}
+
+
+// For Proj.#4
+static block_sector_t get_sector(const struct inode *inode, off_t pos) {
+  ASSERT (inode != NULL);
+  bool success;
+
+  if (pos < BLOCK_SECTOR_SIZE*DIRECT_BLOCKS) {
+    block_sector_t sector = 0;
+    int idx = pos / BLOCK_SECTOR_SIZE;
+
+    if (inode->blocks[idx] == 0) {
+      success = (free_map_allocate(1, &sector) && inode_create(sector, BLOCK_SECTOR_SIZE));
+      if(!success && sector != 0){
+        free_map_release(sector, 1);
+        return 0;
+      }
+      inode->blocks[idx] = sector;
+
+    } else {
+      sector = inode->blocks[idx];
+    }
+    return sector;
+
+  } else if (pos < BLOCK_SECTOR_SIZE*DIRECT_BLOCKS + INDIRECT_BLOCKS*BLOCK_SECTOR_SIZE) {
+    pos -= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS;
+    block_sector_t sector = 0;
+
+    if (inode->blocks[DIRECT_BLOCKS] == 0) {
+      success = (free_map_allocate(1, &sector) && inode_create(sector, BLOCK_SECTOR_SIZE));
+      if (!success && sector != 0){
+        free_map_release(sector, 1);
+        return 0;
+      }
+      inode->blocks[DIRECT_BLOCKS] = sector;
+      // write_cache()
+
+    } else {
+      block_sector_t indirect_node_sector = inode->blocks[DIRECT_BLOCKS];
+      block_sector_t *indirect_inode;
+      block_sector_t indirect_sector = 0;
+      int idx = pos / BLOCK_SECTOR_SIZE;
+      read_cache(fs_device, indirect_node_sector, indirect_inode);
+      if (indirect_inode[idx] == 0) {
+        success = (free_map_allocate(1, &indirect_sector) && inode_create(indirect_sector, BLOCK_SECTOR_SIZE));
+        if (!success && indirect_sector != 0) {
+          free_map_release(indirect_node_sector, 1);
+          return 0;
+        }
+        indirect_inode[idx] = indirect_sector;
+        write_cache(fs_device, indirect_node_sector, indirect_inode);
+      } else {
+        indirect_sector = indirect_inode[idx];
+      }
+      sector = indirect_sector;
+    }
+
+    return sector;
+
+  } else if (pos < BLOCK_SECTOR_SIZE*DIRECT_BLOCKS + INDIRECT_BLOCKS*BLOCK_SECTOR_SIZE + INDIRECT_BLOCKS*INDIRECT_BLOCKS*BLOCK_SECTOR_SIZE) {
+    pos -= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS + INDIRECT_BLOCKS*BLOCK_SECTOR_SIZE;
+    block_sector_t sector = 0;
+
+    if (inode->blocks[DIRECT_BLOCKS + 1] == 0) {
+      success = (free_map_allocate(1, &sector))
+    }
+  }
 }
 
 /* Disables writes to INODE.
