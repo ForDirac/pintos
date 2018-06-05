@@ -305,6 +305,7 @@ process_exit (void)
     e = list_pop_front(page_table);
     pe = list_entry(e, struct page_entry, elem);
     free(pe);
+    // TODO : free the entry which is in frame or swap table
   }
 
   /* If current thread has execute_file, we execute allow_write and file_close for read_only_child cases */

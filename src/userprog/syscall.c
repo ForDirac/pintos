@@ -389,6 +389,27 @@ syscall_handler (struct intr_frame *f UNUSED)
   }
 }
 
+bool syscall_chdir(const char *dir){
+
+}
+
+bool syscall_mkdir(const char *dir) {
+
+}
+
+bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
+
+}
+
+bool syscall_isdir(int fd) {
+
+}
+
+int syscall_inumber(int fd) {
+
+}
+
+
 int syscall_exit(int status){
   struct thread *t = thread_current();
   struct list_elem *e;
@@ -717,7 +738,6 @@ bool valid_file_ptr(const char *file) {
     return 0;
   return 1;
 }
-
 
 bool syscall_chdir(const char *dir){
 

@@ -231,6 +231,7 @@ thread_create (const char *name, int priority,
   }
 
   struct member *new_member = NULL;
+
   if (name[0] != '_') {
     /*Else if, we make member structure which stores child_tid, parent thread and other things. 
     And this member is stored in family list */
