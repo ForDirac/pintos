@@ -230,31 +230,36 @@ thread_create (const char *name, int priority,
     return tid;
   }
 
-  /*Else if, we make member structure which stores child_tid, parent thread and other things. 
-  And this member is stored in family list */
-  struct member *new_member = (struct member *) malloc(sizeof(struct member));
-  /* init the member's property */
-  new_member->child_tid = tid;
-  new_member->parent = t_cur;
-  new_member->exit_status = 0;
-  new_member->is_exit = 0;
-  new_member->success = 0;
-  sema_init(&new_member->sema, 0);
-  sema_init(&new_member->loading_sema, 0);
+  struct member *new_member = NULL;
+  if (name[0] != '_') {
+    /*Else if, we make member structure which stores child_tid, parent thread and other things. 
+    And this member is stored in family list */
+    new_member = (struct member *) malloc(sizeof(struct member));
+    /* init the member's property */
+    new_member->child_tid = tid;
+    new_member->parent = t_cur;
+    new_member->exit_status = 0;
+    new_member->is_exit = 0;
+    new_member->success = 0;
+    sema_init(&new_member->sema, 0);
+    sema_init(&new_member->loading_sema, 0);
 
-  lock_acquire(&family_lock);
-  list_push_back(&family, &new_member->elem);
-  lock_release(&family_lock);
+    lock_acquire(&family_lock);
+    list_push_back(&family, &new_member->elem);
+    lock_release(&family_lock);
+  }
 
   /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
   if (t_cur->priority <= t->priority)
     thread_yield();
   
-  sema_down(&new_member->loading_sema);
-  
-  if (!new_member->success)
-    tid = -1;
+  if (name[0] != '_') {
+    sema_down(&new_member->loading_sema);
+    
+    if (!new_member->success)
+      tid = -1;
+  }
   
  /* (Original code) Add to run queue. */
   /* thread_unblock (t); */

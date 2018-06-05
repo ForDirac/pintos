@@ -3,6 +3,8 @@
 #include "lib/user/syscall.h"
 #include "threads/thread.h"
 
+#define READDIR_MAX_LEN 14
+
 void syscall_init (void);
 
 /* For proj #2 */
@@ -39,5 +41,10 @@ mapid_t syscall_mmap(int fd, void *addr);
 void syscall_munmap(mapid_t mapid);
 void file_unmap(struct file *file);
 bool valid_file_ptr(const char *file);
+bool syscall_chdir(const char *dir);
+bool syscall_mkdir(const char *dir);
+bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]);
+bool syscall_isdir(int fd);
+int syscall_inumber(int fd);
 
 #endif /* userprog/syscall.h */
