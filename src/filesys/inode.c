@@ -346,6 +346,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 static block_sector_t get_sector(struct inode *inode, off_t pos) {
   ASSERT (inode != NULL);
   bool success;
+  printf("get_sector\n");
 
   // in DIRECT_BLOCK size (0 ~ 10*512)
   if (pos < BLOCK_SECTOR_SIZE*DIRECT_BLOCKS) {
@@ -428,17 +429,17 @@ static block_sector_t get_sector(struct inode *inode, off_t pos) {
       block_sector_t d_indirect_inode_sector = 0;
       block_sector_t indirect_inode_sector = 0;
       block_sector_t indirect_sector = 0;
-      success = (free_map_allocate(1, &d_indirect_inode_sector) && inode_create(d_indirect_inode_sector, BLOCK_SECTOR_SIZE));
+      success = free_map_allocate(1, &d_indirect_inode_sector);
       if (!success && d_indirect_inode_sector != 0) {
         free_map_release(d_indirect_inode_sector, 1);
         return 0;
       }
-      success = (free_map_allocate(1, &indirect_inode_sector) && inode_create(indirect_inode_sector, BLOCK_SECTOR_SIZE));
+      success = free_map_allocate(1, &indirect_inode_sector);
       if (!success && indirect_inode_sector != 0) {
         free_map_release(indirect_inode_sector, 1);
         return 0;
       }
-      success = free_map_allocate(1, &indirect_sector) && inode_create(indirect_sector, BLOCK_SECTOR_SIZE);
+      success = free_map_allocate(1, &indirect_sector);
       if (!success && indirect_sector != 0) {
         free_map_release(indirect_sector, 1);
         return 0;
@@ -463,12 +464,12 @@ static block_sector_t get_sector(struct inode *inode, off_t pos) {
 
       // there is no INDIRECT_BLOCK in correct position
       if (d_indirect_inode[d_idx] == 0) {
-        success = free_map_allocate(1, &indirect_inode_sector) && inode_create(indirect_inode_sector, BLOCK_SECTOR_SIZE);
+        success = free_map_allocate(1, &indirect_inode_sector);
         if (!success && indirect_inode_sector != 0) {
           free_map_release(indirect_inode_sector, 1);
           return 0;
         }
-        success = free_map_allocate(1, &indirect_sector) && inode_create(indirect_sector, BLOCK_SECTOR_SIZE);
+        success = free_map_allocate(1, &indirect_sector);
         if (!success && indirect_sector != 0) {
           free_map_release(indirect_sector, 1);
           return 0;
@@ -488,7 +489,7 @@ static block_sector_t get_sector(struct inode *inode, off_t pos) {
 
         // there is no DIRECT_BLOCK in correct position
         if (indirect_inode[i_idx] == 0) {
-          success = free_map_allocate(1, &indirect_sector) && inode_create(indirect_sector, BLOCK_SECTOR_SIZE);
+          success = free_map_allocate(1, &indirect_sector);
           if (!success && indirect_sector != 0) {
             free_map_release(indirect_sector, 1);
             return 0;
