@@ -13,9 +13,6 @@
 #define INODE_MAGIC 0x494e4f44
 // For Proj.#4
 #define DIRECT_BLOCKS 10
-#define BLOCK_NUMBER 12
-#define INDIRECT_BLOCKS 128
-#define INIT_SECTOR 0xffffffff
 // #define INDIRECT_BLOCK 1
 // #define D_INDIRECT_BLOCK 1
 
@@ -47,6 +44,8 @@ bytes_to_sectors (off_t size)
   return DIV_ROUND_UP (size, BLOCK_SECTOR_SIZE);
 }
 
+// For Proj.#4
+// static block_sector_t get_sector(struct inode *inode, off_t pos);
 
 /* In-memory inode. */
 struct inode 
@@ -56,6 +55,7 @@ struct inode
     int open_cnt;                       /* Number of openers. */
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
+    // struct inode_disk data;             /* Inode content. */
     // For Proj.#4
     off_t length;
     off_t read_length;
@@ -383,6 +383,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   while (size > 0) 
     {
       /* Sector to write, starting byte offset within sector. */
+      // block_sector_t sector_idx = get_sector(inode, offset);
       block_sector_t sector_idx = byte_to_sector (inode, inode_length(inode), offset);
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
 
