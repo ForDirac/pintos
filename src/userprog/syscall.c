@@ -395,7 +395,8 @@ bool syscall_chdir(const char *dir){
 }
 
 bool syscall_mkdir(const char *dir) {
-  return 1;  
+
+  return 1;
 }
 
 bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {

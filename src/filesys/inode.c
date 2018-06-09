@@ -347,7 +347,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
           read_cache(fs_device, sector_idx, bounce);
           memcpy (buffer + bytes_read, bounce + sector_ofs, chunk_size);
         }
-      
+
       /* Advance. */
       size -= chunk_size;
       offset += chunk_size;
@@ -609,13 +609,13 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 // }
 
 off_t grow_inode(struct inode *inode, off_t length){
-  static char zeros[BLOCK_NUMBER];
+  static char zeros[BLOCK_SECTOR_SIZE];
   size_t n_sectors = bytes_to_sectors(length) - bytes_to_sectors(inode->length);
 
   if (n_sectors == 0)
     return length;
 
-  while(inode->direct_index < 10){
+  while(inode->direct_index < DIRECT_BLOCKS){
     free_map_allocate(1, &inode->blocks[inode->direct_index]);
     write_cache(fs_device, inode->blocks[inode->direct_index], zeros);
     inode->direct_index ++;
@@ -623,12 +623,12 @@ off_t grow_inode(struct inode *inode, off_t length){
     if(n_sectors == 0)
       return length;
   }
-  if (inode->direct_index == 10){
+  if (inode->direct_index == DIRECT_BLOCKS){
     n_sectors = add_indirect_block(inode, n_sectors);
     if(n_sectors == 0)
       return length;
   }
-  else if (inode->direct_index == 11){
+  if (inode->direct_index == DIRECT_BLOCKS + 1){
     n_sectors = add_dindirect_block(inode, n_sectors);
   }
   return length - n_sectors*BLOCK_SECTOR_SIZE;
