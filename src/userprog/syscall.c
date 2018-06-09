@@ -5,6 +5,7 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "filesys/filesys.h"
+#include "filesys/directory.h"
 #include "devices/shutdown.h"
 #include "userprog/process.h"
 #include "lib/string.h"
@@ -140,7 +141,7 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
       off_t initial_size = (off_t)((unsigned int *)f->esp)[2];
       lock_acquire(&filesys_lock);
-      bool success = filesys_create(file, initial_size);
+      bool success = filesys_create(file, initial_size, true);
       lock_release(&filesys_lock);
       f->eax = 0;
       f->eax = success;
@@ -391,12 +392,23 @@ syscall_handler (struct intr_frame *f UNUSED)
 
 
 bool syscall_chdir(const char *dir){
-  return 1;  
+  struct dir *chdir;
+  lock_acquire(&filesys_lock);
+  chdir = filesys_dir_open(dir);
+  lock_release(&filesys_lock);
+  if(!chdir)
+    return 0;
+  dir_close(thread_current()->dir);
+  thread_current()->dir = chdir;
+  return 1;
 }
 
 bool syscall_mkdir(const char *dir) {
-
-  return 1;
+  bool success;
+  lock_acquire(&filesys_lock);
+  success = filesys_create(dir, 0, false);
+  lock_release(&filesys_lock);
+  return success;
 }
 
 bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {

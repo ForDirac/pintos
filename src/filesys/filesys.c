@@ -8,6 +8,7 @@
 #include "filesys/directory.h"
 #include "threads/thread.h"
 #include "threads/synch.h"
+#include "threads/malloc.h"
 #include "filesys/cache.h"
 
 /* Partition that contains the file system. */
@@ -37,6 +38,7 @@ filesys_init (bool format)
     do_format ();
 
   free_map_open ();
+
 }
 
 /* Shuts down the file system module, writing any unwritten data
@@ -48,25 +50,77 @@ filesys_done (void)
   // for Proj.#4
   cache_flush();
 }
-
+
+static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode **target_inode, struct dir **target_dir, char *target_name) {
+  const char *delimiter = "/";
+  char *dirname = malloc(strlen(name) + 1);
+  strlcpy(dirname, name, strlen(name) + 1);
+  char *d, *save_ptr;
+  bool exists = false;
+  int depth = 0;
+  int depth_index = 0;
+  struct inode *inode;
+
+  for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
+    if (strlen(d) > 14)
+      return false;
+    depth++;
+  }
+  strlcpy(dirname, name, strlen(name) + 1);
+  for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
+    depth_index++;
+    if (depth_index == depth) {
+      exists = true;
+      break;
+    }
+    if (!dir_lookup(dir, d, &inode)){
+      break;
+    }
+    if (depth_index != 1)
+      dir_close(dir);
+    dir = dir_open(inode);
+  }
+  if(!exists){
+    dir = NULL;
+    inode = NULL;
+  }
+  strlcpy(target_name, d, strlen(d) + 1);
+  free(dirname);
+  *target_dir = dir;
+  *target_inode = inode;
+  return dir != NULL;
+}
+
 /* Creates a file named NAME with the given INITIAL_SIZE.
    Returns true if successful, false otherwise.
    Fails if a file named NAME already exists,
    or if internal memory allocation fails. */
 bool
-filesys_create (const char *name, off_t initial_size) 
+filesys_create (const char *name, off_t initial_size, bool is_file) 
 {
-
-  // initial_size = 0;
+  if (!strcmp(name, ""))
+    return false;
+// Proj.#4
   block_sector_t inode_sector = 0;
-  struct dir *dir = dir_open_root ();
+  struct dir *root = thread_current()->dir;
+  if (!root)
+    root = thread_current()->dir = dir_open_root();
+  // struct dir *dir = dir_open_root ();
+  char target[NAME_MAX + 1];
+  struct dir *dir;
+  struct inode *inode;
+  if(!filesys_dir_lookup(root, name, &inode, &dir, target))
+    return false;
+
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
-                  && inode_create (inode_sector, initial_size)
-                  && dir_add (dir, name, inode_sector));
+                  && (is_file? inode_create(inode_sector, initial_size) : dir_create(inode_sector, 1))
+                  // && dir_add (dir, name, inode_sector));
+                  && dir_add (dir, target, inode_sector));
+//
   if (!success && inode_sector != 0)
     free_map_release (inode_sector, 1);
-  dir_close (dir);
+  // dir_close (dir);
 
   return success;
 }
@@ -79,15 +133,41 @@ filesys_create (const char *name, off_t initial_size)
 struct file *
 filesys_open (const char *name)
 {
-
-  struct dir *dir = dir_open_root ();
-  struct inode *inode = NULL;
-
-  if (dir != NULL)
-    dir_lookup (dir, name, &inode);
-  dir_close (dir);
+  if (!strcmp(name, ""))
+    return NULL;
+// Proj.#4
+  struct dir *root = thread_current()->dir;
+  if (!root)
+    root = thread_current()->dir = dir_open_root();
+  // struct dir *dir = dir_open_root ();
+  struct inode *inode;
+  struct dir *dir;
+  char target[NAME_MAX + 1];
+  filesys_dir_lookup(root, name, &inode, &dir, target);
+//  
+  if (dir != NULL){
+    dir_lookup (dir, target, &inode);
+    // dir_lookup (dir, name, &inode);
+  }
+  // dir_close (dir);
 
   return file_open (inode);
+}
+
+struct dir *filesys_dir_open(const char *name) {
+  struct dir *root = thread_current()->dir;
+  if (!root)
+    root = thread_current()->dir = dir_open_root();
+  struct inode *inode;
+  struct dir *dir;
+  char target[NAME_MAX + 1];
+  filesys_dir_lookup(root, name, &inode, &dir, target);
+
+  if (dir != NULL)
+    dir_lookup(dir, target, &inode);
+  // dir_close(dir);
+
+  return dir_open(inode);
 }
 
 /* Deletes the file named NAME.

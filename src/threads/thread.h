@@ -101,6 +101,9 @@ struct thread
     struct list mmap_table;
     uint8_t *temp_stack;
 #endif
+#ifdef FILESYS
+    struct dir *dir;
+#endif
 
     /* Owned by thread.c. */
     tid_t tid;                          /* Thread identifier. */

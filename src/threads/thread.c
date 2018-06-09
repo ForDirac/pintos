@@ -17,6 +17,9 @@
 #include "threads/malloc.h"
 #include "vm/page.h"
 #endif
+#ifdef FILESYS
+#include "filesys/directory.h"
+#endif
 
 /* Random value for struct thread's `magic' member.
    Used to detect stack overflow.  See the big comment at the top
@@ -556,6 +559,9 @@ init_thread (struct thread *t, const char *name, int priority)
 #ifdef VM
   page_init(&t->sup_page_table);
   list_init(&t->mmap_table);
+#endif
+#ifdef FILESYS
+  t->dir = NULL;
 #endif
 
   t->execute_f = NULL;
