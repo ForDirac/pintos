@@ -1,20 +1,5 @@
 cd build && make grade
 make[1]: Entering directory '/home/team46a/pintos4/src/filesys/build'
-pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-none -a args-none --swap-size=4 -- -q  -f run args-none < /dev/null 2> tests/userprog/args-none.errors > tests/userprog/args-none.output
-perl -I../.. ../../tests/userprog/args-none.ck tests/userprog/args-none tests/userprog/args-none.result
-pass tests/userprog/args-none
-pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-single -a args-single --swap-size=4 -- -q  -f run 'args-single onearg' < /dev/null 2> tests/userprog/args-single.errors > tests/userprog/args-single.output
-perl -I../.. ../../tests/userprog/args-single.ck tests/userprog/args-single tests/userprog/args-single.result
-pass tests/userprog/args-single
-pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-multiple -a args-multiple --swap-size=4 -- -q  -f run 'args-multiple some arguments for you!' < /dev/null 2> tests/userprog/args-multiple.errors > tests/userprog/args-multiple.output
-perl -I../.. ../../tests/userprog/args-multiple.ck tests/userprog/args-multiple tests/userprog/args-multiple.result
-pass tests/userprog/args-multiple
-pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-many -a args-many --swap-size=4 -- -q  -f run 'args-many a b c d e f g h i j k l m n o p q r s t u v' < /dev/null 2> tests/userprog/args-many.errors > tests/userprog/args-many.output
-perl -I../.. ../../tests/userprog/args-many.ck tests/userprog/args-many tests/userprog/args-many.result
-pass tests/userprog/args-many
-pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-dbl-space -a args-dbl-space --swap-size=4 -- -q  -f run 'args-dbl-space two  spaces!' < /dev/null 2> tests/userprog/args-dbl-space.errors > tests/userprog/args-dbl-space.output
-perl -I../.. ../../tests/userprog/args-dbl-space.ck tests/userprog/args-dbl-space tests/userprog/args-dbl-space.result
-pass tests/userprog/args-dbl-space
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/sc-bad-sp -a sc-bad-sp --swap-size=4 -- -q  -f run sc-bad-sp < /dev/null 2> tests/userprog/sc-bad-sp.errors > tests/userprog/sc-bad-sp.output
 perl -I../.. ../../tests/userprog/sc-bad-sp.ck tests/userprog/sc-bad-sp tests/userprog/sc-bad-sp.result
 pass tests/userprog/sc-bad-sp
@@ -65,7 +50,8 @@ perl -I../.. ../../tests/userprog/open-boundary.ck tests/userprog/open-boundary 
 pass tests/userprog/open-boundary
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-empty -a open-empty --swap-size=4 -- -q  -f run open-empty < /dev/null 2> tests/userprog/open-empty.errors > tests/userprog/open-empty.output
 perl -I../.. ../../tests/userprog/open-empty.ck tests/userprog/open-empty tests/userprog/open-empty.result
-pass tests/userprog/open-empty
+FAIL tests/userprog/open-empty
+run: open() returned 2 instead of -1: FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/open-null -a open-null --swap-size=4 -- -q  -f run open-null < /dev/null 2> tests/userprog/open-null.errors > tests/userprog/open-null.output
 perl -I../.. ../../tests/userprog/open-null.ck tests/userprog/open-null tests/userprog/open-null.result
 pass tests/userprog/open-null
@@ -188,22 +174,115 @@ perl -I../.. ../../tests/userprog/bad-jump2.ck tests/userprog/bad-jump2 tests/us
 pass tests/userprog/bad-jump2
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-create -a lg-create --swap-size=4 -- -q  -f run lg-create < /dev/null 2> tests/filesys/base/lg-create.errors > tests/filesys/base/lg-create.output
 perl -I../.. ../../tests/filesys/base/lg-create.ck tests/filesys/base/lg-create tests/filesys/base/lg-create.result
-pass tests/filesys/base/lg-create
+FAIL tests/filesys/base/lg-create
+run: 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-full -a lg-full --swap-size=4 -- -q  -f run lg-full < /dev/null 2> tests/filesys/base/lg-full.errors > tests/filesys/base/lg-full.output
 perl -I../.. ../../tests/filesys/base/lg-full.ck tests/filesys/base/lg-full tests/filesys/base/lg-full.result
-pass tests/filesys/base/lg-full
+FAIL tests/filesys/base/lg-full
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-full:
+0x0804a2c8: write (...../lib/user/syscall.c:123)
+0x080487a8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e4: test_main (.../filesys/base/full.inc:20)
+0x08048852: main (...ild/../../tests/main.c:13)
+0x08048884: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-random -a lg-random --swap-size=4 -- -q  -f run lg-random < /dev/null 2> tests/filesys/base/lg-random.errors > tests/filesys/base/lg-random.output
 perl -I../.. ../../tests/filesys/base/lg-random.ck tests/filesys/base/lg-random tests/filesys/base/lg-random.result
-pass tests/filesys/base/lg-random
+FAIL tests/filesys/base/lg-random
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a4a8 0x80481c2 0x8048a32 0x8048a64
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-random:
+0x0804a4a8: write (...../lib/user/syscall.c:123)
+0x080481c2: test_main (...ilesys/base/random.inc:41)
+0x08048a32: main (...ild/../../tests/main.c:13)
+0x08048a64: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-seq-block -a lg-seq-block --swap-size=4 -- -q  -f run lg-seq-block < /dev/null 2> tests/filesys/base/lg-seq-block.errors > tests/filesys/base/lg-seq-block.output
 perl -I../.. ../../tests/filesys/base/lg-seq-block.ck tests/filesys/base/lg-seq-block tests/filesys/base/lg-seq-block.result
-pass tests/filesys/base/lg-seq-block
+FAIL tests/filesys/base/lg-seq-block
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-seq-block:
+0x0804a2c8: write (...../lib/user/syscall.c:123)
+0x080487a8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e4: test_main (...sys/base/seq-block.inc:20)
+0x08048852: main (...ild/../../tests/main.c:13)
+0x08048884: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/lg-seq-random -a lg-seq-random --swap-size=4 -- -q  -f run lg-seq-random < /dev/null 2> tests/filesys/base/lg-seq-random.errors > tests/filesys/base/lg-seq-random.output
 perl -I../.. ../../tests/filesys/base/lg-seq-random.ck tests/filesys/base/lg-seq-random tests/filesys/base/lg-seq-random.result
-pass tests/filesys/base/lg-seq-random
+FAIL tests/filesys/base/lg-seq-random
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2e8 0x80487c8 0x80480e6 0x8048872 0x80488a4
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-seq-random:
+0x0804a2e8: write (...../lib/user/syscall.c:123)
+0x080487c8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e6: test_main (...ys/base/seq-random.inc:22)
+0x08048872: main (...ild/../../tests/main.c:13)
+0x080488a4: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-create -a sm-create --swap-size=4 -- -q  -f run sm-create < /dev/null 2> tests/filesys/base/sm-create.errors > tests/filesys/base/sm-create.output
 perl -I../.. ../../tests/filesys/base/sm-create.ck tests/filesys/base/sm-create tests/filesys/base/sm-create.result
-pass tests/filesys/base/sm-create
+FAIL tests/filesys/base/sm-create
+run: 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/sm-full -a sm-full --swap-size=4 -- -q  -f run sm-full < /dev/null 2> tests/filesys/base/sm-full.errors > tests/filesys/base/sm-full.output
 perl -I../.. ../../tests/filesys/base/sm-full.ck tests/filesys/base/sm-full tests/filesys/base/sm-full.result
 pass tests/filesys/base/sm-full
@@ -240,7 +319,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/di
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/dir-mk-tree.ck tests/filesys/extended/dir-mk-tree tests/filesys/extended/dir-mk-tree.result
 FAIL tests/filesys/extended/dir-mk-tree
-run: create "/0/1/0/2": FAILED
+run: open "/0/2/0/3": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/dir-mkdir -a dir-mkdir -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run dir-mkdir < /dev/null 2> tests/filesys/extended/dir-mkdir.errors > tests/filesys/extended/dir-mkdir.output
@@ -294,7 +373,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/di
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/dir-rm-tree.ck tests/filesys/extended/dir-rm-tree tests/filesys/extended/dir-rm-tree.result
 FAIL tests/filesys/extended/dir-rm-tree
-run: create "/0/1/0/2": FAILED
+run: open "/0/2/0/3": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/dir-rmdir -a dir-rmdir -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run dir-rmdir < /dev/null 2> tests/filesys/extended/dir-rmdir.errors > tests/filesys/extended/dir-rmdir.output
@@ -318,7 +397,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/di
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/dir-vine.ck tests/filesys/extended/dir-vine tests/filesys/extended/dir-vine.result
 FAIL tests/filesys/extended/dir-vine
-run: created files and directories only to level 0: FAILED
+run: open ".": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-create -a grow-create -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-create < /dev/null 2> tests/filesys/extended/grow-create.errors > tests/filesys/extended/grow-create.output
@@ -333,7 +412,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-dir-lg.ck tests/filesys/extended/grow-dir-lg tests/filesys/extended/grow-dir-lg.result
 FAIL tests/filesys/extended/grow-dir-lg
-run: create "/x/file14": FAILED
+run: open "/x/file11": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-file-size -a grow-file-size -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-file-size < /dev/null 2> tests/filesys/extended/grow-file-size.errors > tests/filesys/extended/grow-file-size.output
@@ -341,7 +420,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-file-size.ck tests/filesys/extended/grow-file-size tests/filesys/extended/grow-file-size.result
 FAIL tests/filesys/extended/grow-file-size
-run: write 37 bytes at offset 0 in "testfile" failed: FAILED
+run: read of 512 bytes at offset 0 in "testfile" returned 0: FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-root-lg -a grow-root-lg -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-root-lg < /dev/null 2> tests/filesys/extended/grow-root-lg.errors > tests/filesys/extended/grow-root-lg.output
@@ -349,7 +428,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-root-lg.ck tests/filesys/extended/grow-root-lg tests/filesys/extended/grow-root-lg.result
 FAIL tests/filesys/extended/grow-root-lg
-run: create "file14": FAILED
+run: open "file11": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-root-sm -a grow-root-sm -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-root-sm < /dev/null 2> tests/filesys/extended/grow-root-sm.errors > tests/filesys/extended/grow-root-sm.output
@@ -357,7 +436,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-root-sm.ck tests/filesys/extended/grow-root-sm tests/filesys/extended/grow-root-sm.result
 FAIL tests/filesys/extended/grow-root-sm
-run: create "file14": FAILED
+run: open "file11": FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-seq-lg -a grow-seq-lg -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-seq-lg < /dev/null 2> tests/filesys/extended/grow-seq-lg.errors > tests/filesys/extended/grow-seq-lg.output
@@ -365,7 +444,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-seq-lg.ck tests/filesys/extended/grow-seq-lg tests/filesys/extended/grow-seq-lg.result
 FAIL tests/filesys/extended/grow-seq-lg
-run: write 1234 bytes at offset 0 in "testme" failed: FAILED
+run: read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-seq-sm -a grow-seq-sm -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-seq-sm < /dev/null 2> tests/filesys/extended/grow-seq-sm.errors > tests/filesys/extended/grow-seq-sm.output
@@ -373,7 +452,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-seq-sm.ck tests/filesys/extended/grow-seq-sm tests/filesys/extended/grow-seq-sm.result
 FAIL tests/filesys/extended/grow-seq-sm
-run: write 1234 bytes at offset 0 in "testme" failed: FAILED
+run: read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-sparse -a grow-sparse -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-sparse < /dev/null 2> tests/filesys/extended/grow-sparse.errors > tests/filesys/extended/grow-sparse.output
@@ -389,7 +468,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-tell.ck tests/filesys/extended/grow-tell tests/filesys/extended/grow-tell.result
 FAIL tests/filesys/extended/grow-tell
-run: write 37 bytes at offset 0 in "foobar" failed: FAILED
+run: read of 512 bytes at offset 0 in "foobar" returned 0: FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/grow-two-files -a grow-two-files -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run grow-two-files < /dev/null 2> tests/filesys/extended/grow-two-files.errors > tests/filesys/extended/grow-two-files.output
@@ -397,7 +476,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/gr
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/grow-two-files.ck tests/filesys/extended/grow-two-files tests/filesys/extended/grow-two-files.result
 FAIL tests/filesys/extended/grow-two-files
-run: write 250 bytes at offset 0 in "a" returned 0: FAILED
+run: read of 512 bytes at offset 0 in "a" returned 0: FAILED
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/syn-rw -a syn-rw -p tests/filesys/extended/tar -a tar -p tests/filesys/extended/child-syn-rw -a child-syn-rw --swap-size=4 -- -q  -f run syn-rw < /dev/null 2> tests/filesys/extended/syn-rw.errors > tests/filesys/extended/syn-rw.output
@@ -405,7 +484,7 @@ pintos -v -k -T 60  --qemu --disk=tmp.dsk -g fs.tar -a tests/filesys/extended/sy
 rm -f tmp.dsk
 perl -I../.. ../../tests/filesys/extended/syn-rw.ck tests/filesys/extended/syn-rw tests/filesys/extended/syn-rw.result
 FAIL tests/filesys/extended/syn-rw
-run: write 8 bytes at offset 0 in "logfile": FAILED
+run: TIMEOUT after 60 seconds of host CPU time
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/pt-grow-stack -a pt-grow-stack --swap-size=4 -- -q  -f run pt-grow-stack < /dev/null 2> tests/vm/pt-grow-stack.errors > tests/vm/pt-grow-stack.output
 perl -I../.. ../../tests/vm/pt-grow-stack.ck tests/vm/pt-grow-stack tests/vm/pt-grow-stack.result
 pass tests/vm/pt-grow-stack
@@ -444,13 +523,82 @@ perl -I../.. ../../tests/vm/page-merge-seq.ck tests/vm/page-merge-seq tests/vm/p
 pass tests/vm/page-merge-seq
 pintos -v -k -T 600 --qemu  --filesys-size=2 -p tests/vm/page-merge-par -a page-merge-par -p tests/vm/child-sort -a child-sort --swap-size=4 -- -q  -f run page-merge-par < /dev/null 2> tests/vm/page-merge-par.errors > tests/vm/page-merge-par.output
 perl -I../.. ../../tests/vm/page-merge-par.ck tests/vm/page-merge-par tests/vm/page-merge-par.result
-pass tests/vm/page-merge-par
+FAIL tests/vm/page-merge-par
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-par:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...sts/vm/page-merge-par.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/page-merge-stk -a page-merge-stk -p tests/vm/child-qsort -a child-qsort --swap-size=4 -- -q  -f run page-merge-stk < /dev/null 2> tests/vm/page-merge-stk.errors > tests/vm/page-merge-stk.output
 perl -I../.. ../../tests/vm/page-merge-stk.ck tests/vm/page-merge-stk tests/vm/page-merge-stk.result
-pass tests/vm/page-merge-stk
+FAIL tests/vm/page-merge-stk
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-stk:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...sts/vm/page-merge-stk.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/page-merge-mm -a page-merge-mm -p tests/vm/child-qsort-mm -a child-qsort-mm --swap-size=4 -- -q  -f run page-merge-mm < /dev/null 2> tests/vm/page-merge-mm.errors > tests/vm/page-merge-mm.output
 perl -I../.. ../../tests/vm/page-merge-mm.ck tests/vm/page-merge-mm tests/vm/page-merge-mm.result
-pass tests/vm/page-merge-mm
+FAIL tests/vm/page-merge-mm
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-mm:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...ests/vm/page-merge-mm.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 600 --qemu  --filesys-size=2 -p tests/vm/page-shuffle -a page-shuffle --swap-size=4 -- -q  -f run page-shuffle < /dev/null 2> tests/vm/page-shuffle.errors > tests/vm/page-shuffle.output
 perl -I../.. ../../tests/vm/page-shuffle.ck tests/vm/page-shuffle tests/vm/page-shuffle.result
 pass tests/vm/page-shuffle
@@ -463,7 +611,6 @@ pass tests/vm/mmap-close
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-unmap -a mmap-unmap -p ../../tests/vm/sample.txt -a sample.txt --swap-size=4 -- -q  -f run mmap-unmap < /dev/null 2> tests/vm/mmap-unmap.errors > tests/vm/mmap-unmap.output
 perl -I../.. ../../tests/vm/mmap-unmap.ck tests/vm/mmap-unmap tests/vm/mmap-unmap.result
 pass tests/vm/mmap-unmap
-dd if=/dev/zero of=tests/vm/zeros bs=1024 count=6
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-overlap -a mmap-overlap -p tests/vm/zeros -a zeros --swap-size=4 -- -q  -f run mmap-overlap < /dev/null 2> tests/vm/mmap-overlap.errors > tests/vm/mmap-overlap.output
 perl -I../.. ../../tests/vm/mmap-overlap.ck tests/vm/mmap-overlap tests/vm/mmap-overlap.result
 pass tests/vm/mmap-overlap
@@ -478,7 +625,28 @@ perl -I../.. ../../tests/vm/mmap-exit.ck tests/vm/mmap-exit tests/vm/mmap-exit.r
 pass tests/vm/mmap-exit
 pintos -v -k -T 600 --qemu  --filesys-size=2 -p tests/vm/mmap-shuffle -a mmap-shuffle --swap-size=4 -- -q  -f run mmap-shuffle < /dev/null 2> tests/vm/mmap-shuffle.errors > tests/vm/mmap-shuffle.output
 perl -I../.. ../../tests/vm/mmap-shuffle.ck tests/vm/mmap-shuffle tests/vm/mmap-shuffle.result
-pass tests/vm/mmap-shuffle
+FAIL tests/vm/mmap-shuffle
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e915 0xc002db11 0xc002fa5a 0xc002c1bc 0xc0021c5d 0xc0021d8f 0x8048137 0x804894e 0x8048980
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e915: inode_read_at (...../../filesys/inode.c:301)
+0xc002db11: file_read (...d/../../filesys/file.c:74)
+0xc002fa5a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c1bc: page_fault (.../userprog/exception.c:189)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/mmap-shuffle:
+0x08048137: test_main (...ests/vm/mmap-shuffle.c:29)
+0x0804894e: main (...ild/../../tests/main.c:13)
+0x08048980: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-bad-fd -a mmap-bad-fd --swap-size=4 -- -q  -f run mmap-bad-fd < /dev/null 2> tests/vm/mmap-bad-fd.errors > tests/vm/mmap-bad-fd.output
 perl -I../.. ../../tests/vm/mmap-bad-fd.ck tests/vm/mmap-bad-fd tests/vm/mmap-bad-fd.result
 pass tests/vm/mmap-bad-fd
@@ -531,12 +699,10 @@ perl -I../.. ../../tests/filesys/extended/dir-rm-parent-persistence.ck tests/fil
 FAIL tests/filesys/extended/dir-rm-parent-persistence
 Error extracting file system:
 /: open failed
-error writing archive
 perl -I../.. ../../tests/filesys/extended/dir-rm-root-persistence.ck tests/filesys/extended/dir-rm-root-persistence tests/filesys/extended/dir-rm-root-persistence.result
 FAIL tests/filesys/extended/dir-rm-root-persistence
 Error extracting file system:
 /: open failed
-error writing archive
 perl -I../.. ../../tests/filesys/extended/dir-rm-tree-persistence.ck tests/filesys/extended/dir-rm-tree-persistence tests/filesys/extended/dir-rm-tree-persistence.result
 FAIL tests/filesys/extended/dir-rm-tree-persistence
 Prerequisite test tests/filesys/extended/dir-rm-tree failed.
@@ -553,7 +719,6 @@ perl -I../.. ../../tests/filesys/extended/grow-create-persistence.ck tests/files
 FAIL tests/filesys/extended/grow-create-persistence
 Error extracting file system:
 /: open failed
-error writing archive
 perl -I../.. ../../tests/filesys/extended/grow-dir-lg-persistence.ck tests/filesys/extended/grow-dir-lg-persistence tests/filesys/extended/grow-dir-lg-persistence.result
 FAIL tests/filesys/extended/grow-dir-lg-persistence
 Prerequisite test tests/filesys/extended/grow-dir-lg failed.
@@ -585,7 +750,7 @@ perl -I../.. ../../tests/filesys/extended/syn-rw-persistence.ck tests/filesys/ex
 FAIL tests/filesys/extended/syn-rw-persistence
 Prerequisite test tests/filesys/extended/syn-rw failed.
 ../../tests/make-grade ../.. results ../../tests/filesys/Grading.with-vm | tee grade
-TOTAL TESTING SCORE: 50.4%
+TOTAL TESTING SCORE: 40.9%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -596,13 +761,13 @@ Test Set                                      Pts Max  % Ttl  % Max
 tests/filesys/extended/Rubric.functionality     1/ 34   0.9%/ 30.0%
 tests/filesys/extended/Rubric.robustness        3/ 10   4.5%/ 15.0%
 tests/filesys/extended/Rubric.persistence       0/ 23   0.0%/ 20.0%
-tests/filesys/base/Rubric                      30/ 30  20.0%/ 20.0%
+tests/filesys/base/Rubric                      19/ 30  12.7%/ 20.0%
 tests/userprog/Rubric.functionality           108/108  10.0%/ 10.0%
-tests/userprog/Rubric.robustness               88/ 88   5.0%/  5.0%
-tests/vm/Rubric.functionality                  55/ 55   8.0%/  8.0%
+tests/userprog/Rubric.robustness               86/ 88   4.9%/  5.0%
+tests/vm/Rubric.functionality                  41/ 55   6.0%/  8.0%
 tests/vm/Rubric.robustness                     28/ 28   2.0%/  2.0%
 --------------------------------------------- --- --- ------ ------
-Total                                                  50.4%/110.0%
+Total                                                  40.9%/110.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -684,18 +849,18 @@ Persistence of file system (tests/filesys/extended/Rubric.persistence):
 
 Functionality of base file system (tests/filesys/base/Rubric):
 	- Test basic support for small files.
-	     1/ 1 tests/filesys/base/sm-create
+	  ** 0/ 1 tests/filesys/base/sm-create
 	     2/ 2 tests/filesys/base/sm-full
 	     2/ 2 tests/filesys/base/sm-random
 	     2/ 2 tests/filesys/base/sm-seq-block
 	     3/ 3 tests/filesys/base/sm-seq-random
 
 	- Test basic support for large files.
-	     1/ 1 tests/filesys/base/lg-create
-	     2/ 2 tests/filesys/base/lg-full
-	     2/ 2 tests/filesys/base/lg-random
-	     2/ 2 tests/filesys/base/lg-seq-block
-	     3/ 3 tests/filesys/base/lg-seq-random
+	  ** 0/ 1 tests/filesys/base/lg-create
+	  ** 0/ 2 tests/filesys/base/lg-full
+	  ** 0/ 2 tests/filesys/base/lg-random
+	  ** 0/ 2 tests/filesys/base/lg-seq-block
+	  ** 0/ 3 tests/filesys/base/lg-seq-random
 
 	- Test synchronized multiprogram access to files.
 	     4/ 4 tests/filesys/base/syn-read
@@ -703,8 +868,8 @@ Functionality of base file system (tests/filesys/base/Rubric):
 	     2/ 2 tests/filesys/base/syn-remove
 
 	- Section summary.
-	     13/ 13 tests passed
-	     30/ 30 points subtotal
+	      7/ 13 tests passed
+	     19/ 30 points subtotal
 
 Functionality of system calls (tests/userprog/Rubric.functionality):
 	- Test argument passing on Pintos command line.
@@ -791,7 +956,7 @@ Robustness of system calls (tests/userprog/Rubric.robustness):
 	- Test handling of null pointer and empty strings.
 	     2/ 2 tests/userprog/create-null
 	     2/ 2 tests/userprog/open-null
-	     2/ 2 tests/userprog/open-empty
+	  ** 0/ 2 tests/userprog/open-empty
 
 	- Test robustness of system call implementation.
 	     3/ 3 tests/userprog/sc-bad-arg
@@ -813,8 +978,8 @@ Robustness of system calls (tests/userprog/Rubric.robustness):
 	     1/ 1 tests/userprog/bad-jump2
 
 	- Section summary.
-	     34/ 34 tests passed
-	     88/ 88 points subtotal
+	     33/ 34 tests passed
+	     86/ 88 points subtotal
 
 Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	- Test stack growth.
@@ -828,14 +993,14 @@ Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	     3/ 3 tests/vm/page-parallel
 	     3/ 3 tests/vm/page-shuffle
 	     4/ 4 tests/vm/page-merge-seq
-	     4/ 4 tests/vm/page-merge-par
-	     4/ 4 tests/vm/page-merge-mm
-	     4/ 4 tests/vm/page-merge-stk
+	  ** 0/ 4 tests/vm/page-merge-par
+	  ** 0/ 4 tests/vm/page-merge-mm
+	  ** 0/ 4 tests/vm/page-merge-stk
 
 	- Test "mmap" system call.
 	     2/ 2 tests/vm/mmap-read
 	     2/ 2 tests/vm/mmap-write
-	     2/ 2 tests/vm/mmap-shuffle
+	  ** 0/ 2 tests/vm/mmap-shuffle
 
 	     2/ 2 tests/vm/mmap-twice
 
@@ -848,8 +1013,8 @@ Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	     2/ 2 tests/vm/mmap-remove
 
 	- Section summary.
-	     20/ 20 tests passed
-	     55/ 55 points subtotal
+	     16/ 20 tests passed
+	     41/ 55 points subtotal
 
 Robustness of virtual memory subsystem (tests/vm/Rubric.robustness):
 	- Test robustness of page table support.
@@ -888,7 +1053,7 @@ OUTPUT FROM tests/filesys/extended/dir-mkdir:
 
 Copying tests/filesys/extended/dir-mkdir to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/_qoKEQcWSL.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/KE6L7tYfiP.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-mkdir
@@ -920,12 +1085,12 @@ Executing 'dir-mkdir':
 (dir-mkdir) open "b": FAILED
 dir-mkdir: exit(1)
 Execution of 'dir-mkdir' complete.
-Timer: 98 ticks
+Timer: 109 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 489 writes
+hdb1 (filesys): 275 reads, 726 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1186 characters output
+Console: 1188 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -934,13 +1099,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/dir-mk-tree FAILURE:
 
-run: create "/0/1/0/2": FAILED
+run: open "/0/2/0/3": FAILED
 
 OUTPUT FROM tests/filesys/extended/dir-mk-tree:
 
 Copying tests/filesys/extended/dir-mk-tree to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/y7MSkHckyM.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/jfg4CP1GaC.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-mk-tree
@@ -966,15 +1131,16 @@ Erasing ustar archive...
 Executing 'dir-mk-tree':
 (dir-mk-tree) begin
 (dir-mk-tree) creating /0/0/0/0 through /3/2/2/3...
-(dir-mk-tree) create "/0/1/0/2": FAILED
+(dir-mk-tree) open "/0/2/0/3"
+(dir-mk-tree) open "/0/2/0/3": FAILED
 dir-mk-tree: exit(1)
 Execution of 'dir-mk-tree' complete.
-Timer: 98 ticks
+Timer: 133 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 37 reads, 554 writes
+hdb1 (filesys): 420 reads, 1168 writes
 hda2 (scratch): 243 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1171 characters output
+Console: 1202 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
@@ -989,7 +1155,7 @@ OUTPUT FROM tests/filesys/extended/dir-rmdir:
 
 Copying tests/filesys/extended/dir-rmdir to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/mbVx03liCX.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/mAmXVbss4a.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rmdir
@@ -1019,12 +1185,12 @@ Executing 'dir-rmdir':
 (dir-rmdir) rmdir "a": FAILED
 dir-rmdir: exit(1)
 Execution of 'dir-rmdir' complete.
-Timer: 94 ticks
+Timer: 123 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 484 writes
+hdb1 (filesys): 274 reads, 721 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1141 characters output
+Console: 1143 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1033,13 +1199,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/dir-rm-tree FAILURE:
 
-run: create "/0/1/0/2": FAILED
+run: open "/0/2/0/3": FAILED
 
 OUTPUT FROM tests/filesys/extended/dir-rm-tree:
 
 Copying tests/filesys/extended/dir-rm-tree to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/jt_kE6lW_H.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/9egv8g4uZT.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rm-tree
@@ -1065,15 +1231,16 @@ Erasing ustar archive...
 Executing 'dir-rm-tree':
 (dir-rm-tree) begin
 (dir-rm-tree) creating /0/0/0/0 through /3/2/2/3...
-(dir-rm-tree) create "/0/1/0/2": FAILED
+(dir-rm-tree) open "/0/2/0/3"
+(dir-rm-tree) open "/0/2/0/3": FAILED
 dir-rm-tree: exit(1)
 Execution of 'dir-rm-tree' complete.
-Timer: 97 ticks
+Timer: 149 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 38 reads, 560 writes
+hdb1 (filesys): 427 reads, 1177 writes
 hda2 (scratch): 246 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1171 characters output
+Console: 1202 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1082,20 +1249,20 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/dir-vine FAILURE:
 
-run: created files and directories only to level 0: FAILED
+run: open ".": FAILED
 
 OUTPUT FROM tests/filesys/extended/dir-vine:
 
 Copying tests/filesys/extended/dir-vine to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/59GGo3p11u.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/zuKf66U8yL.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-vine
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  307,609,600 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 243 sectors (121 kB), Pintos scratch (22)
@@ -1114,15 +1281,15 @@ Erasing ustar archive...
 Executing 'dir-vine':
 (dir-vine) begin
 (dir-vine) creating many levels of files and directories...
-(dir-vine) created files and directories only to level 0: FAILED
+(dir-vine) open ".": FAILED
 dir-vine: exit(1)
 Execution of 'dir-vine' complete.
-Timer: 96 ticks
+Timer: 124 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 38 reads, 499 writes
+hdb1 (filesys): 283 reads, 739 writes
 hda2 (scratch): 242 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1186 characters output
+Console: 1151 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1131,20 +1298,20 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-seq-sm FAILURE:
 
-run: write 1234 bytes at offset 0 in "testme" failed: FAILED
+run: read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-seq-sm:
 
 Copying tests/filesys/extended/grow-seq-sm to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/mz1fCzWio1.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/1jHaYURI_d.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-seq-sm
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  235,520,000 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 239 sectors (119 kB), Pintos scratch (22)
@@ -1165,15 +1332,18 @@ Executing 'grow-seq-sm':
 (grow-seq-sm) create "testme"
 (grow-seq-sm) open "testme"
 (grow-seq-sm) writing "testme"
-(grow-seq-sm) write 1234 bytes at offset 0 in "testme" failed: FAILED
+(grow-seq-sm) close "testme"
+(grow-seq-sm) open "testme" for verification
+(grow-seq-sm) size of testme (0) differs from expected (5678)
+(grow-seq-sm) read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 grow-seq-sm: exit(1)
 Execution of 'grow-seq-sm' complete.
-Timer: 94 ticks
+Timer: 125 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 488 writes
+hdb1 (filesys): 285 reads, 766 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1238 characters output
+Console: 1381 characters output
 Keyboard: 0 keys pressed
 Exception: 6 page faults
 Powering off...
@@ -1182,13 +1352,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-seq-lg FAILURE:
 
-run: write 1234 bytes at offset 0 in "testme" failed: FAILED
+run: read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-seq-lg:
 
 Copying tests/filesys/extended/grow-seq-lg to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/A9kLThsVhE.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/1DvDtY7xMZ.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-seq-lg
@@ -1216,15 +1386,18 @@ Executing 'grow-seq-lg':
 (grow-seq-lg) create "testme"
 (grow-seq-lg) open "testme"
 (grow-seq-lg) writing "testme"
-(grow-seq-lg) write 1234 bytes at offset 0 in "testme" failed: FAILED
+(grow-seq-lg) close "testme"
+(grow-seq-lg) open "testme" for verification
+(grow-seq-lg) size of testme (0) differs from expected (72943)
+(grow-seq-lg) read of 512 bytes at offset 0 in "testme" returned 0: FAILED
 grow-seq-lg: exit(1)
 Execution of 'grow-seq-lg' complete.
-Timer: 95 ticks
+Timer: 154 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 488 writes
+hdb1 (filesys): 587 reads, 1272 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1238 characters output
+Console: 1383 characters output
 Keyboard: 0 keys pressed
 Exception: 22 page faults
 Powering off...
@@ -1239,7 +1412,7 @@ OUTPUT FROM tests/filesys/extended/grow-sparse:
 
 Copying tests/filesys/extended/grow-sparse to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/Dxgmp5qX2G.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/a9HIgEIxFJ.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-sparse
@@ -1271,12 +1444,12 @@ Executing 'grow-sparse':
 (grow-sparse) write "testfile": FAILED
 grow-sparse: exit(1)
 Execution of 'grow-sparse' complete.
-Timer: 97 ticks
+Timer: 124 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 36 reads, 490 writes
+hdb1 (filesys): 272 reads, 1005 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1241 characters output
+Console: 1244 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
@@ -1285,20 +1458,20 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-two-files FAILURE:
 
-run: write 250 bytes at offset 0 in "a" returned 0: FAILED
+run: read of 512 bytes at offset 0 in "a" returned 0: FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-two-files:
 
 Copying tests/filesys/extended/grow-two-files to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/eveh6vwc6E.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/300xG9wQB0.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-two-files
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  311,296,000 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 242 sectors (121 kB), Pintos scratch (22)
@@ -1321,15 +1494,19 @@ Executing 'grow-two-files':
 (grow-two-files) open "a"
 (grow-two-files) open "b"
 (grow-two-files) write "a" and "b" alternately
-(grow-two-files) write 250 bytes at offset 0 in "a" returned 0: FAILED
+(grow-two-files) close "a"
+(grow-two-files) close "b"
+(grow-two-files) open "a" for verification
+(grow-two-files) size of a (0) differs from expected (8143)
+(grow-two-files) read of 512 bytes at offset 0 in "a" returned 0: FAILED
 grow-two-files: exit(1)
 Execution of 'grow-two-files' complete.
-Timer: 101 ticks
+Timer: 119 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 37 reads, 498 writes
+hdb1 (filesys): 338 reads, 877 writes
 hda2 (scratch): 241 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1324 characters output
+Console: 1484 characters output
 Keyboard: 0 keys pressed
 Exception: 8 page faults
 Powering off...
@@ -1338,20 +1515,20 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-tell FAILURE:
 
-run: write 37 bytes at offset 0 in "foobar" failed: FAILED
+run: read of 512 bytes at offset 0 in "foobar" returned 0: FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-tell:
 
 Copying tests/filesys/extended/grow-tell to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/KnVgJCNAqo.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/P6RfuKCUwj.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-tell
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  313,753,600 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 240 sectors (120 kB), Pintos scratch (22)
@@ -1372,15 +1549,18 @@ Executing 'grow-tell':
 (grow-tell) create "foobar"
 (grow-tell) open "foobar"
 (grow-tell) writing "foobar"
-(grow-tell) write 37 bytes at offset 0 in "foobar" failed: FAILED
+(grow-tell) close "foobar"
+(grow-tell) open "foobar" for verification
+(grow-tell) size of foobar (0) differs from expected (2134)
+(grow-tell) read of 512 bytes at offset 0 in "foobar" returned 0: FAILED
 grow-tell: exit(1)
 Execution of 'grow-tell' complete.
-Timer: 98 ticks
+Timer: 115 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 490 writes
+hdb1 (filesys): 284 reads, 799 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1216 characters output
+Console: 1355 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1389,20 +1569,20 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-file-size FAILURE:
 
-run: write 37 bytes at offset 0 in "testfile" failed: FAILED
+run: read of 512 bytes at offset 0 in "testfile" returned 0: FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-file-size:
 
 Copying tests/filesys/extended/grow-file-size to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/6HjsHFzer8.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/PBMMVH3PbG.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-file-size
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  311,705,600 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 240 sectors (120 kB), Pintos scratch (22)
@@ -1423,15 +1603,18 @@ Executing 'grow-file-size':
 (grow-file-size) create "testfile"
 (grow-file-size) open "testfile"
 (grow-file-size) writing "testfile"
-(grow-file-size) write 37 bytes at offset 0 in "testfile" failed: FAILED
+(grow-file-size) close "testfile"
+(grow-file-size) open "testfile" for verification
+(grow-file-size) size of testfile (0) differs from expected (2134)
+(grow-file-size) read of 512 bytes at offset 0 in "testfile" returned 0: FAILED
 grow-file-size: exit(1)
 Execution of 'grow-file-size' complete.
-Timer: 97 ticks
+Timer: 117 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 490 writes
+hdb1 (filesys): 284 reads, 799 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1274 characters output
+Console: 1434 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1440,13 +1623,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-dir-lg FAILURE:
 
-run: create "/x/file14": FAILED
+run: open "/x/file11": FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-dir-lg:
 
 Copying tests/filesys/extended/grow-dir-lg to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/FKHwW6aXaK.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/0DbFMjn8dV.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-dir-lg
@@ -1484,18 +1667,15 @@ Executing 'grow-dir-lg':
 (grow-dir-lg) creating and checking "/x/file9"
 (grow-dir-lg) creating and checking "/x/file10"
 (grow-dir-lg) creating and checking "/x/file11"
-(grow-dir-lg) creating and checking "/x/file12"
-(grow-dir-lg) creating and checking "/x/file13"
-(grow-dir-lg) creating and checking "/x/file14"
-(grow-dir-lg) create "/x/file14": FAILED
+(grow-dir-lg) open "/x/file11": FAILED
 grow-dir-lg: exit(1)
 Execution of 'grow-dir-lg' complete.
-Timer: 106 ticks
+Timer: 114 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 36 reads, 575 writes
+hdb1 (filesys): 333 reads, 795 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1854 characters output
+Console: 1709 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1504,13 +1684,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-root-sm FAILURE:
 
-run: create "file14": FAILED
+run: open "file11": FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-root-sm:
 
 Copying tests/filesys/extended/grow-root-sm to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/oLpwheXnII.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/F8PyCl0733.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-root-sm
@@ -1547,18 +1727,15 @@ Executing 'grow-root-sm':
 (grow-root-sm) creating and checking "file9"
 (grow-root-sm) creating and checking "file10"
 (grow-root-sm) creating and checking "file11"
-(grow-root-sm) creating and checking "file12"
-(grow-root-sm) creating and checking "file13"
-(grow-root-sm) creating and checking "file14"
-(grow-root-sm) create "file14": FAILED
+(grow-root-sm) open "file11": FAILED
 grow-root-sm: exit(1)
 Execution of 'grow-root-sm' complete.
-Timer: 105 ticks
+Timer: 115 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 575 writes
+hdb1 (filesys): 331 reads, 795 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1805 characters output
+Console: 1666 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1567,13 +1744,13 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/grow-root-lg FAILURE:
 
-run: create "file14": FAILED
+run: open "file11": FAILED
 
 OUTPUT FROM tests/filesys/extended/grow-root-lg:
 
 Copying tests/filesys/extended/grow-root-lg to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/dGItNzePZj.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/r0lY8LRPvd.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run grow-root-lg
@@ -1610,18 +1787,15 @@ Executing 'grow-root-lg':
 (grow-root-lg) creating and checking "file9"
 (grow-root-lg) creating and checking "file10"
 (grow-root-lg) creating and checking "file11"
-(grow-root-lg) creating and checking "file12"
-(grow-root-lg) creating and checking "file13"
-(grow-root-lg) creating and checking "file14"
-(grow-root-lg) create "file14": FAILED
+(grow-root-lg) open "file11": FAILED
 grow-root-lg: exit(1)
 Execution of 'grow-root-lg' complete.
-Timer: 101 ticks
+Timer: 116 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 575 writes
+hdb1 (filesys): 331 reads, 795 writes
 hda2 (scratch): 239 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1805 characters output
+Console: 1666 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1630,14 +1804,14 @@ Powering off...
 
 DETAILS OF tests/filesys/extended/syn-rw FAILURE:
 
-run: write 8 bytes at offset 0 in "logfile": FAILED
+run: TIMEOUT after 60 seconds of host CPU time
 
 OUTPUT FROM tests/filesys/extended/syn-rw:
 
 Copying tests/filesys/extended/syn-rw to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
 Copying tests/filesys/extended/child-syn-rw to scratch partition...
-qemu -hda /tmp/user/1002/44xkLvUym7.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/8FsTS8AQ5F.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run syn-rw
@@ -1668,19 +1842,8 @@ Executing 'syn-rw':
 (syn-rw) exec child 1 of 4: "child-syn-rw 0"
 (syn-rw) exec child 2 of 4: "child-syn-rw 1"
 (syn-rw) exec child 3 of 4: "child-syn-rw 2"
-(syn-rw) exec child 4 of 4: "child-syn-rw 3"
-(syn-rw) write 8 bytes at offset 0 in "logfile": FAILED
-syn-rw: exit(1)
-Execution of 'syn-rw' complete.
-Timer: 106 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 46 reads, 734 writes
-hda2 (scratch): 360 reads, 2 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 1383 characters output
-Keyboard: 0 keys pressed
-Exception: 10 page faults
-Powering off...
+
+TIMEOUT after 60 seconds of host CPU time
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1692,7 +1855,7 @@ OUTPUT FROM tests/filesys/extended/dir-empty-name:
 
 Copying tests/filesys/extended/dir-empty-name to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/qgMXfPysXR.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/REop5zpSOW.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-empty-name
@@ -1721,12 +1884,12 @@ Executing 'dir-empty-name':
 (dir-empty-name) mkdir "" (must return false): FAILED
 dir-empty-name: exit(1)
 Execution of 'dir-empty-name' complete.
-Timer: 98 ticks
+Timer: 112 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 484 writes
+hdb1 (filesys): 273 reads, 721 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1197 characters output
+Console: 1199 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1741,7 +1904,7 @@ OUTPUT FROM tests/filesys/extended/dir-open:
 
 Copying tests/filesys/extended/dir-open to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/8U1E7pqBiD.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/cCCxlPYqdT.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-open
@@ -1771,12 +1934,12 @@ Executing 'dir-open':
 (dir-open) open "xyzzy": FAILED
 dir-open: exit(1)
 Execution of 'dir-open' complete.
-Timer: 99 ticks
+Timer: 109 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 36 reads, 484 writes
+hdb1 (filesys): 276 reads, 721 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1142 characters output
+Console: 1144 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1791,7 +1954,7 @@ OUTPUT FROM tests/filesys/extended/dir-over-file:
 
 Copying tests/filesys/extended/dir-over-file to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/mzceq1VE0a.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/jrbgUNO6m3.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-over-file
@@ -1821,12 +1984,12 @@ Executing 'dir-over-file':
 (dir-over-file) create "abc" (must return false): FAILED
 dir-over-file: exit(1)
 Execution of 'dir-over-file' complete.
-Timer: 98 ticks
+Timer: 120 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 488 writes
+hdb1 (filesys): 274 reads, 724 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1225 characters output
+Console: 1227 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1841,7 +2004,7 @@ OUTPUT FROM tests/filesys/extended/dir-under-file:
 
 Copying tests/filesys/extended/dir-under-file to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/7nSrVZNjGq.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/hEYFH6faon.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-under-file
@@ -1871,12 +2034,12 @@ Executing 'dir-under-file':
 (dir-under-file) mkdir "abc" (must return false): FAILED
 dir-under-file: exit(1)
 Execution of 'dir-under-file' complete.
-Timer: 98 ticks
+Timer: 102 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 488 writes
+hdb1 (filesys): 274 reads, 724 writes
 hda2 (scratch): 238 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1233 characters output
+Console: 1235 characters output
 Keyboard: 0 keys pressed
 Exception: 5 page faults
 Powering off...
@@ -1891,7 +2054,7 @@ OUTPUT FROM tests/filesys/extended/dir-rm-cwd:
 
 Copying tests/filesys/extended/dir-rm-cwd to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/g_hhTTTZ46.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/bezuZMRVar.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rm-cwd
@@ -1920,12 +2083,12 @@ Executing 'dir-rm-cwd':
 (dir-rm-cwd) open "/": FAILED
 dir-rm-cwd: exit(1)
 Execution of 'dir-rm-cwd' complete.
-Timer: 97 ticks
+Timer: 108 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 38 reads, 494 writes
+hdb1 (filesys): 278 reads, 736 writes
 hda2 (scratch): 243 reads, 2 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1125 characters output
+Console: 1127 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
@@ -1938,7 +2101,7 @@ Prerequisite test tests/filesys/extended/dir-empty-name failed.
 
 OUTPUT FROM tests/filesys/extended/dir-empty-name-persistence:
 
-qemu -hda /tmp/user/1002/1GzBfkwNir.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/3CGR9gMIhz.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1958,20 +2121,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-empty-name.tar out of /tmp/user/1002/1GzBfkwNir.dsk...
+Copying tests/filesys/extended/dir-empty-name.tar out of /tmp/user/1002/3CGR9gMIhz.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1981,7 +2143,7 @@ Prerequisite test tests/filesys/extended/dir-mk-tree failed.
 
 OUTPUT FROM tests/filesys/extended/dir-mk-tree-persistence:
 
-qemu -hda /tmp/user/1002/da2y6vk7AA.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/2AOm5dPoY_.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2000,25 +2162,25 @@ scratch: using hda2
 swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
-fs.tar: create failed
+fs.tar: open failed
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
-Call stack: 0xc0028b09 0xc002e7c5 0xc0020970.
+Kernel PANIC at ../../filesys/fsutil.c:192 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc0028b09 0xc002eca5 0xc0020970.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 76 ticks
+Timer: 79 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 56 reads, 3 writes
 hda2 (scratch): 0 reads, 0 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1213 characters output
+Console: 1211 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
-Copying tests/filesys/extended/dir-mk-tree.tar out of /tmp/user/1002/da2y6vk7AA.dsk...
+Copying tests/filesys/extended/dir-mk-tree.tar out of /tmp/user/1002/2AOm5dPoY_.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2028,7 +2190,7 @@ Prerequisite test tests/filesys/extended/dir-mkdir failed.
 
 OUTPUT FROM tests/filesys/extended/dir-mkdir-persistence:
 
-qemu -hda /tmp/user/1002/Rfy6BUhKgC.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/TsQJDSZvNG.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2048,20 +2210,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-mkdir.tar out of /tmp/user/1002/Rfy6BUhKgC.dsk...
+Copying tests/filesys/extended/dir-mkdir.tar out of /tmp/user/1002/TsQJDSZvNG.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2071,7 +2232,7 @@ Prerequisite test tests/filesys/extended/dir-open failed.
 
 OUTPUT FROM tests/filesys/extended/dir-open-persistence:
 
-qemu -hda /tmp/user/1002/rvQS4pRO_q.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/6i9K9hQBJF.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2091,20 +2252,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 78 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-open.tar out of /tmp/user/1002/rvQS4pRO_q.dsk...
+Copying tests/filesys/extended/dir-open.tar out of /tmp/user/1002/6i9K9hQBJF.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2114,7 +2274,7 @@ Prerequisite test tests/filesys/extended/dir-over-file failed.
 
 OUTPUT FROM tests/filesys/extended/dir-over-file-persistence:
 
-qemu -hda /tmp/user/1002/6zMaSzhOEO.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/mzLzkp43V6.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2134,20 +2294,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 78 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-over-file.tar out of /tmp/user/1002/6zMaSzhOEO.dsk...
+Copying tests/filesys/extended/dir-over-file.tar out of /tmp/user/1002/mzLzkp43V6.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2157,97 +2316,7 @@ Prerequisite test tests/filesys/extended/dir-rm-cwd failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rm-cwd-persistence:
 
-qemu -hda /tmp/user/1002/PR0H6LqdWu.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading..........
-Kernel command line: -q run 'tar fs.tar /' append fs.tar
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
-hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 163 sectors (81 kB), Pintos OS kernel (20)
-hda2: 2,048 sectors (1 MB), Pintos scratch (22)
-hda3: 8,192 sectors (4 MB), Pintos swap (23)
-hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
-hdb1: 4,096 sectors (2 MB), Pintos file system (21)
-filesys: using hdb1
-scratch: using hda2
-swap: using hda3
-Boot complete.
-Executing 'tar fs.tar /':
-/: open failed
-error writing archive
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
-hda2 (scratch): 0 reads, 3 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
-Keyboard: 0 keys pressed
-Exception: 4 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-cwd.tar out of /tmp/user/1002/PR0H6LqdWu.dsk...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/extended/dir-rm-parent-persistence FAILURE:
-
-Error extracting file system:
-/: open failed
-error writing archive
-
-OUTPUT FROM tests/filesys/extended/dir-rm-parent-persistence:
-
-qemu -hda /tmp/user/1002/xVnyp3XWzl.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading..........
-Kernel command line: -q run 'tar fs.tar /' append fs.tar
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  235,520,000 loops/s.
-hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 163 sectors (81 kB), Pintos OS kernel (20)
-hda2: 2,048 sectors (1 MB), Pintos scratch (22)
-hda3: 8,192 sectors (4 MB), Pintos swap (23)
-hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
-hdb1: 4,096 sectors (2 MB), Pintos file system (21)
-filesys: using hdb1
-scratch: using hda2
-swap: using hda3
-Boot complete.
-Executing 'tar fs.tar /':
-/: open failed
-error writing archive
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
-hda2 (scratch): 0 reads, 3 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
-Keyboard: 0 keys pressed
-Exception: 4 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-parent.tar out of /tmp/user/1002/xVnyp3XWzl.dsk...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/extended/dir-rm-root-persistence FAILURE:
-
-Error extracting file system:
-/: open failed
-error writing archive
-
-OUTPUT FROM tests/filesys/extended/dir-rm-root-persistence:
-
-qemu -hda /tmp/user/1002/MTk5VDhRO0.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/xnF5fjF6C_.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2267,20 +2336,105 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 76 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-rm-root.tar out of /tmp/user/1002/MTk5VDhRO0.dsk...
+Copying tests/filesys/extended/dir-rm-cwd.tar out of /tmp/user/1002/xnF5fjF6C_.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-parent-persistence FAILURE:
+
+Error extracting file system:
+/: open failed
+
+OUTPUT FROM tests/filesys/extended/dir-rm-parent-persistence:
+
+qemu -hda /tmp/user/1002/2TDwJavTRX.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hda3: 8,192 sectors (4 MB), Pintos swap (23)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+swap: using hda3
+Boot complete.
+Executing 'tar fs.tar /':
+/: open failed
+tar: exit(1)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 78 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hdb1 (filesys): 64 reads, 9 writes
+hda2 (scratch): 0 reads, 3 writes
+hda3 (swap): 0 reads, 0 writes
+Console: 923 characters output
+Keyboard: 0 keys pressed
+Exception: 5 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-parent.tar out of /tmp/user/1002/2TDwJavTRX.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/extended/dir-rm-root-persistence FAILURE:
+
+Error extracting file system:
+/: open failed
+
+OUTPUT FROM tests/filesys/extended/dir-rm-root-persistence:
+
+qemu -hda /tmp/user/1002/8skkpHj4L6.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q run 'tar fs.tar /' append fs.tar
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 2,048 sectors (1 MB), Pintos scratch (22)
+hda3: 8,192 sectors (4 MB), Pintos swap (23)
+hdb: 5,040 sectors (2 MB), model "QM00002", serial "QEMU HARDDISK"
+hdb1: 4,096 sectors (2 MB), Pintos file system (21)
+filesys: using hdb1
+scratch: using hda2
+swap: using hda3
+Boot complete.
+Executing 'tar fs.tar /':
+/: open failed
+tar: exit(1)
+Execution of 'tar fs.tar /' complete.
+Appending 'fs.tar' to ustar archive on scratch device...
+Timer: 80 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hdb1 (filesys): 64 reads, 9 writes
+hda2 (scratch): 0 reads, 3 writes
+hda3 (swap): 0 reads, 0 writes
+Console: 923 characters output
+Keyboard: 0 keys pressed
+Exception: 5 page faults
+Powering off...
+Copying tests/filesys/extended/dir-rm-root.tar out of /tmp/user/1002/8skkpHj4L6.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2290,7 +2444,7 @@ Prerequisite test tests/filesys/extended/dir-rm-tree failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rm-tree-persistence:
 
-qemu -hda /tmp/user/1002/1CFEM9WuRs.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/pQK3Ymb4ZZ.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2309,25 +2463,25 @@ scratch: using hda2
 swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
-fs.tar: create failed
+fs.tar: open failed
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
-Call stack: 0xc0028b09 0xc002e7c5 0xc0020970.
+Kernel PANIC at ../../filesys/fsutil.c:192 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc0028b09 0xc002eca5 0xc0020970.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 76 ticks
+Timer: 79 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 56 reads, 3 writes
 hda2 (scratch): 0 reads, 0 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1213 characters output
+Console: 1211 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
-Copying tests/filesys/extended/dir-rm-tree.tar out of /tmp/user/1002/1CFEM9WuRs.dsk...
+Copying tests/filesys/extended/dir-rm-tree.tar out of /tmp/user/1002/pQK3Ymb4ZZ.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2337,7 +2491,7 @@ Prerequisite test tests/filesys/extended/dir-rmdir failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rmdir-persistence:
 
-qemu -hda /tmp/user/1002/dq2732JFRa.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/aC5477eu0y.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2357,20 +2511,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 76 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-rmdir.tar out of /tmp/user/1002/dq2732JFRa.dsk...
+Copying tests/filesys/extended/dir-rmdir.tar out of /tmp/user/1002/aC5477eu0y.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2380,7 +2533,7 @@ Prerequisite test tests/filesys/extended/dir-under-file failed.
 
 OUTPUT FROM tests/filesys/extended/dir-under-file-persistence:
 
-qemu -hda /tmp/user/1002/TlWMkRUA5Q.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/zsKZN0tKEs.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2400,20 +2553,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 78 ticks
+Timer: 79 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-under-file.tar out of /tmp/user/1002/TlWMkRUA5Q.dsk...
+Copying tests/filesys/extended/dir-under-file.tar out of /tmp/user/1002/zsKZN0tKEs.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2423,7 +2575,7 @@ Prerequisite test tests/filesys/extended/dir-vine failed.
 
 OUTPUT FROM tests/filesys/extended/dir-vine-persistence:
 
-qemu -hda /tmp/user/1002/OrACE8plFC.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/8cj3sNXeZs.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2443,20 +2595,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/dir-vine.tar out of /tmp/user/1002/OrACE8plFC.dsk...
+Copying tests/filesys/extended/dir-vine.tar out of /tmp/user/1002/8cj3sNXeZs.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2464,11 +2615,10 @@ DETAILS OF tests/filesys/extended/grow-create-persistence FAILURE:
 
 Error extracting file system:
 /: open failed
-error writing archive
 
 OUTPUT FROM tests/filesys/extended/grow-create-persistence:
 
-qemu -hda /tmp/user/1002/EXGeqvH7T0.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/vbwsfA737x.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2488,20 +2638,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-create.tar out of /tmp/user/1002/EXGeqvH7T0.dsk...
+Copying tests/filesys/extended/grow-create.tar out of /tmp/user/1002/vbwsfA737x.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2511,7 +2660,7 @@ Prerequisite test tests/filesys/extended/grow-dir-lg failed.
 
 OUTPUT FROM tests/filesys/extended/grow-dir-lg-persistence:
 
-qemu -hda /tmp/user/1002/z9qIirhSbt.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/RtZNvo6fRg.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2530,25 +2679,25 @@ scratch: using hda2
 swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
-fs.tar: create failed
+fs.tar: open failed
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
-Call stack: 0xc0028b09 0xc002e7c5 0xc0020970.
+Kernel PANIC at ../../filesys/fsutil.c:192 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc0028b09 0xc002eca5 0xc0020970.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 76 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 56 reads, 3 writes
 hda2 (scratch): 0 reads, 0 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1213 characters output
+Console: 1211 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
-Copying tests/filesys/extended/grow-dir-lg.tar out of /tmp/user/1002/z9qIirhSbt.dsk...
+Copying tests/filesys/extended/grow-dir-lg.tar out of /tmp/user/1002/RtZNvo6fRg.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2558,7 +2707,7 @@ Prerequisite test tests/filesys/extended/grow-file-size failed.
 
 OUTPUT FROM tests/filesys/extended/grow-file-size-persistence:
 
-qemu -hda /tmp/user/1002/XVjSadZKUV.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/1Anza29ijY.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2578,20 +2727,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 77 ticks
+Timer: 79 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-file-size.tar out of /tmp/user/1002/XVjSadZKUV.dsk...
+Copying tests/filesys/extended/grow-file-size.tar out of /tmp/user/1002/1Anza29ijY.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2601,14 +2749,14 @@ Prerequisite test tests/filesys/extended/grow-root-lg failed.
 
 OUTPUT FROM tests/filesys/extended/grow-root-lg-persistence:
 
-qemu -hda /tmp/user/1002/VepmwyI5ve.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Wu9VeEr6Jq.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  235,520,000 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2620,25 +2768,25 @@ scratch: using hda2
 swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
-fs.tar: create failed
+fs.tar: open failed
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
-Call stack: 0xc0028b09 0xc002e7c5 0xc0020970.
+Kernel PANIC at ../../filesys/fsutil.c:192 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc0028b09 0xc002eca5 0xc0020970.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 81 ticks
+Timer: 80 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 56 reads, 3 writes
 hda2 (scratch): 0 reads, 0 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1213 characters output
+Console: 1211 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
-Copying tests/filesys/extended/grow-root-lg.tar out of /tmp/user/1002/VepmwyI5ve.dsk...
+Copying tests/filesys/extended/grow-root-lg.tar out of /tmp/user/1002/Wu9VeEr6Jq.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2648,14 +2796,14 @@ Prerequisite test tests/filesys/extended/grow-root-sm failed.
 
 OUTPUT FROM tests/filesys/extended/grow-root-sm-persistence:
 
-qemu -hda /tmp/user/1002/rWW6QL20bx.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/vb9bhgpFZT.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  291,225,600 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2667,25 +2815,25 @@ scratch: using hda2
 swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
-fs.tar: create failed
+fs.tar: open failed
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Kernel PANIC at ../../filesys/fsutil.c:187 in fsutil_append(): fs.tar: open failed
-Call stack: 0xc0028b09 0xc002e7c5 0xc0020970.
+Kernel PANIC at ../../filesys/fsutil.c:192 in fsutil_append(): fs.tar: open failed
+Call stack: 0xc0028b09 0xc002eca5 0xc0020970.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Timer: 77 ticks
+Timer: 83 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 56 reads, 3 writes
 hda2 (scratch): 0 reads, 0 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 1213 characters output
+Console: 1211 characters output
 Keyboard: 0 keys pressed
 Exception: 4 page faults
 Powering off...
-Copying tests/filesys/extended/grow-root-sm.tar out of /tmp/user/1002/rWW6QL20bx.dsk...
+Copying tests/filesys/extended/grow-root-sm.tar out of /tmp/user/1002/vb9bhgpFZT.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2695,7 +2843,7 @@ Prerequisite test tests/filesys/extended/grow-seq-lg failed.
 
 OUTPUT FROM tests/filesys/extended/grow-seq-lg-persistence:
 
-qemu -hda /tmp/user/1002/lc8rghQnu9.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/0iIUx5SluS.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2715,20 +2863,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 76 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-seq-lg.tar out of /tmp/user/1002/lc8rghQnu9.dsk...
+Copying tests/filesys/extended/grow-seq-lg.tar out of /tmp/user/1002/0iIUx5SluS.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2738,7 +2885,7 @@ Prerequisite test tests/filesys/extended/grow-seq-sm failed.
 
 OUTPUT FROM tests/filesys/extended/grow-seq-sm-persistence:
 
-qemu -hda /tmp/user/1002/iYRt8GhCTV.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/CemVtUH20u.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2758,20 +2905,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
+Timer: 82 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-seq-sm.tar out of /tmp/user/1002/iYRt8GhCTV.dsk...
+Copying tests/filesys/extended/grow-seq-sm.tar out of /tmp/user/1002/CemVtUH20u.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2781,7 +2927,7 @@ Prerequisite test tests/filesys/extended/grow-sparse failed.
 
 OUTPUT FROM tests/filesys/extended/grow-sparse-persistence:
 
-qemu -hda /tmp/user/1002/LIaX45HVBg.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/RLY99uAJg5.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2801,20 +2947,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 76 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-sparse.tar out of /tmp/user/1002/LIaX45HVBg.dsk...
+Copying tests/filesys/extended/grow-sparse.tar out of /tmp/user/1002/RLY99uAJg5.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2824,7 +2969,7 @@ Prerequisite test tests/filesys/extended/grow-tell failed.
 
 OUTPUT FROM tests/filesys/extended/grow-tell-persistence:
 
-qemu -hda /tmp/user/1002/qhC0JAZ58h.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/DPlJMToRzN.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2844,20 +2989,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 77 ticks
+Timer: 81 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-tell.tar out of /tmp/user/1002/qhC0JAZ58h.dsk...
+Copying tests/filesys/extended/grow-tell.tar out of /tmp/user/1002/DPlJMToRzN.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2867,14 +3011,14 @@ Prerequisite test tests/filesys/extended/grow-two-files failed.
 
 OUTPUT FROM tests/filesys/extended/grow-two-files-persistence:
 
-qemu -hda /tmp/user/1002/wGAKljlmxC.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/4PkEPRtcuJ.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  312,934,400 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2887,20 +3031,19 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
+Timer: 82 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/grow-two-files.tar out of /tmp/user/1002/wGAKljlmxC.dsk...
+Copying tests/filesys/extended/grow-two-files.tar out of /tmp/user/1002/4PkEPRtcuJ.dsk...
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2910,14 +3053,14 @@ Prerequisite test tests/filesys/extended/syn-rw failed.
 
 OUTPUT FROM tests/filesys/extended/syn-rw-persistence:
 
-qemu -hda /tmp/user/1002/B8mykp9pZD.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/1phSYDdY_Z.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  209,510,400 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2930,18 +3073,750 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-error writing archive
 tar: exit(1)
 Execution of 'tar fs.tar /' complete.
 Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
+Timer: 76 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 34 reads, 4 writes
+hdb1 (filesys): 64 reads, 9 writes
 hda2 (scratch): 0 reads, 3 writes
 hda3 (swap): 0 reads, 0 writes
-Console: 945 characters output
+Console: 923 characters output
 Keyboard: 0 keys pressed
-Exception: 4 page faults
+Exception: 5 page faults
 Powering off...
-Copying tests/filesys/extended/syn-rw.tar out of /tmp/user/1002/B8mykp9pZD.dsk...
+Copying tests/filesys/extended/syn-rw.tar out of /tmp/user/1002/1phSYDdY_Z.dsk...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/sm-create FAILURE:
+
+run: 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
+
+OUTPUT FROM tests/filesys/base/sm-create:
+
+Copying tests/filesys/base/sm-create to scratch partition...
+qemu -hda /tmp/user/1002/h8u2HDbcts.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run sm-create
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 111 sectors (55 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'sm-create' into the file system...
+Erasing ustar archive...
+Executing 'sm-create':
+(sm-create) begin
+(sm-create) create "blargle"
+(sm-create) open "blargle" for verification
+(sm-create) 8 bytes read starting at offset 16 in "blargle" differ from expected.
+(sm-create) Data actually read:
+00000010  0c 91 10 c0 0c 90 10 c0-                        |........        |
+(sm-create) Expected data:
+00000010  00 00 00 00 00 00 00 00-                        |........        |
+(sm-create) 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
+sm-create: exit(1)
+Execution of 'sm-create' complete.
+Timer: 96 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 155 reads, 364 writes
+hda3 (scratch): 110 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1420 characters output
+Keyboard: 0 keys pressed
+Exception: 5 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-create FAILURE:
+
+run: 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
+
+OUTPUT FROM tests/filesys/base/lg-create:
+
+Copying tests/filesys/base/lg-create to scratch partition...
+qemu -hda /tmp/user/1002/AgjXnfix0z.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run lg-create
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 111 sectors (55 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'lg-create' into the file system...
+Erasing ustar archive...
+Executing 'lg-create':
+(lg-create) begin
+(lg-create) create "blargle"
+(lg-create) open "blargle" for verification
+(lg-create) 8 bytes read starting at offset 16 in "blargle" differ from expected.
+(lg-create) Data actually read:
+00000010  0c 91 10 c0 0c 90 10 c0-                        |........        |
+(lg-create) Expected data:
+00000010  00 00 00 00 00 00 00 00-                        |........        |
+(lg-create) 8 bytes read starting at offset 16 in "blargle" differ from expected: FAILED
+lg-create: exit(1)
+Execution of 'lg-create' complete.
+Timer: 99 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 155 reads, 616 writes
+hda3 (scratch): 110 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1420 characters output
+Keyboard: 0 keys pressed
+Exception: 5 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-full FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-full:
+0x0804a2c8: write (...../lib/user/syscall.c:123)
+0x080487a8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e4: test_main (.../filesys/base/full.inc:20)
+0x08048852: main (...ild/../../tests/main.c:13)
+0x08048884: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/filesys/base/lg-full:
+
+Copying tests/filesys/base/lg-full to scratch partition...
+qemu -hda /tmp/user/1002/1gCjV8ZR3j.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run lg-full
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 111 sectors (55 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'lg-full' into the file system...
+Erasing ustar archive...
+Executing 'lg-full':
+(lg-full) begin
+(lg-full) create "quux"
+(lg-full) open "quux"
+(lg-full) writing "quux"
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 102 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 282 reads, 754 writes
+hda3 (scratch): 110 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1424 characters output
+Keyboard: 0 keys pressed
+Exception: 23 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-random FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a4a8 0x80481c2 0x8048a32 0x8048a64
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-random:
+0x0804a4a8: write (...../lib/user/syscall.c:123)
+0x080481c2: test_main (...ilesys/base/random.inc:41)
+0x08048a32: main (...ild/../../tests/main.c:13)
+0x08048a64: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/filesys/base/lg-random:
+
+Copying tests/filesys/base/lg-random to scratch partition...
+qemu -hda /tmp/user/1002/4joE5oQNeJ.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run lg-random
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 113 sectors (56 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'lg-random' into the file system...
+Erasing ustar archive...
+Executing 'lg-random':
+(lg-random) begin
+(lg-random) create "bazzle"
+(lg-random) open "bazzle"
+(lg-random) write "bazzle" in random order
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a4a8 0x80481c2 0x8048a32 0x8048a64.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 99 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 160 reads, 623 writes
+hda3 (scratch): 112 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1447 characters output
+Keyboard: 0 keys pressed
+Exception: 24 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-seq-block FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-seq-block:
+0x0804a2c8: write (...../lib/user/syscall.c:123)
+0x080487a8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e4: test_main (...sys/base/seq-block.inc:20)
+0x08048852: main (...ild/../../tests/main.c:13)
+0x08048884: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/filesys/base/lg-seq-block:
+
+Copying tests/filesys/base/lg-seq-block to scratch partition...
+qemu -hda /tmp/user/1002/DZh5M1kh_W.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run lg-seq-block
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  209,510,400 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 111 sectors (55 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'lg-seq-block' into the file system...
+Erasing ustar archive...
+Executing 'lg-seq-block':
+(lg-seq-block) begin
+(lg-seq-block) create "noodle"
+(lg-seq-block) open "noodle"
+(lg-seq-block) writing "noodle"
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2c8 0x80487a8 0x80480e4 0x8048852 0x8048884.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 119 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 547 reads, 891 writes
+hda3 (scratch): 110 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1465 characters output
+Keyboard: 0 keys pressed
+Exception: 23 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/filesys/base/lg-seq-random FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2e8 0x80487c8 0x80480e6 0x8048872 0x80488a4
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/filesys/base/lg-seq-random:
+0x0804a2e8: write (...../lib/user/syscall.c:123)
+0x080487c8: seq_test (...sts/filesys/seq-test.c:26)
+0x080480e6: test_main (...ys/base/seq-random.inc:22)
+0x08048872: main (...ild/../../tests/main.c:13)
+0x080488a4: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/filesys/base/lg-seq-random:
+
+Copying tests/filesys/base/lg-seq-random to scratch partition...
+qemu -hda /tmp/user/1002/CRreZdVJIQ.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run lg-seq-random
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  209,510,400 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 111 sectors (55 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'lg-seq-random' into the file system...
+Erasing ustar archive...
+Executing 'lg-seq-random':
+(lg-seq-random) begin
+(lg-seq-random) create "nibble"
+(lg-seq-random) open "nibble"
+(lg-seq-random) writing "nibble"
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a2e8 0x80487c8 0x80480e6 0x8048872 0x80488a4.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 123 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 522 reads, 897 writes
+hda3 (scratch): 110 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1472 characters output
+Keyboard: 0 keys pressed
+Exception: 23 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/userprog/open-empty FAILURE:
+
+run: open() returned 2 instead of -1: FAILED
+
+OUTPUT FROM tests/userprog/open-empty:
+
+Copying tests/userprog/open-empty to scratch partition...
+qemu -hda /tmp/user/1002/F4ddBWVeRV.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run open-empty
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 107 sectors (53 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'open-empty' into the file system...
+Erasing ustar archive...
+Executing 'open-empty':
+(open-empty) begin
+(open-empty) open() returned 2 instead of -1: FAILED
+open-empty: exit(1)
+Execution of 'open-empty' complete.
+Timer: 92 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 145 reads, 323 writes
+hda3 (scratch): 106 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1022 characters output
+Keyboard: 0 keys pressed
+Exception: 5 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/vm/page-merge-par FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-par:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...sts/vm/page-merge-par.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/vm/page-merge-par:
+
+Copying tests/vm/page-merge-par to scratch partition...
+Copying tests/vm/child-sort to scratch partition...
+qemu -hda /tmp/user/1002/CuB3XLWZJd.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run page-merge-par
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 225 sectors (112 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'page-merge-par' into the file system...
+Putting 'child-sort' into the file system...
+Erasing ustar archive...
+Executing 'page-merge-par':
+(page-merge-par) begin
+(page-merge-par) init
+(page-merge-par) sort chunk 0
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 145 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 387 reads, 1098 writes
+hda3 (scratch): 224 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1480 characters output
+Keyboard: 0 keys pressed
+Exception: 261 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/vm/page-merge-mm FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-mm:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...ests/vm/page-merge-mm.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/vm/page-merge-mm:
+
+Copying tests/vm/page-merge-mm to scratch partition...
+Copying tests/vm/child-qsort-mm to scratch partition...
+qemu -hda /tmp/user/1002/aykXjoOEXI.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run page-merge-mm
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 230 sectors (115 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'page-merge-mm' into the file system...
+Putting 'child-qsort-mm' into the file system...
+Erasing ustar archive...
+Executing 'page-merge-mm':
+(page-merge-mm) begin
+(page-merge-mm) init
+(page-merge-mm) sort chunk 0
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 130 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 392 reads, 1113 writes
+hda3 (scratch): 229 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1478 characters output
+Keyboard: 0 keys pressed
+Exception: 261 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/vm/page-merge-stk FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e789: inode_write_at (...../../filesys/inode.c:370)
+0xc002dab5: file_write (.../../../filesys/file.c:100)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/page-merge-stk:
+0x0804a5c8: write (...../lib/user/syscall.c:123)
+0x080481c7: sort_chunks (...ts/vm/parallel-merge.c:58)
+0x080480ba: test_main (...sts/vm/page-merge-stk.c:8)
+0x08048b4e: main (...ild/../../tests/main.c:13)
+0x08048b80: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/vm/page-merge-stk:
+
+Copying tests/vm/page-merge-stk to scratch partition...
+Copying tests/vm/child-qsort to scratch partition...
+qemu -hda /tmp/user/1002/XNRsHZIa8W.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run page-merge-stk
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 231 sectors (115 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'page-merge-stk' into the file system...
+Putting 'child-qsort' into the file system...
+Erasing ustar archive...
+Executing 'page-merge-stk':
+(page-merge-stk) begin
+(page-merge-stk) init
+(page-merge-stk) sort chunk 0
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e789 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804a5c8 0x80481c7 0x80480ba 0x8048b4e 0x8048b80.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 134 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 393 reads, 1116 writes
+hda3 (scratch): 230 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1481 characters output
+Keyboard: 0 keys pressed
+Exception: 261 page faults
+Powering off...
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DETAILS OF tests/vm/mmap-shuffle FAILURE:
+
+Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e915 0xc002db11 0xc002fa5a 0xc002c1bc 0xc0021c5d 0xc0021d8f 0x8048137 0x804894e 0x8048980
+Translation of call stack:
+In kernel.o:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc0024c6d: check_sector (...../../devices/block.c:114)
+0xc0024cfe: block_read (...../../devices/block.c:124)
+0xc002e30d: byte_to_sector (...../../filesys/inode.c:109)
+0xc002e915: inode_read_at (...../../filesys/inode.c:301)
+0xc002db11: file_read (...d/../../filesys/file.c:74)
+0xc002fa5a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c1bc: page_fault (.../userprog/exception.c:189)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+In tests/vm/mmap-shuffle:
+0x08048137: test_main (...ests/vm/mmap-shuffle.c:29)
+0x0804894e: main (...ild/../../tests/main.c:13)
+0x08048980: _start (.../../../lib/user/entry.c:9)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.
+
+OUTPUT FROM tests/vm/mmap-shuffle:
+
+Copying tests/vm/mmap-shuffle to scratch partition...
+qemu -hda /tmp/user/1002/pN4drTv7Ep.dsk -m 4 -net none -nographic -monitor null
+PiLo hda1
+Loading..........
+Kernel command line: -q -f extract run mmap-shuffle
+Pintos booting with 3,968 kB RAM...
+367 pages available in kernel pool.
+367 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
+hda1: 163 sectors (81 kB), Pintos OS kernel (20)
+hda2: 4,096 sectors (2 MB), Pintos file system (21)
+hda3: 118 sectors (59 kB), Pintos scratch (22)
+hda4: 8,192 sectors (4 MB), Pintos swap (23)
+filesys: using hda2
+scratch: using hda3
+swap: using hda4
+Formatting file system...done.
+Boot complete.
+Extracting ustar archive from scratch device into file system...
+Putting 'mmap-shuffle' into the file system...
+Erasing ustar archive...
+Executing 'mmap-shuffle':
+(mmap-shuffle) begin
+(mmap-shuffle) create "buffer"
+(mmap-shuffle) open "buffer"
+(mmap-shuffle) mmap "buffer"
+Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=3221397558, size=4096)
+
+Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002e30d 0xc002e915 0xc002db11 0xc002fa5a 0xc002c1bc 0xc0021c5d 0xc0021d8f 0x8048137 0x804894e 0x8048980.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 104 ticks
+Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
+hda2 (filesys): 426 reads, 637 writes
+hda3 (scratch): 117 reads, 2 writes
+hda4 (swap): 0 reads, 0 writes
+Console: 1442 characters output
+Keyboard: 0 keys pressed
+Exception: 22 page faults
+Powering off...
 make[1]: Leaving directory '/home/team46a/pintos4/src/filesys/build'
