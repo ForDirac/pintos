@@ -91,7 +91,9 @@ static void loading_result(bool success) {
     member = list_entry(e, struct member, elem);
     if (t->tid == member->child_tid) {
       member->success = success;
+      // printf("before the sema_up(load) in tid %d\n", t->tid);
       sema_up(&member->loading_sema);
+      // printf("after the sema_up(load) in tid %d\n", t->tid);
       break;
     }
   }
@@ -167,8 +169,9 @@ start_process (void *file_name_)
   success = load (file_rename, &if_.eip, &if_.esp);
   lock_release(&filesys_lock);
 
-  if(thread_current()->tid != 1 || thread_current()->tid != 0)
+  if(thread_current()->tid != 1 || thread_current()->tid != 0){
     loading_result(success);
+  }
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -223,8 +226,9 @@ process_wait (tid_t child_tid UNUSED)
   }
   lock_release(&family_lock);
 
-  if (child_exists)
+  if (child_exists){
     sema_down(&member->sema);
+  }
   else{
     // printf("don't exist!\n");
     return -1;

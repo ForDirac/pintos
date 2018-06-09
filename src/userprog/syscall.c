@@ -109,7 +109,6 @@ syscall_handler (struct intr_frame *f UNUSED)
         syscall_exit(-1);
         break;
       }
-
       tid_t tid = process_execute(file);
 
       f->eax = tid;
@@ -180,7 +179,6 @@ syscall_handler (struct intr_frame *f UNUSED)
         syscall_exit(-1);
         break;
       }
-
       lock_acquire(&filesys_lock);
       int fd = syscall_open(file);
       lock_release(&filesys_lock);
@@ -210,6 +208,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_READ:
     {
+      // printf("syscall_read\n");
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
@@ -395,8 +394,7 @@ bool syscall_chdir(const char *dir){
 }
 
 bool syscall_mkdir(const char *dir) {
-
-  return 1;
+  return 1;  
 }
 
 bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
@@ -459,6 +457,7 @@ int syscall_open(const char *file){
   struct file* file_p = filesys_open(file);
 
   if(file_p == NULL){
+    lock_release(&t->file_list_lock);
     return -1;
   }
 

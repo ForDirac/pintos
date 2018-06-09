@@ -106,10 +106,6 @@ lookup (const struct dir *dir, const char *name,
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  // For Proj.#4
-  if (!strcmp(name, ""))
-    return false;
-
   for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
        ofs += sizeof e) 
     if (e.in_use && !strcmp (name, e.name)) 

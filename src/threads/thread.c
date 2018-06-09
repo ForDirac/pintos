@@ -249,12 +249,11 @@ thread_create (const char *name, int priority,
     list_push_back(&family, &new_member->elem);
     lock_release(&family_lock);
   }
-
   /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
-  if (t_cur->priority <= t->priority)
+  if (t_cur->priority < t->priority){
     thread_yield();
-  
+  }
   if (name[0] != '_') {
     sema_down(&new_member->loading_sema);
     
@@ -374,7 +373,7 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-    /* list_push_back (&ready_list, &cur->elem); */
+     // list_push_back (&ready_list, &cur->elem); 
     /* Project #1 */
     list_insert_ordered(&ready_list, &cur->elem, &compare, NULL);
   cur->status = THREAD_READY;
