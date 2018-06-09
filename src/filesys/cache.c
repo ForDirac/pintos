@@ -9,11 +9,13 @@
 #include <stdio.h>
 
 struct list cache_list;
+struct lock cache_lock;
 
 static void periodic_flush(void *aux UNUSED);
 
 void cache_init(void) {
   list_init(&cache_list);
+  lock_init(&cache_lock);
 	thread_create("_flusher", 0, periodic_flush, NULL);
 }
 
@@ -27,7 +29,6 @@ static void periodic_flush(void *aux UNUSED){
 void cache_push(struct cache_entry *ce) {
 	if(list_size(&cache_list) == 64)
 		cache_pop();
-	lock_init(&ce->lock);
   list_push_back(&cache_list, &ce->elem);
 }
 
@@ -41,14 +42,15 @@ void cache_pop(void) {
 void cache_flush(void){
 	struct list_elem *e;
 	struct cache_entry *ce = NULL;
+	lock_acquire(&cache_lock);
   for (e = list_begin(&cache_list); e != list_end(&cache_list); e = list_next(e)){
     ce = list_entry(e, struct cache_entry, elem);
     cache_block_write(ce);
 	}
+	lock_release(&cache_lock);
 }
 
 void cache_block_read(struct cache_entry *ce){
-
 	block_read(ce->block, ce->sector, ce->buffer);
 }
 
@@ -60,7 +62,7 @@ void cache_block_write(struct cache_entry *ce){
 }
 
 void read_cache(struct block *block, block_sector_t sector, void *buffer){
-	// lock_acquire(&cache_lock);	
+	lock_acquire(&cache_lock);
 	struct cache_entry *ce = lookup_cache(block, sector);
 	if(!ce){
 		ce = (struct cache_entry *)calloc(1, sizeof(struct cache_entry));
@@ -72,11 +74,12 @@ void read_cache(struct block *block, block_sector_t sector, void *buffer){
 		ce->dirty = 0;
 	}
 	memcpy(buffer, ce->buffer, BUF_SIZE);
+	lock_release(&cache_lock);
 }
 
 void write_cache(struct block *block, block_sector_t sector, const void *buffer){
+	lock_acquire(&cache_lock);
 	struct cache_entry *ce = lookup_cache(block, sector);
-
 	if(!ce){
 		ce = (struct cache_entry *)calloc(1, sizeof(struct cache_entry));
 		ce->block = block;
@@ -87,6 +90,7 @@ void write_cache(struct block *block, block_sector_t sector, const void *buffer)
 	memcpy(ce->buffer, buffer, BUF_SIZE);
 	ce->dirty = 1;
 	cache_block_write(ce);
+	lock_release(&cache_lock);
 }
 
 struct cache_entry *lookup_cache(struct block *block, block_sector_t sector){

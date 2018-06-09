@@ -6,7 +6,7 @@
 
 struct cache_entry {
     struct block *block;
-    struct lock lock;
+    // struct lock lock;
     block_sector_t sector;
     bool dirty;
     char buffer[BUF_SIZE];

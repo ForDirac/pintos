@@ -1,8 +1,5 @@
 cd build && make grade
 make[1]: Entering directory '/home/team46a/pintos4/src/filesys/build'
-gcc-4.1 -m32 -c ../../filesys/inode.c -o filesys/inode.o -g -msoft-float -O -fno-stack-protector -nostdinc -I../.. -I../../lib -I../../lib/kernel -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wsystem-headers -DUSERPROG -DFILESYS -DVM -MMD -MF filesys/inode.d
-ld -melf_i386 -T threads/kernel.lds.s -o kernel.o threads/start.o threads/init.o threads/thread.o threads/switch.o threads/interrupt.o threads/intr-stubs.o threads/synch.o threads/palloc.o threads/malloc.o devices/pit.o devices/timer.o devices/kbd.o devices/vga.o devices/serial.o devices/block.o devices/partition.o devices/ide.o devices/input.o devices/intq.o devices/rtc.o devices/shutdown.o devices/speaker.o lib/debug.o lib/random.o lib/stdio.o lib/stdlib.o lib/string.o lib/arithmetic.o lib/ustar.o lib/kernel/debug.o lib/kernel/list.o lib/kernel/bitmap.o lib/kernel/hash.o lib/kernel/console.o userprog/process.o userprog/pagedir.o userprog/exception.o userprog/syscall.o userprog/gdt.o userprog/tss.o filesys/filesys.o filesys/free-map.o filesys/file.o filesys/directory.o filesys/inode.o filesys/fsutil.o filesys/cache.o vm/page.o vm/swap.o vm/frame.o
-objcopy -R .note -R .comment -S kernel.o kernel.bin
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/userprog/args-none -a args-none --swap-size=4 -- -q  -f run args-none < /dev/null 2> tests/userprog/args-none.errors > tests/userprog/args-none.output
 perl -I../.. ../../tests/userprog/args-none.ck tests/userprog/args-none tests/userprog/args-none.result
 pass tests/userprog/args-none
@@ -227,31 +224,7 @@ perl -I../.. ../../tests/filesys/base/syn-remove.ck tests/filesys/base/syn-remov
 pass tests/filesys/base/syn-remove
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/filesys/base/syn-write -a syn-write -p tests/filesys/base/child-syn-wrt -a child-syn-wrt --swap-size=4 -- -q  -f run syn-write < /dev/null 2> tests/filesys/base/syn-write.errors > tests/filesys/base/syn-write.output
 perl -I../.. ../../tests/filesys/base/syn-write.ck tests/filesys/base/syn-write tests/filesys/base/syn-write.result
-FAIL tests/filesys/base/syn-write
-Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=623190127, size=4096)
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002dec4 0xc002d458 0xc002c857 0xc002ccd9 0xc0021c5d 0xc0021d8f 0x804a718 0x804813a 0x8048922
-Translation of call stack:
-In kernel.o:
-0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
-0xc0024c6d: check_sector (...../../devices/block.c:114)
-0xc0024cfe: block_read (...../../devices/block.c:124)
-0xc002f684: cache_block_read (.../../../filesys/cache.c:53)
-0xc002f7c5: read_cache (.../../../filesys/cache.c:71)
-0xc002e9c7: inode_read_at (...../../filesys/inode.c:426)
-0xc002dd3c: lookup (..../filesys/directory.c:113)
-0xc002dec4: dir_lookup (..../filesys/directory.c:139)
-0xc002d458: filesys_open (..../../filesys/filesys.c:88)
-0xc002c857: syscall_open (...../userprog/syscall.c:458)
-0xc002ccd9: syscall_handler (...../userprog/syscall.c:185)
-0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
-0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
-0x0804a718: (unknown)
-In tests/filesys/base/syn-write:
-0x0804813a: test_main (...lesys/base/syn-write.c:27)
-0x08048922: main (...uild/../../tests/main.c:8)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+pass tests/filesys/base/syn-write
 rm -f tmp.dsk
 pintos-mkdisk tmp.dsk --filesys-size=2
 pintos -v -k -T 60 --qemu  --disk=tmp.dsk -p tests/filesys/extended/dir-empty-name -a dir-empty-name -p tests/filesys/extended/tar -a tar --swap-size=4 -- -q  -f run dir-empty-name < /dev/null 2> tests/filesys/extended/dir-empty-name.errors > tests/filesys/extended/dir-empty-name.output
@@ -467,32 +440,7 @@ perl -I../.. ../../tests/vm/page-merge-stk.ck tests/vm/page-merge-stk tests/vm/p
 pass tests/vm/page-merge-stk
 pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/page-merge-mm -a page-merge-mm -p tests/vm/child-qsort-mm -a child-qsort-mm --swap-size=4 -- -q  -f run page-merge-mm < /dev/null 2> tests/vm/page-merge-mm.errors > tests/vm/page-merge-mm.output
 perl -I../.. ../../tests/vm/page-merge-mm.ck tests/vm/page-merge-mm tests/vm/page-merge-mm.result
-FAIL tests/vm/page-merge-mm
-Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=2860396022, size=4096)
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002df9a 0xc002d4ce 0xc002cbfa 0xc0021c5d 0xc0021d8f 0x804a558 0x8048177 0x80480ba 0x8048b4e 0x8048b80
-Translation of call stack:
-In kernel.o:
-0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
-0xc0024c6d: check_sector (...../../devices/block.c:114)
-0xc0024cfe: block_read (...../../devices/block.c:124)
-0xc002f684: cache_block_read (.../../../filesys/cache.c:53)
-0xc002f7c5: read_cache (.../../../filesys/cache.c:71)
-0xc002e9c7: inode_read_at (...../../filesys/inode.c:426)
-0xc002dd3c: lookup (..../filesys/directory.c:113)
-0xc002df9a: dir_add (..../filesys/directory.c:168)
-0xc002d4ce: filesys_create (..../../filesys/filesys.c:66)
-0xc002cbfa: syscall_handler (...../userprog/syscall.c:143)
-0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
-0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
-In tests/vm/page-merge-mm:
-0x0804a558: create (.../../lib/user/syscall.c:93)
-0x08048177: sort_chunks (...ts/vm/parallel-merge.c:55)
-0x080480ba: test_main (...ests/vm/page-merge-mm.c:8)
-0x08048b4e: main (...ild/../../tests/main.c:13)
-0x08048b80: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+pass tests/vm/page-merge-mm
 pintos -v -k -T 600 --qemu  --filesys-size=2 -p tests/vm/page-shuffle -a page-shuffle --swap-size=4 -- -q  -f run page-shuffle < /dev/null 2> tests/vm/page-shuffle.errors > tests/vm/page-shuffle.output
 perl -I../.. ../../tests/vm/page-shuffle.ck tests/vm/page-shuffle tests/vm/page-shuffle.result
 pass tests/vm/page-shuffle
@@ -555,8 +503,31 @@ FAIL tests/filesys/extended/dir-empty-name-persistence
 Prerequisite test tests/filesys/extended/dir-empty-name failed.
 perl -I../.. ../../tests/filesys/extended/dir-mk-tree-persistence.ck tests/filesys/extended/dir-mk-tree-persistence tests/filesys/extended/dir-mk-tree-persistence.result
 FAIL tests/filesys/extended/dir-mk-tree-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/dir-mkdir-persistence.ck tests/filesys/extended/dir-mkdir-persistence tests/filesys/extended/dir-mkdir-persistence.result
 FAIL tests/filesys/extended/dir-mkdir-persistence
 Prerequisite test tests/filesys/extended/dir-mkdir failed.
@@ -571,12 +542,58 @@ FAIL tests/filesys/extended/dir-rm-cwd-persistence
 Prerequisite test tests/filesys/extended/dir-rm-cwd failed.
 perl -I../.. ../../tests/filesys/extended/dir-rm-parent-persistence.ck tests/filesys/extended/dir-rm-parent-persistence tests/filesys/extended/dir-rm-parent-persistence.result
 FAIL tests/filesys/extended/dir-rm-parent-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/dir-rm-root-persistence.ck tests/filesys/extended/dir-rm-root-persistence tests/filesys/extended/dir-rm-root-persistence.result
 FAIL tests/filesys/extended/dir-rm-root-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/dir-rm-tree-persistence.ck tests/filesys/extended/dir-rm-tree-persistence tests/filesys/extended/dir-rm-tree-persistence.result
 FAIL tests/filesys/extended/dir-rm-tree-persistence
 Prerequisite test tests/filesys/extended/dir-rm-tree failed.
@@ -591,49 +608,279 @@ FAIL tests/filesys/extended/dir-vine-persistence
 Prerequisite test tests/filesys/extended/dir-vine failed.
 perl -I../.. ../../tests/filesys/extended/grow-create-persistence.ck tests/filesys/extended/grow-create-persistence tests/filesys/extended/grow-create-persistence.result
 FAIL tests/filesys/extended/grow-create-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-dir-lg-persistence.ck tests/filesys/extended/grow-dir-lg-persistence tests/filesys/extended/grow-dir-lg-persistence.result
 FAIL tests/filesys/extended/grow-dir-lg-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-file-size-persistence.ck tests/filesys/extended/grow-file-size-persistence tests/filesys/extended/grow-file-size-persistence.result
 FAIL tests/filesys/extended/grow-file-size-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-root-lg-persistence.ck tests/filesys/extended/grow-root-lg-persistence tests/filesys/extended/grow-root-lg-persistence.result
 FAIL tests/filesys/extended/grow-root-lg-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-root-sm-persistence.ck tests/filesys/extended/grow-root-sm-persistence tests/filesys/extended/grow-root-sm-persistence.result
 FAIL tests/filesys/extended/grow-root-sm-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-seq-lg-persistence.ck tests/filesys/extended/grow-seq-lg-persistence tests/filesys/extended/grow-seq-lg-persistence.result
 FAIL tests/filesys/extended/grow-seq-lg-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-seq-sm-persistence.ck tests/filesys/extended/grow-seq-sm-persistence tests/filesys/extended/grow-seq-sm-persistence.result
 FAIL tests/filesys/extended/grow-seq-sm-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-sparse-persistence.ck tests/filesys/extended/grow-sparse-persistence tests/filesys/extended/grow-sparse-persistence.result
 FAIL tests/filesys/extended/grow-sparse-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-tell-persistence.ck tests/filesys/extended/grow-tell-persistence tests/filesys/extended/grow-tell-persistence.result
 FAIL tests/filesys/extended/grow-tell-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/grow-two-files-persistence.ck tests/filesys/extended/grow-two-files-persistence tests/filesys/extended/grow-two-files-persistence.result
 FAIL tests/filesys/extended/grow-two-files-persistence
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 perl -I../.. ../../tests/filesys/extended/syn-rw-persistence.ck tests/filesys/extended/syn-rw-persistence tests/filesys/extended/syn-rw-persistence.result
 FAIL tests/filesys/extended/syn-rw-persistence
 Prerequisite test tests/filesys/extended/syn-rw failed.
 ../../tests/make-grade ../.. results ../../tests/filesys/Grading.with-vm | tee grade
-TOTAL TESTING SCORE: 63.0%
+TOTAL TESTING SCORE: 66.3%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -644,13 +891,13 @@ Test Set                                      Pts Max  % Ttl  % Max
 tests/filesys/extended/Rubric.functionality    19/ 34  16.8%/ 30.0%
 tests/filesys/extended/Rubric.robustness        3/ 10   4.5%/ 15.0%
 tests/filesys/extended/Rubric.persistence       0/ 23   0.0%/ 20.0%
-tests/filesys/base/Rubric                      26/ 30  17.3%/ 20.0%
+tests/filesys/base/Rubric                      30/ 30  20.0%/ 20.0%
 tests/userprog/Rubric.functionality           108/108  10.0%/ 10.0%
 tests/userprog/Rubric.robustness               88/ 88   5.0%/  5.0%
-tests/vm/Rubric.functionality                  51/ 55   7.4%/  8.0%
+tests/vm/Rubric.functionality                  55/ 55   8.0%/  8.0%
 tests/vm/Rubric.robustness                     28/ 28   2.0%/  2.0%
 --------------------------------------------- --- --- ------ ------
-Total                                                  63.0%/110.0%
+Total                                                  66.3%/110.0%
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -747,12 +994,12 @@ Functionality of base file system (tests/filesys/base/Rubric):
 
 	- Test synchronized multiprogram access to files.
 	     4/ 4 tests/filesys/base/syn-read
-	  ** 0/ 4 tests/filesys/base/syn-write
+	     4/ 4 tests/filesys/base/syn-write
 	     2/ 2 tests/filesys/base/syn-remove
 
 	- Section summary.
-	     12/ 13 tests passed
-	     26/ 30 points subtotal
+	     13/ 13 tests passed
+	     30/ 30 points subtotal
 
 Functionality of system calls (tests/userprog/Rubric.functionality):
 	- Test argument passing on Pintos command line.
@@ -877,7 +1124,7 @@ Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	     3/ 3 tests/vm/page-shuffle
 	     4/ 4 tests/vm/page-merge-seq
 	     4/ 4 tests/vm/page-merge-par
-	  ** 0/ 4 tests/vm/page-merge-mm
+	     4/ 4 tests/vm/page-merge-mm
 	     4/ 4 tests/vm/page-merge-stk
 
 	- Test "mmap" system call.
@@ -896,8 +1143,8 @@ Functionality of virtual memory subsystem (tests/vm/Rubric.functionality):
 	     2/ 2 tests/vm/mmap-remove
 
 	- Section summary.
-	     19/ 20 tests passed
-	     51/ 55 points subtotal
+	     20/ 20 tests passed
+	     55/ 55 points subtotal
 
 Robustness of virtual memory subsystem (tests/vm/Rubric.robustness):
 	- Test robustness of page table support.
@@ -936,7 +1183,7 @@ OUTPUT FROM tests/filesys/extended/dir-mkdir:
 
 Copying tests/filesys/extended/dir-mkdir to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/xfn9tBmxOd.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/DLeh0_cQuP.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-mkdir
@@ -968,7 +1215,7 @@ Executing 'dir-mkdir':
 (dir-mkdir) open "b": FAILED
 dir-mkdir: exit(1)
 Execution of 'dir-mkdir' complete.
-Timer: 102 ticks
+Timer: 106 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 39 reads, 738 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -988,7 +1235,7 @@ OUTPUT FROM tests/filesys/extended/dir-rmdir:
 
 Copying tests/filesys/extended/dir-rmdir to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/VpwlAl8w4n.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/2IOkfrHTqf.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rmdir
@@ -1018,7 +1265,7 @@ Executing 'dir-rmdir':
 (dir-rmdir) rmdir "a": FAILED
 dir-rmdir: exit(1)
 Execution of 'dir-rmdir' complete.
-Timer: 107 ticks
+Timer: 112 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 39 reads, 732 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -1038,7 +1285,7 @@ OUTPUT FROM tests/filesys/extended/dir-rm-tree:
 
 Copying tests/filesys/extended/dir-rm-tree to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/ILEgautPlD.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/ZuGzsWviXq.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rm-tree
@@ -1070,7 +1317,7 @@ Executing 'dir-rm-tree':
 (dir-rm-tree) remove "/0/0/0": FAILED
 dir-rm-tree: exit(1)
 Execution of 'dir-rm-tree' complete.
-Timer: 173 ticks
+Timer: 175 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 53 reads, 1360 writes
 hda2 (scratch): 246 reads, 2 writes
@@ -1090,14 +1337,14 @@ OUTPUT FROM tests/filesys/extended/dir-vine:
 
 Copying tests/filesys/extended/dir-vine to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/iMF4QKgWJh.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/jwM5lqcMZt.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-vine
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  313,753,600 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 9,072 sectors (4 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 243 sectors (121 kB), Pintos scratch (22)
@@ -1140,7 +1387,7 @@ OUTPUT FROM tests/filesys/extended/syn-rw:
 Copying tests/filesys/extended/syn-rw to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
 Copying tests/filesys/extended/child-syn-rw to scratch partition...
-qemu -hda /tmp/user/1002/ri8DW8uPtd.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/yyv7VpSSqx.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run syn-rw
@@ -1184,7 +1431,7 @@ OUTPUT FROM tests/filesys/extended/dir-empty-name:
 
 Copying tests/filesys/extended/dir-empty-name to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/mEc3ZAj7Pi.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/1ASR41unPu.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-empty-name
@@ -1213,7 +1460,7 @@ Executing 'dir-empty-name':
 (dir-empty-name) mkdir "" (must return false): FAILED
 dir-empty-name: exit(1)
 Execution of 'dir-empty-name' complete.
-Timer: 108 ticks
+Timer: 113 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 39 reads, 731 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -1233,7 +1480,7 @@ OUTPUT FROM tests/filesys/extended/dir-open:
 
 Copying tests/filesys/extended/dir-open to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/PtW1NrJSVx.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/0Fn9aWLZrl.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-open
@@ -1263,7 +1510,7 @@ Executing 'dir-open':
 (dir-open) open "xyzzy": FAILED
 dir-open: exit(1)
 Execution of 'dir-open' complete.
-Timer: 100 ticks
+Timer: 106 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 40 reads, 732 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -1283,7 +1530,7 @@ OUTPUT FROM tests/filesys/extended/dir-over-file:
 
 Copying tests/filesys/extended/dir-over-file to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/OSmVhkFgu5.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/mw4j39dkwg.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-over-file
@@ -1313,7 +1560,7 @@ Executing 'dir-over-file':
 (dir-over-file) create "abc" (must return false): FAILED
 dir-over-file: exit(1)
 Execution of 'dir-over-file' complete.
-Timer: 111 ticks
+Timer: 102 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 39 reads, 735 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -1333,7 +1580,7 @@ OUTPUT FROM tests/filesys/extended/dir-under-file:
 
 Copying tests/filesys/extended/dir-under-file to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/0WrLTFQvcd.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/U1apcbyS8i.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-under-file
@@ -1363,7 +1610,7 @@ Executing 'dir-under-file':
 (dir-under-file) mkdir "abc" (must return false): FAILED
 dir-under-file: exit(1)
 Execution of 'dir-under-file' complete.
-Timer: 107 ticks
+Timer: 103 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 39 reads, 735 writes
 hda2 (scratch): 238 reads, 2 writes
@@ -1383,7 +1630,7 @@ OUTPUT FROM tests/filesys/extended/dir-rm-cwd:
 
 Copying tests/filesys/extended/dir-rm-cwd to scratch partition...
 Copying tests/filesys/extended/tar to scratch partition...
-qemu -hda /tmp/user/1002/NgsNP8E_BA.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/vW_wPVBRwq.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q -f extract run dir-rm-cwd
@@ -1412,7 +1659,7 @@ Executing 'dir-rm-cwd':
 (dir-rm-cwd) open "/": FAILED
 dir-rm-cwd: exit(1)
 Execution of 'dir-rm-cwd' complete.
-Timer: 104 ticks
+Timer: 101 ticks
 Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
 hdb1 (filesys): 42 reads, 747 writes
 hda2 (scratch): 243 reads, 2 writes
@@ -1430,14 +1677,14 @@ Prerequisite test tests/filesys/extended/dir-empty-name failed.
 
 OUTPUT FROM tests/filesys/extended/dir-empty-name-persistence:
 
-qemu -hda /tmp/user/1002/iyXg_Q4BUx.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/WzQt4rHoov.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  261,734,400 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -1450,30 +1697,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 77 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-empty-name.tar out of /tmp/user/1002/iyXg_Q4BUx.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.98, 0.57, 0.23
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/dir-mk-tree-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/dir-mk-tree-persistence:
 
-qemu -hda /tmp/user/1002/pmDNNMPI5h.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/WTwT9q1wtP.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1493,19 +1759,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 78 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 40 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-mk-tree.tar out of /tmp/user/1002/pmDNNMPI5h.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.09, 0.68, 0.30
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1515,7 +1777,7 @@ Prerequisite test tests/filesys/extended/dir-mkdir failed.
 
 OUTPUT FROM tests/filesys/extended/dir-mkdir-persistence:
 
-qemu -hda /tmp/user/1002/iQMj5Kb4TX.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/QoXrfhn5QM.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1535,19 +1797,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 77 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-mkdir.tar out of /tmp/user/1002/iQMj5Kb4TX.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 66 seconds of wall-clock time - load average: 1.01, 0.75, 0.35
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1557,7 +1815,7 @@ Prerequisite test tests/filesys/extended/dir-open failed.
 
 OUTPUT FROM tests/filesys/extended/dir-open-persistence:
 
-qemu -hda /tmp/user/1002/wWVYG4_pjk.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/I0vQDUswVG.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1577,19 +1835,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 77 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-open.tar out of /tmp/user/1002/wWVYG4_pjk.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.92, 0.77, 0.38
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1599,7 +1853,7 @@ Prerequisite test tests/filesys/extended/dir-over-file failed.
 
 OUTPUT FROM tests/filesys/extended/dir-over-file-persistence:
 
-qemu -hda /tmp/user/1002/cNgay9WY9s.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/xMdeaMO880.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1619,19 +1873,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-over-file.tar out of /tmp/user/1002/cNgay9WY9s.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.93, 0.80, 0.42
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1641,7 +1891,7 @@ Prerequisite test tests/filesys/extended/dir-rm-cwd failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rm-cwd-persistence:
 
-qemu -hda /tmp/user/1002/UTFC1hnQGF.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/_zkdCRZj4Y.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1661,30 +1911,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-cwd.tar out of /tmp/user/1002/UTFC1hnQGF.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.93, 0.82, 0.46
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/dir-rm-parent-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/dir-rm-parent-persistence:
 
-qemu -hda /tmp/user/1002/KByaAm3zlN.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/WjLZ7F3lo8.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1704,37 +1973,56 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-parent.tar out of /tmp/user/1002/KByaAm3zlN.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.05, 0.88, 0.50
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/dir-rm-root-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/dir-rm-root-persistence:
 
-qemu -hda /tmp/user/1002/LbyXBPi7Y9.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/_f_kVrLEat.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  268,288,000 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -1747,19 +2035,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 83 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-root.tar out of /tmp/user/1002/LbyXBPi7Y9.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 64 seconds of wall-clock time - load average: 0.96, 0.89, 0.53
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1769,7 +2053,7 @@ Prerequisite test tests/filesys/extended/dir-rm-tree failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rm-tree-persistence:
 
-qemu -hda /tmp/user/1002/vPifHKdJ0G.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/DVkJvhW7a2.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1789,19 +2073,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 40 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rm-tree.tar out of /tmp/user/1002/vPifHKdJ0G.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.10, 0.94, 0.58
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1811,7 +2091,7 @@ Prerequisite test tests/filesys/extended/dir-rmdir failed.
 
 OUTPUT FROM tests/filesys/extended/dir-rmdir-persistence:
 
-qemu -hda /tmp/user/1002/9sy1M0cz3M.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/2W3yhiDAyU.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1831,19 +2111,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-rmdir.tar out of /tmp/user/1002/9sy1M0cz3M.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 67 seconds of wall-clock time - load average: 1.00, 0.94, 0.60
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1853,7 +2129,7 @@ Prerequisite test tests/filesys/extended/dir-under-file failed.
 
 OUTPUT FROM tests/filesys/extended/dir-under-file-persistence:
 
-qemu -hda /tmp/user/1002/rt0SY9iuUM.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/NswqrrsYi8.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1873,19 +2149,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-under-file.tar out of /tmp/user/1002/rt0SY9iuUM.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.03, 0.97, 0.64
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -1895,7 +2167,7 @@ Prerequisite test tests/filesys/extended/dir-vine failed.
 
 OUTPUT FROM tests/filesys/extended/dir-vine-persistence:
 
-qemu -hda /tmp/user/1002/NNpXcw0Yku.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/6IzmWG4OQL.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1915,30 +2187,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/dir-vine.tar out of /tmp/user/1002/NNpXcw0Yku.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 62 seconds of wall-clock time - load average: 0.95, 0.96, 0.66
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-create-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-create-persistence:
 
-qemu -hda /tmp/user/1002/avnwPGeMnf.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Z1LdytPsv8.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -1958,30 +2249,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-create.tar out of /tmp/user/1002/avnwPGeMnf.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.99, 0.97, 0.68
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-dir-lg-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-dir-lg-persistence:
 
-qemu -hda /tmp/user/1002/JJNMevEQx5.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/dTKkoe8bkc.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2001,30 +2311,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 37 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-dir-lg.tar out of /tmp/user/1002/JJNMevEQx5.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.03, 1.00, 0.71
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-file-size-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-file-size-persistence:
 
-qemu -hda /tmp/user/1002/m3NFo30AUh.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/Q19bFo4JrO.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2044,37 +2373,56 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-file-size.tar out of /tmp/user/1002/m3NFo30AUh.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 62 seconds of wall-clock time - load average: 1.06, 1.01, 0.74
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-root-lg-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-root-lg-persistence:
 
-qemu -hda /tmp/user/1002/Q6EfhrRbW7.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/WuAb1Lam1k.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2087,30 +2435,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 83 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 37 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-root-lg.tar out of /tmp/user/1002/Q6EfhrRbW7.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 64 seconds of wall-clock time - load average: 1.07, 1.02, 0.77
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-root-sm-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-root-sm-persistence:
 
-qemu -hda /tmp/user/1002/cbm_qyjk5k.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/evPXIugifi.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2130,30 +2497,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-root-sm.tar out of /tmp/user/1002/cbm_qyjk5k.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 64 seconds of wall-clock time - load average: 1.02, 1.02, 0.78
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-seq-lg-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-seq-lg-persistence:
 
-qemu -hda /tmp/user/1002/IAUJ42iK7Q.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/T_MMRL3MbD.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2173,37 +2559,56 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 79 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-seq-lg.tar out of /tmp/user/1002/IAUJ42iK7Q.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 62 seconds of wall-clock time - load average: 1.14, 1.05, 0.81
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-seq-sm-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-seq-sm-persistence:
 
-qemu -hda /tmp/user/1002/5VqWL27wVS.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/erRXDx58_X.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
 Pintos booting with 3,968 kB RAM...
 367 pages available in kernel pool.
 367 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hda: 11,088 sectors (5 MB), model "QM00001", serial "QEMU HARDDISK"
 hda1: 163 sectors (81 kB), Pintos OS kernel (20)
 hda2: 2,048 sectors (1 MB), Pintos scratch (22)
@@ -2216,30 +2621,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 82 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-seq-sm.tar out of /tmp/user/1002/5VqWL27wVS.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 69 seconds of wall-clock time - load average: 1.01, 1.02, 0.82
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-sparse-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-sparse-persistence:
 
-qemu -hda /tmp/user/1002/DSQADRWV9m.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/nEJv9C0cGJ.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2259,30 +2683,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-sparse.tar out of /tmp/user/1002/DSQADRWV9m.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.98, 1.00, 0.83
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-tell-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-tell-persistence:
 
-qemu -hda /tmp/user/1002/83GQmyQ2m1.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/l4UYtjlV4Y.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2302,30 +2745,49 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-tell.tar out of /tmp/user/1002/83GQmyQ2m1.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 61 seconds of wall-clock time - load average: 1.05, 1.02, 0.85
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 DETAILS OF tests/filesys/extended/grow-two-files-persistence FAILURE:
 
-Error extracting file system:
-/: open failed
+Kernel panic in file system extraction run: PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22
+Translation of call stack:
+0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
+0xc00231aa: lock_acquire (...../../threads/synch.c:257)
+0xc002f7bb: read_cache (.../../../filesys/cache.c:66)
+0xc002e2e8: byte_to_sector (...../../filesys/inode.c:121)
+0xc002e92b: inode_read_at (...../../filesys/inode.c:394)
+0xc002db11: file_read (...d/../../filesys/file.c:75)
+0xc002fd2a: lazy_load_segment (...build/../../vm/page.c:148)
+0xc002c169: page_fault (.../userprog/exception.c:181)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0xc0028018: memcpy (...ild/../../lib/string.c:16)
+0xc002f777: write_cache (.../../../filesys/cache.c:91)
+0xc002e814: inode_write_at (...../../filesys/inode.c:479)
+0xc002dab5: file_write (.../../../filesys/file.c:101)
+0xc002c741: syscall_write (...../userprog/syscall.c:586)
+0xc002cdfb: syscall_handler (...../userprog/syscall.c:244)
+0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
+0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
+0x0804ab29: (unknown)
+0x080480c1: (unknown)
+0x08048497: (unknown)
+0x08048c22: (unknown)
 
 OUTPUT FROM tests/filesys/extended/grow-two-files-persistence:
 
-qemu -hda /tmp/user/1002/SJnghBgQCe.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/LEF01JFpNq.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2345,19 +2807,15 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 80 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/grow-two-files.tar out of /tmp/user/1002/SJnghBgQCe.dsk...
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
+
+TIMEOUT after 64 seconds of wall-clock time - load average: 1.01, 1.01, 0.86
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -2367,7 +2825,7 @@ Prerequisite test tests/filesys/extended/syn-rw failed.
 
 OUTPUT FROM tests/filesys/extended/syn-rw-persistence:
 
-qemu -hda /tmp/user/1002/xpVaSzvaVm.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
+qemu -hda /tmp/user/1002/iZVgLfFkUM.dsk -hdb tmp.dsk -m 4 -net none -nographic -monitor null
 PiLo hda1
 Loading..........
 Kernel command line: -q run 'tar fs.tar /' append fs.tar
@@ -2387,166 +2845,13 @@ swap: using hda3
 Boot complete.
 Executing 'tar fs.tar /':
 /: open failed
-tar: exit(1)
-Execution of 'tar fs.tar /' complete.
-Appending 'fs.tar' to ustar archive on scratch device...
-Timer: 81 ticks
-Thread: 0 idle ticks, 0 kernel ticks, 0 user ticks
-hdb1 (filesys): 35 reads, 18 writes
-hda2 (scratch): 0 reads, 5 writes
-hda3 (swap): 0 reads, 0 writes
-Console: 924 characters output
-Keyboard: 0 keys pressed
-Exception: 5 page faults
-Powering off...
-Copying tests/filesys/extended/syn-rw.tar out of /tmp/user/1002/xpVaSzvaVm.dsk...
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/filesys/base/syn-write FAILURE:
-
-Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=623190127, size=4096)
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002dec4 0xc002d458 0xc002c857 0xc002ccd9 0xc0021c5d 0xc0021d8f 0x804a718 0x804813a 0x8048922
-Translation of call stack:
-In kernel.o:
-0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
-0xc0024c6d: check_sector (...../../devices/block.c:114)
-0xc0024cfe: block_read (...../../devices/block.c:124)
-0xc002f684: cache_block_read (.../../../filesys/cache.c:53)
-0xc002f7c5: read_cache (.../../../filesys/cache.c:71)
-0xc002e9c7: inode_read_at (...../../filesys/inode.c:426)
-0xc002dd3c: lookup (..../filesys/directory.c:113)
-0xc002dec4: dir_lookup (..../filesys/directory.c:139)
-0xc002d458: filesys_open (..../../filesys/filesys.c:88)
-0xc002c857: syscall_open (...../userprog/syscall.c:458)
-0xc002ccd9: syscall_handler (...../userprog/syscall.c:185)
-0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
-0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
-0x0804a718: (unknown)
-In tests/filesys/base/syn-write:
-0x0804813a: test_main (...lesys/base/syn-write.c:27)
-0x08048922: main (...uild/../../tests/main.c:8)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
-
-OUTPUT FROM tests/filesys/base/syn-write:
-
-Copying tests/filesys/base/syn-write to scratch partition...
-Copying tests/filesys/base/child-syn-wrt to scratch partition...
-qemu -hda /tmp/user/1002/liOax48cxR.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading..........
-Kernel command line: -q -f extract run syn-write
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  294,502,400 loops/s.
-hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 163 sectors (81 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 233 sectors (116 kB), Pintos scratch (22)
-hda4: 8,192 sectors (4 MB), Pintos swap (23)
-filesys: using hda2
-scratch: using hda3
-swap: using hda4
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'syn-write' into the file system...
-Putting 'child-syn-wrt' into the file system...
-Erasing ustar archive...
-Executing 'syn-write':
-(syn-write) begin
-(syn-write) create "stuff"
-(syn-write) exec child 1 of 10: "child-syn-wrt 0"
-(syn-write) exec child 2 of 10: "child-syn-wrt 1"
-(syn-write) exec child 3 of 10: "child-syn-wrt 2"
-Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=623190127, size=4096)
-
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002dec4 0xc002d458 0xc002c857 0xc002ccd9 0xc0021c5d 0xc0021d8f 0x804a718 0x804813a 0x8048922.
+Kernel PANIC at ../../threads/synch.c:255 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
+Call stack: 0xc0028b09 0xc00231aa 0xc002f7bb 0xc002e2e8 0xc002e92b 0xc002db11 0xc002fd2a 0xc002c169 0xc0021c5d 0xc0021d8f 0xc0028018 0xc002f777 0xc002e814 0xc002dab5 0xc002c741 0xc002cdfb 0xc0021c5d 0xc0021d8f 0x804ab29 0x80480c1 0x8048497 0x8048c22.
 The `backtrace' program can make call stacks useful.
 Read "Backtraces" in the "Debugging Tools" chapter
 of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../devices/timer.c:257 in real_time_sleep().
-child-syn-wrt: exit(-1)
-cPiLo hda1
-Loading..........
-Kernel command line: -q -f extract run syn-write
-Pintos booting with 3,968 kB RAM...
-[...details of reboot(s) omitted...]
+Kernel PANIC recursion at ../../threads/synch.c:255 in lock_acquire().
+tar: exit(-1)
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-DETAILS OF tests/vm/page-merge-mm FAILURE:
-
-Kernel panic in run: PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=2860396022, size=4096)
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002df9a 0xc002d4ce 0xc002cbfa 0xc0021c5d 0xc0021d8f 0x804a558 0x8048177 0x80480ba 0x8048b4e 0x8048b80
-Translation of call stack:
-In kernel.o:
-0xc0028b09: debug_panic (.../../lib/kernel/debug.c:38)
-0xc0024c6d: check_sector (...../../devices/block.c:114)
-0xc0024cfe: block_read (...../../devices/block.c:124)
-0xc002f684: cache_block_read (.../../../filesys/cache.c:53)
-0xc002f7c5: read_cache (.../../../filesys/cache.c:71)
-0xc002e9c7: inode_read_at (...../../filesys/inode.c:426)
-0xc002dd3c: lookup (..../filesys/directory.c:113)
-0xc002df9a: dir_add (..../filesys/directory.c:168)
-0xc002d4ce: filesys_create (..../../filesys/filesys.c:66)
-0xc002cbfa: syscall_handler (...../userprog/syscall.c:143)
-0xc0021c5d: intr_handler (..../threads/interrupt.c:367)
-0xc0021d8f: intr_entry (threads/intr-stubs.S:38)
-In tests/vm/page-merge-mm:
-0x0804a558: create (.../../lib/user/syscall.c:93)
-0x08048177: sort_chunks (...ts/vm/parallel-merge.c:55)
-0x080480ba: test_main (...ests/vm/page-merge-mm.c:8)
-0x08048b4e: main (...ild/../../tests/main.c:13)
-0x08048b80: _start (.../../../lib/user/entry.c:9)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
-
-OUTPUT FROM tests/vm/page-merge-mm:
-
-Copying tests/vm/page-merge-mm to scratch partition...
-Copying tests/vm/child-qsort-mm to scratch partition...
-qemu -hda /tmp/user/1002/NkAa90KSlE.dsk -m 4 -net none -nographic -monitor null
-PiLo hda1
-Loading..........
-Kernel command line: -q -f extract run page-merge-mm
-Pintos booting with 3,968 kB RAM...
-367 pages available in kernel pool.
-367 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hda: 13,104 sectors (6 MB), model "QM00001", serial "QEMU HARDDISK"
-hda1: 163 sectors (81 kB), Pintos OS kernel (20)
-hda2: 4,096 sectors (2 MB), Pintos file system (21)
-hda3: 230 sectors (115 kB), Pintos scratch (22)
-hda4: 8,192 sectors (4 MB), Pintos swap (23)
-filesys: using hda2
-scratch: using hda3
-swap: using hda4
-Formatting file system...done.
-Boot complete.
-Extracting ustar archive from scratch device into file system...
-Putting 'page-merge-mm' into the file system...
-Putting 'child-qsort-mm' into the file system...
-Erasing ustar archive...
-Executing 'page-merge-mm':
-(page-merge-mm) begin
-(page-merge-mm) init
-(page-merge-mm) sort chunk 0
-(page-merge-mm) sort chunk 1
-child-qsort-mm: exit(80)
-(page-merge-mm) sort chunk 2
-Kernel PANIC at ../../devices/block.c:112 in check_sector(): Access past end of device hda2 (sector=2860396022, size=4096)
-
-Call stack: 0xc0028b09 0xc0024c6d 0xc0024cfe 0xc002f684 0xc002f7c5 0xc002e9c7 0xc002dd3c 0xc002df9a 0xc002d4ce 0xc002cbfa 0xc0021c5d 0xc0021d8f 0x804a558 0x8048177 0x80480ba 0x8048b4e 0x8048b80.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../devices/timer.c:257 in real_time_sleep().
-page-merge-mm: exit(-1)
-
-TIMEOUT after 61 seconds of wall-clock time - load average: 1.06, 0.92, 0.70
+TIMEOUT after 61 seconds of wall-clock time - load average: 0.95, 0.99, 0.88
 make[1]: Leaving directory '/home/team46a/pintos4/src/filesys/build'

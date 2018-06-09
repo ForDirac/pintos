@@ -114,10 +114,9 @@ byte_to_sector (const struct inode *inode, off_t length, off_t pos)
     // in INDIRECT_BLOCK size (10*512 ~ 512*128 + 10*512) 
     else if (pos < (BLOCK_SECTOR_SIZE*DIRECT_BLOCKS + BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS*1)){
       pos -= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS;
-      // idx = pos/(BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS) + DIRECT_BLOCKS;
-      
+      idx = pos/(BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS) + DIRECT_BLOCKS;
       // read the 11th block(double_indirect_block)
-      read_cache(fs_device, inode->blocks[DIRECT_BLOCKS], &indirect_block);
+      read_cache(fs_device, inode->blocks[idx], &indirect_block);
       pos = pos%(BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS);
       return indirect_block[pos/BLOCK_SECTOR_SIZE];
     }
@@ -408,20 +407,18 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
       if (sector_ofs == 0 && chunk_size == BLOCK_SECTOR_SIZE)
         {
           /* Read full sector directly into caller's buffer. */
-          // read_cache (fs_device, sector_idx, buffer + bytes_read);
           read_cache(fs_device, sector_idx, buffer + bytes_read);
         }
       else 
         {
-          /* Read sector into bounce buffer, then partially copy
-             into caller's buffer. */
+           /*Read sector into bounce buffer, then partially copy
+             into caller's buffer. */  
           if (bounce == NULL) 
             {
               bounce = malloc (BLOCK_SECTOR_SIZE);
               if (bounce == NULL)
                 break;
             }
-          // read_cache (fs_device, sector_idx, bounce);
           read_cache(fs_device, sector_idx, bounce);
           memcpy (buffer + bytes_read, bounce + sector_ofs, chunk_size);
         }
@@ -491,16 +488,15 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
                 break;
             }
 
-          /* If the sector contains data before or after the chunk
+          /*If the sector contains data before or after the chunk
              we're writing, then we need to read in the sector
              first.  Otherwise we start with a sector of all zeros. */
-          if (sector_ofs > 0 || chunk_size < sector_left) 
-            // read_cache (fs_device, sector_idx, bounce);
+          if (sector_ofs > 0 || chunk_size < sector_left){
             read_cache(fs_device, sector_idx, bounce);
+          }
           else
             memset (bounce, 0, BLOCK_SECTOR_SIZE);
           memcpy (bounce + sector_ofs, buffer + bytes_written, chunk_size);
-          // write_cache (fs_device, sector_idx, bounce);
           write_cache(fs_device, sector_idx, bounce);
         }
       /* Advance. */
@@ -717,8 +713,9 @@ size_t add_indirect_block(struct inode *inode, size_t n_sectors){
   struct indirect_block i_block;
   if (inode->indirect_index == 0)
     free_map_allocate(1, &inode->blocks[inode->direct_index]);
-  else
+  else{
     read_cache(fs_device, inode->blocks[inode->direct_index], &i_block);
+  }
   
   while (inode->indirect_index < INDIRECT_BLOCKS){
     free_map_allocate(1, &i_block.blocks[inode->indirect_index]);
@@ -742,8 +739,9 @@ size_t add_dindirect_block(struct inode *inode, size_t n_sectors){
   struct indirect_block i_block;
   if (inode->d_indirect_index == 0 && inode->indirect_index == 0)
     free_map_allocate(1, &inode->blocks[inode->direct_index]);
-  else
+  else{
     read_cache(fs_device, inode->blocks[inode->direct_index], &i_block);
+  }
 
   while (inode->indirect_index < INDIRECT_BLOCKS){
     n_sectors = add_ddindirect_block(inode, n_sectors, &i_block);
@@ -761,8 +759,9 @@ size_t add_ddindirect_block(struct inode *inode, size_t n_sectors, struct indire
   struct indirect_block d_block;
   if(inode->d_indirect_index == 0)
     free_map_allocate(1, &i_block->blocks[inode->indirect_index]);
-  else
+  else{
     read_cache(fs_device, i_block->blocks[inode->indirect_index], &d_block);
+  }
 
   while(inode->d_indirect_index < INDIRECT_BLOCKS){
     free_map_allocate(1, &d_block.blocks[inode->d_indirect_index]);
