@@ -170,7 +170,11 @@ inode_create (block_sector_t sector, off_t length)
         disk_inode->length = MAX_SIZE;
       }
       disk_inode->magic = INODE_MAGIC;
-      // memset(disk_inode->blocks, INIT_SECTOR, BLOCK_NUMBER * sizeof(block_sector_t));
+      if(check_alloc(disk_inode)){
+        write_cache(fs_device, sector, disk_inode);
+        success = true;
+      }
+      // // memset(disk_inode->blocks, INIT_SECTOR, BLOCK_NUMBER * sizeof(block_sector_t));
       // if (free_map_allocate (sectors, &disk_inode->start)) 
       //   {
       //     // write_cache (fs_device, sector, disk_inode);
@@ -185,13 +189,8 @@ inode_create (block_sector_t sector, off_t length)
       //           write_cache(fs_device, disk_inode->start + i, zeros);
       //       }
       //     success = true; 
-      //   } 
-      // free (disk_inode);
-      if (check_alloc(disk_inode)){
-        write_cache(fs_device, sector, disk_inode);
-        success = true;
-      }
-      free(disk_inode);
+        // } 
+      free (disk_inode);
     }
   return success;
 }
@@ -426,7 +425,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
           // write_cache (fs_device, sector_idx, bounce);
           write_cache(fs_device, sector_idx, bounce);
         }
-
       /* Advance. */
       size -= chunk_size;
       offset += chunk_size;
@@ -609,6 +607,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 //     return 0;
 //   }
 // }
+
 off_t grow_inode(struct inode *inode, off_t length){
   static char zeros[BLOCK_NUMBER];
   size_t n_sectors = bytes_to_sectors(length) - bytes_to_sectors(inode->length);
