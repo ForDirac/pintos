@@ -13,11 +13,6 @@
 #define INODE_MAGIC 0x494e4f44
 // For Proj.#4
 #define DIRECT_BLOCKS 10
-<<<<<<< HEAD
-#define BLOCK_NUMBER 12
-#define INDIRECT_BLOCKS 128
-#define INIT_SECTOR 0xffffffff
-=======
 // #define INDIRECT_BLOCK 1
 // #define D_INDIRECT_BLOCK 1
 
@@ -26,7 +21,6 @@
 #define INIT_SECTOR 0xffffffff
 
 #define MAX_SIZE 8*1024*8192
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
 
 /* On-disk inode.
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
@@ -35,14 +29,10 @@ struct inode_disk
     // block_sector_t start;               /* First data sector. */
     off_t length;                       /* File size in bytes. */
     unsigned magic;                     /* Magic number. */
-<<<<<<< HEAD
-    uint32_t unused[113];               /* Not used. */
-=======
     uint32_t direct_index;
     uint32_t indirect_index;
     uint32_t d_indirect_index;
     uint32_t unused[111];               /* Not used. */
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
@@ -55,12 +45,7 @@ bytes_to_sectors (off_t size)
 }
 
 // For Proj.#4
-<<<<<<< HEAD
-static block_sector_t get_sector(struct inode *inode, off_t pos);
-
-=======
 // static block_sector_t get_sector(struct inode *inode, off_t pos);
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
 
 /* In-memory inode. */
 struct inode 
@@ -70,10 +55,8 @@ struct inode
     int open_cnt;                       /* Number of openers. */
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
-<<<<<<< HEAD
-    struct inode_disk data;             /* Inode content. */
+    // struct inode_disk data;             /* Inode content. */
     // For Proj.#4
-=======
     // struct inode_disk data;             /* Inode content. */
     // For Proj.#4
     off_t length;
@@ -83,7 +66,6 @@ struct inode
     uint32_t d_indirect_index;
     struct lock i_lock;
     block_sector_t blocks[BLOCK_NUMBER];
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
   };
 
 struct indirect_block
@@ -190,31 +172,28 @@ inode_create (block_sector_t sector, off_t length)
         disk_inode->length = MAX_SIZE;
       }
       disk_inode->magic = INODE_MAGIC;
-<<<<<<< HEAD
-      memset(disk_inode->blocks, INIT_SECTOR, BLOCK_NUMBER * sizeof(block_sector_t));
-      if (free_map_allocate (sectors, &disk_inode->start)) 
-        {
-          // block_write (fs_device, sector, disk_inode);
-          write_cache(fs_device, sector, disk_inode);
-          if (sectors > 0) 
-            {
-              static char zeros[BLOCK_SECTOR_SIZE];
-              size_t i;
+      // memset(disk_inode->blocks, INIT_SECTOR, BLOCK_NUMBER * sizeof(block_sector_t));
+      // if (free_map_allocate (sectors, &disk_inode->start)) 
+      //   {
+      //     // block_write (fs_device, sector, disk_inode);
+      //     write_cache(fs_device, sector, disk_inode);
+      //     if (sectors > 0) 
+      //       {
+      //         static char zeros[BLOCK_SECTOR_SIZE];
+      //         size_t i;
               
-              for (i = 0; i < sectors; i++) 
-                // block_write (fs_device, disk_inode->start + i, zeros);
-                write_cache(fs_device, disk_inode->start + i, zeros);
-            }
-          success = true; 
-        } 
-      free (disk_inode);
-=======
+      //         for (i = 0; i < sectors; i++) 
+      //           // block_write (fs_device, disk_inode->start + i, zeros);
+      //           write_cache(fs_device, disk_inode->start + i, zeros);
+      //       }
+      //     success = true; 
+      //   } 
+      // free (disk_inode);
       if (check_alloc(disk_inode)){
         block_write(fs_device, sector, disk_inode);
         success = true;
       }
       free(disk_inode);
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
     }
   return success;
 }
@@ -407,12 +386,8 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   while (size > 0) 
     {
       /* Sector to write, starting byte offset within sector. */
-<<<<<<< HEAD
-      // block_sector_t sector_idx = byte_to_sector (inode, offset);
-      block_sector_t sector_idx = get_sector(inode, offset);
-=======
+      // block_sector_t sector_idx = get_sector(inode, offset);
       block_sector_t sector_idx = byte_to_sector (inode, inode_length(inode), offset);
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
       int sector_ofs = offset % BLOCK_SECTOR_SIZE;
 
       /* Bytes left in inode, bytes left in sector, lesser of the two. */
@@ -463,8 +438,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 
   return bytes_written;
 }
-
-<<<<<<< HEAD
 
 // For Proj.#4
 // static block_sector_t get_sector(struct inode *inode, off_t pos) {
@@ -638,7 +611,6 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 //     return 0;
 //   }
 // }
-=======
 off_t grow_inode(struct inode *inode, off_t length){
   static char zeros[BLOCK_NUMBER];
   size_t n_sectors = bytes_to_sectors(length) - bytes_to_sectors(inode->length);
@@ -734,7 +706,6 @@ size_t add_ddindirect_block(struct inode *inode, size_t n_sectors, struct indire
 
   return n_sectors;
 }
->>>>>>> 3b76b8e1bfcbedf1304f536dbf628fda19d9f727
 
 /* Disables writes to INODE.
    May be called at most once per inode opener. */
