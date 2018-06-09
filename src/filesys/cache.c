@@ -48,21 +48,19 @@ void cache_flush(void){
 }
 
 void cache_block_read(struct cache_entry *ce){
-	// lock_acquire(&ce->lock);
+
 	block_read(ce->block, ce->sector, ce->buffer);
-	// lock_release(&ce->lock);
 }
 
 void cache_block_write(struct cache_entry *ce){
-	// lock_acquire(&ce->lock);
 	if(ce->dirty){
 		block_write(ce->block, ce->sector, ce->buffer);
 		ce->dirty = 0;
 	}
-	// lock_release(&ce->lock);
 }
 
 void read_cache(struct block *block, block_sector_t sector, void *buffer){
+	// lock_acquire(&cache_lock);	
 	struct cache_entry *ce = lookup_cache(block, sector);
 	if(!ce){
 		ce = (struct cache_entry *)calloc(1, sizeof(struct cache_entry));
