@@ -21,6 +21,14 @@ struct dir_entry
     bool in_use;                        /* In use or free? */
   };
 
+// struct indir_entry {
+//   struct dir_entry *de_array[1024];
+// };
+
+// struct dindir_entry {
+//   struct indir_entry *ie_array[1024];
+// };
+
 /* Creates a directory with space for ENTRY_CNT entries in the
    given SECTOR.  Returns true if successful, false on failure. */
 bool
@@ -97,6 +105,10 @@ lookup (const struct dir *dir, const char *name,
   
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
+
+  // For Proj.#4
+  if (!strcmp(name, ""))
+    return false;
 
   for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
        ofs += sizeof e) 

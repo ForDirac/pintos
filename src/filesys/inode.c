@@ -44,6 +44,23 @@ bytes_to_sectors (off_t size)
   return DIV_ROUND_UP (size, BLOCK_SECTOR_SIZE);
 }
 
+// Check the number of sectors in Indirect_Blocks
+static size_t check_indirect_block (off_t size){
+  if (size <= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS){
+      return 0;
+  }
+  size -= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS;
+  return DIV_ROUND_UP(size, BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS);
+}
+
+// Check the Double_indirect_blocks
+static size_t check_d_indirect_block (off_t size){
+  if (size <= BLOCK_SECTOR_SIZE*DIRECT_BLOCKS + BLOCK_SECTOR_SIZE*INDIRECT_BLOCKS*1){
+    return 0;
+  }
+  return 1;
+}
+
 // For Proj.#4
 // static block_sector_t get_sector(struct inode *inode, off_t pos);
 
@@ -66,12 +83,14 @@ struct inode
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
-struct indirect_block
-{
+struct indirect_block{
   block_sector_t blocks[INDIRECT_BLOCKS];
 };
 
 bool check_alloc(struct inode_disk *disk_inode);
+void check_dalloc(struct inode *inode);
+void dalloc_indirect (block_sector_t *blocks, size_t remain_sectors);
+void dalloc_d_indirect(block_sector_t *blocks, size_t indirect_block, size_t sectors);
 off_t grow_inode(struct inode *inode, off_t length);
 size_t add_indirect_block(struct inode *inode, size_t n_sectors);
 size_t add_dindirect_block(struct inode *inode, size_t n_sectors);
@@ -189,7 +208,7 @@ inode_create (block_sector_t sector, off_t length)
       //           write_cache(fs_device, disk_inode->start + i, zeros);
       //       }
       //     success = true; 
-        // } 
+        // }
       free (disk_inode);
     }
   return success;
@@ -268,22 +287,81 @@ inode_close (struct inode *inode)
     return;
 
   /* Release resources if this was the last opener. */
-  if (--inode->open_cnt == 0)
-    {
-      /* Remove from inode list and release lock. */
-      list_remove (&inode->elem);
- 
-      /* Deallocate blocks if removed. */
-      if (inode->removed) 
-        {
-          free_map_release (inode->sector, 1);
-          // free_map_release (inode->data.start,
-          //                   bytes_to_sectors (inode->data.length)); 
-        }
+  if (--inode->open_cnt == 0){
+    /* Remove from inode list and release lock. */
+    list_remove (&inode->elem);
 
-      free (inode); 
+    /* Deallocate blocks if removed. */
+    if (inode->removed) {
+        free_map_release (inode->sector, 1);
+        check_dalloc(inode);
     }
+    else {
+      struct inode_disk disk_inode;
+      disk_inode.direct_index = inode->direct_index;
+      disk_inode.indirect_index = inode->indirect_index;
+      disk_inode.d_indirect_index = inode->d_indirect_index;
+      disk_inode.length = inode->length;
+      disk_inode.magic = INODE_MAGIC;
+      memcpy(&disk_inode.blocks, &inode->blocks, BLOCK_NUMBER*sizeof(block_sector_t));
+      write_cache(fs_device, inode->sector, &disk_inode);
+    }
+    free (inode); 
+  }
 }
+
+void check_dalloc(struct inode *inode){
+  size_t sectors = bytes_to_sectors(inode->length);
+  size_t indirect_block = check_indirect_block(inode->length);
+  size_t d_indirect_block = check_d_indirect_block(inode->length);
+
+  uint32_t idx = 0;
+
+  // Dealloc the Direct_block's sectors
+  while (sectors && idx < 10){
+    free_map_release(inode->blocks[idx], 1);
+    sectors --;
+    idx ++;
+  }
+
+  // Dealloc the Indirect_block's sectors
+  while (indirect_block && idx < 11){
+    size_t remain_sectors = sectors < INDIRECT_BLOCKS ? sectors : INDIRECT_BLOCKS;
+    dalloc_indirect(&inode->blocks[idx], remain_sectors);
+    sectors -= remain_sectors;
+    indirect_block --;
+    idx++;
+  }
+
+  // Dealloc the Double_indirect_block's sectors
+  if (d_indirect_block){
+    dalloc_d_indirect(&inode->blocks[idx], indirect_block, sectors);
+  }
+}
+
+void dalloc_indirect (block_sector_t *blocks, size_t remain_sectors){
+  uint32_t n = 0;
+  struct indirect_block i_block;
+  read_cache(fs_device, *blocks, &i_block);
+  while (n < remain_sectors){
+    free_map_release(i_block.blocks[n], 1);
+    n ++;
+  }
+  free_map_release(*blocks, 1);
+}
+
+void dalloc_d_indirect(block_sector_t *blocks, size_t indirect_block, size_t sectors){
+  uint32_t n = 0;
+  struct indirect_block i_block;
+  read_cache(fs_device, *blocks, &i_block);
+  while (n < indirect_block){
+    size_t remain_sectors = sectors < INDIRECT_BLOCKS ? sectors : INDIRECT_BLOCKS;
+    dalloc_indirect(&i_block.blocks[n], remain_sectors);
+    sectors -= remain_sectors;
+  }
+  free_map_release(*blocks, 1);
+}
+
 
 /* Marks INODE to be deleted when it is closed by the last caller who
    has it open. */
@@ -609,7 +687,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 // }
 
 off_t grow_inode(struct inode *inode, off_t length){
-  static char zeros[BLOCK_NUMBER];
+  static char zeros[BLOCK_SECTOR_SIZE];
   size_t n_sectors = bytes_to_sectors(length) - bytes_to_sectors(inode->length);
 
   if (n_sectors == 0)
@@ -628,7 +706,7 @@ off_t grow_inode(struct inode *inode, off_t length){
     if(n_sectors == 0)
       return length;
   }
-  else if (inode->direct_index == 11){
+  if (inode->direct_index == 11){
     n_sectors = add_dindirect_block(inode, n_sectors);
   }
   return length - n_sectors*BLOCK_SECTOR_SIZE;
