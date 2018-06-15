@@ -62,6 +62,18 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
   struct inode *inode;
   static char prev[NAME_MAX + 1];
 
+  // if(dirname[0] == '/' || !thread_current()->dir){
+  //   dir = dir_open_root();
+  //   free(dirname);
+  //   *target_dir = dir;
+  //   *target_inode = file_get_inode((struct file *)dir);
+  //   return dir != NULL;
+  // }
+  // else{
+  //   printf("else!!!!!!\n");
+  //   dir = dir_reopen(thread_current()->dir);
+  // }
+
   for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
     if (strlen(d) > 14)
       return false;
@@ -97,6 +109,7 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
   free(dirname);
   *target_dir = dir;
   *target_inode = inode;
+
   return dir != NULL;
 }
 
@@ -118,8 +131,9 @@ filesys_create (const char *name, off_t initial_size, bool is_file)
   char target[NAME_MAX + 1];
   struct dir *dir;
   struct inode *inode;
-  if(!filesys_dir_lookup(root, name, &inode, &dir, target))
+  if(!filesys_dir_lookup(root, name, &inode, &dir, target)){
     return false;
+  }
 
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
@@ -152,14 +166,21 @@ filesys_open (const char *name)
   struct inode *inode;
   struct dir *dir;
   char target[NAME_MAX + 1];
+  if(!strcmp(name, "/")){
+    dir = dir_open_root();
+    if (root == dir)
+      dir_close(dir);
+    return root;
+  }
   filesys_dir_lookup(root, name, &inode, &dir, target);
 //  
   if (dir != NULL){
     dir_lookup (dir, target, &inode);
     // dir_lookup (dir, name, &inode);
   }
-  if (!inode)
+  if (!inode){
     return NULL;
+  }
   // dir_close (dir);
   if (inode_is_dir(inode))
     return (struct file *)dir_open(inode);
