@@ -51,9 +51,10 @@ process_execute (const char *file_name)
     return TID_ERROR;
   }
   strlcpy (fn_copy, file_name, PGSIZE);
-
+  // printf("process_execute(): fn_copy(%s)\n", fn_copy);
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+  // printf("process_execute(): tid(%d)\n", tid);
 
   // Original code, but if this code is exited, it can make error
   // if (tid == TID_ERROR)
@@ -91,10 +92,10 @@ static void loading_result(bool success) {
   for (e = list_begin(&family); e != list_end(&family); e = list_next(e)) {
     member = list_entry(e, struct member, elem);
     if (t->tid == member->child_tid) {
+      // printf("loading_result(): tid(%d) loading_sema value(%d)\n", t->tid, member->loading_sema.value);
       member->success = success;
-      // printf("before the sema_up(load) in tid %d\n", t->tid);
       sema_up(&member->loading_sema);
-      // printf("after the sema_up(load) in tid %d\n", t->tid);
+      // printf("loading_result(): tid(%d) loading_sema value after sema_up(%d)\n", t->tid, member->loading_sema.value);
       break;
     }
   }
@@ -166,10 +167,12 @@ start_process (void *file_name_)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
 
+  // printf("start_process(): file_rename(%s)\n", file_rename);
   lock_acquire(&filesys_lock);
   success = load (file_rename, &if_.eip, &if_.esp);
   lock_release(&filesys_lock);
 
+  // printf("start_process(): success(%s)\n", success? "true":"false");
   if(thread_current()->tid != 1 || thread_current()->tid != 0){
     loading_result(success);
   }
@@ -188,6 +191,7 @@ start_process (void *file_name_)
   else
     free(exit_file_name);
 
+  // printf("start_process(): DONE\n");
   memcpy((char *)(PHYS_BASE-(void *)total), (char *)esp, (size_t)total);
   if_.esp = PHYS_BASE - total;
 

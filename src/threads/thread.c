@@ -236,6 +236,7 @@ thread_create (const char *name, int priority,
   struct member *new_member = NULL;
 
   if (name[0] != '_') {
+    // printf("thread_create(): name(%s)\n", name);
     /*Else if, we make member structure which stores child_tid, parent thread and other things. 
     And this member is stored in family list */
     new_member = (struct member *) malloc(sizeof(struct member));
@@ -251,6 +252,7 @@ thread_create (const char *name, int priority,
     lock_acquire(&family_lock);
     list_push_back(&family, &new_member->elem);
     lock_release(&family_lock);
+    // printf("thread_create(): new_member->child_tid(%d)\n", tid);
   }
   /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
@@ -258,8 +260,9 @@ thread_create (const char *name, int priority,
     thread_yield();
   }
   if (name[0] != '_') {
+    // printf("thread_create(): before sema_down at tid(%d) loading_sema value(%d)\n", tid, new_member->loading_sema.value);
     sema_down(&new_member->loading_sema);
-    
+    // printf("thread_create(): after sema_down at tid(%d)\n", tid);
     if (!new_member->success)
       tid = -1;
   }

@@ -414,16 +414,39 @@ bool syscall_mkdir(const char *dir) {
   return success;
 }
 
+static struct fd *lookup_fd(int fd) {
+  struct list *file_list = &thread_current()->file_list;
+  struct list_elem *e;
+  struct fd *searching = NULL;
+  struct fd *matched = NULL;
+  for (e = list_begin(file_list); e != list_end(file_list); e = list_next(e)) {
+    searching = list_entry(e, struct fd, elem);
+    if (searching->fd == fd){
+      matched = searching;
+      break;
+    }
+  }
+  return matched;
+}
+
 bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
   return 1;  
 }
 
 bool syscall_isdir(int fd) {
-  return 1;  
+  struct fd *target = lookup_fd(fd);
+  if (!target)
+    return -1;
+
+  return inode_is_dir(file_get_inode((struct file *)target->file_p));
 }
 
 int syscall_inumber(int fd) {
-  return 1;  
+  struct fd *target = lookup_fd(fd);
+  if (!target)
+    return -1;
+
+  return inode_get_inumber(file_get_inode((struct file *)target->file_p));
 }
 
 int syscall_exit(int status){
