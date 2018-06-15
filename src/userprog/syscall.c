@@ -181,8 +181,10 @@ syscall_handler (struct intr_frame *f UNUSED)
         syscall_exit(-1);
         break;
       }
+
       lock_acquire(&filesys_lock);
       int fd = syscall_open(file);
+
       lock_release(&filesys_lock);
       f->eax = fd;
       break;
@@ -415,6 +417,34 @@ bool syscall_mkdir(const char *dir) {
 }
 
 bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
+  struct list_elem *e;
+  struct fd *_fd = NULL;
+  struct thread *t = thread_current();
+  char *path = name[READDIR_MAX_LEN + 1];
+  bool find = 0;
+
+  for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
+    _fd = list_entry(e, struct fd, elem);
+    if(_fd->fd == fd){
+      find = 1;
+      break;
+    }
+  }
+
+  if(!find){
+    return -1;
+  }
+
+  struct inode* inode = file_get_inode(_fd->file_p);
+  if (inode == NULL)
+    return 0;
+  if (!inode_is_dir(inode)) 
+    return 0;
+  
+  struct dir* dir = (struct dir*) _fd->file_p;
+  if(!dir_readdir(dir, path))
+    return 0;
+  
   return 1;  
 }
 
@@ -476,6 +506,7 @@ int syscall_open(const char *file){
 
   if(file_p == NULL){
     lock_release(&t->file_list_lock);
+    printf("false in syscall\n");
     return -1;
   }
 
