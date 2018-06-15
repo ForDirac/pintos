@@ -254,7 +254,7 @@ thread_create (const char *name, int priority,
   }
   /* (Proj.#1) Compare between current thread's priority and create one's */
   thread_unblock(t);
-  if (t_cur->priority < t->priority){
+  if (t_cur->priority <= t->priority){
     thread_yield();
   }
   if (name[0] != '_') {
