@@ -281,6 +281,12 @@ filesys_remove (const char *name)
 }
 
 bool filesys_chdir(const char *name) {
+  if (!strcmp(name, "/")) {
+    if(thread_current()->dir)
+      dir_close(thread_current()->dir);
+    thread_current()->dir = dir_open_root();
+    return true;
+  }
   struct dir* root;
   if(name[0] == '/' || !thread_current()->dir)
     root = dir_open_root();
