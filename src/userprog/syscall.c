@@ -141,7 +141,7 @@ syscall_handler (struct intr_frame *f UNUSED)
       }
       off_t initial_size = (off_t)((unsigned int *)f->esp)[2];
       lock_acquire(&filesys_lock);
-      bool success = filesys_create(file, initial_size, true);
+      bool success = filesys_create(file, initial_size, 1);
       lock_release(&filesys_lock);
       f->eax = 0;
       f->eax = success;
@@ -397,15 +397,20 @@ syscall_handler (struct intr_frame *f UNUSED)
 
 
 bool syscall_chdir(const char *dir){
-  struct dir *chdir;
+  // struct dir *chdir;
+  bool success;
   lock_acquire(&filesys_lock);
-  chdir = filesys_dir_open(dir);
+  // chdir = filesys_dir_open(dir);
+  /////////////////////////////////
+  success = filesys_chdir(dir);
+  /////////////////////////////////
   lock_release(&filesys_lock);
-  if(!chdir)
-    return 0;
-  dir_close(thread_current()->dir);
-  thread_current()->dir = chdir;
-  return 1;
+  // if(!chdir)
+  //   return 0;
+  // dir_close(thread_current()->dir);
+  // thread_current()->dir = chdir;
+  // return 1;
+  return success;
 }
 
 bool syscall_mkdir(const char *dir) {
@@ -435,7 +440,6 @@ bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
   struct list_elem *e;
   struct fd *_fd = NULL;
   struct thread *t = thread_current();
-  char *path = name[READDIR_MAX_LEN + 1];
   bool find = 0;
 
   for(e = list_begin(&t->file_list); e != list_end(&t->file_list); e = list_next(e)){
@@ -457,7 +461,7 @@ bool syscall_readdir(int fd, char name[READDIR_MAX_LEN + 1]) {
     return 0;
   
   struct dir* dir = (struct dir*) _fd->file_p;
-  if(!dir_readdir(dir, path))
+  if(!dir_readdir(dir, name))
     return 0;
   
   return 1;  
@@ -529,7 +533,6 @@ int syscall_open(const char *file){
 
   if(file_p == NULL){
     lock_release(&t->file_list_lock);
-    printf("false in syscall\n");
     return -1;
   }
 

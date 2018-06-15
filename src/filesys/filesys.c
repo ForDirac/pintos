@@ -73,7 +73,6 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
   //   printf("else!!!!!!\n");
   //   dir = dir_reopen(thread_current()->dir);
   // }
-
   for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
     if (strlen(d) > 14)
       return false;
@@ -96,9 +95,17 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
     if (!dir_lookup(dir, d, &inode)){
       break;
     }
-    if (depth_index != 1)
+    // if (depth_index != 1)
+    //   dir_close(dir);
+    // dir = dir_open(inode);
+    if(inode_is_dir(inode)) {
       dir_close(dir);
-    dir = dir_open(inode);
+      dir = dir_open(inode);
+    }
+    else{
+      inode_close(inode);
+    }
+    ////////////////////////
     strlcpy(prev, d, NAME_MAX + 1);
   }
   if(!exists){
@@ -120,30 +127,38 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
 bool
 filesys_create (const char *name, off_t initial_size, bool is_file) 
 {
+  // printf("filesys_create(): name(%s)\n", name);
   if (!strcmp(name, ""))
     return false;
 // Proj.#4
   block_sector_t inode_sector = 0;
-  struct dir *root = thread_current()->dir;
-  if (!root)
-    root = thread_current()->dir = dir_open_root();
-  // struct dir *dir = dir_open_root ();
-  char target[NAME_MAX + 1];
+  // struct dir *root = thread_current()->dir;
+  // if (!root)
+  //   root = thread_current()->dir = dir_open_root();
+  struct dir* root;
+  if(name[0] == '/' || !thread_current()->dir)
+    root = dir_open_root();
+  else
+    root = dir_reopen(thread_current()->dir);
+  //////////////////////////////////////////////////
   struct dir *dir;
   struct inode *inode;
+  char target[NAME_MAX + 1];
   if(!filesys_dir_lookup(root, name, &inode, &dir, target)){
     return false;
   }
 
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
-                  && (is_file? inode_create(inode_sector, initial_size, false) : dir_create(inode_sector, 1))
+                  && (is_file? inode_create(inode_sector, initial_size, 0) : dir_create(inode_sector, 200))
                   // && dir_add (dir, name, inode_sector));
                   && dir_add (dir, target, inode_sector));
 //
   if (!success && inode_sector != 0)
     free_map_release (inode_sector, 1);
-  // dir_close (dir);
+  ///////////////
+  dir_close (dir);
+  ///////////////
 
   return success;
 }
@@ -159,10 +174,15 @@ filesys_open (const char *name)
   if (!strcmp(name, ""))
     return NULL;
 // Proj.#4
-  struct dir *root = thread_current()->dir;
-  if (!root)
-    root = thread_current()->dir = dir_open_root();
-  // struct dir *dir = dir_open_root ();
+  // struct dir *root = thread_current()->dir;
+  // if (!root)
+  //   root = thread_current()->dir = dir_open_root();
+  struct dir* root;
+  if(name[0] == '/' || !thread_current()->dir)
+    root = dir_open_root();
+  else
+    root = dir_reopen(thread_current()->dir);
+  //////////////////////////////////////////////////
   struct inode *inode;
   struct dir *dir;
   char target[NAME_MAX + 1];
@@ -170,18 +190,29 @@ filesys_open (const char *name)
     dir = dir_open_root();
     if (root == dir)
       dir_close(dir);
-    return root;
+    return (struct file *)root;
   }
   filesys_dir_lookup(root, name, &inode, &dir, target);
 //  
-  if (dir != NULL){
-    dir_lookup (dir, target, &inode);
-    // dir_lookup (dir, name, &inode);
+  // if (dir != NULL){
+  //   dir_lookup (dir, target, &inode);
+  // }
+  if (dir != NULL) {
+    if (!strcmp(target, "..")) {
+      inode = dir_parent_inode(dir);
+      if (!inode) {
+        return NULL;
+      }
+    } else if ((dir_is_root(dir) && strlen(target) == 0) || !strcmp(target, ".")) {
+      return (struct file *) dir;
+    } else
+      dir_lookup (dir, target, &inode);
   }
+
+  dir_close (dir);
   if (!inode){
     return NULL;
   }
-  // dir_close (dir);
   if (inode_is_dir(inode))
     return (struct file *)dir_open(inode);
 
@@ -189,17 +220,27 @@ filesys_open (const char *name)
 }
 
 struct dir *filesys_dir_open(const char *name) {
-  struct dir *root = thread_current()->dir;
-  if (!root)
-    root = thread_current()->dir = dir_open_root();
+  // struct dir *root = thread_current()->dir;
+  // if (!root)
+  //   root = thread_current()->dir = dir_open_root();
+  struct dir* root;
+  if(name[0] == '/' || !thread_current()->dir)
+    root = dir_open_root();
+  else
+    root = dir_reopen(thread_current()->dir);
+  //////////////////////////////////////////////////
   struct inode *inode;
   struct dir *dir;
   char target[NAME_MAX + 1];
   filesys_dir_lookup(root, name, &inode, &dir, target);
 
-  if (dir != NULL)
+  if (dir != NULL){
     dir_lookup(dir, target, &inode);
-  // dir_close(dir);
+  }
+  dir_close(dir);
+  if (!inode){
+    return NULL;
+  }
 
   return dir_open(inode);
 }
@@ -211,13 +252,69 @@ struct dir *filesys_dir_open(const char *name) {
 bool
 filesys_remove (const char *name) 
 {
-  // TODO
-  struct dir *dir = dir_open_root ();
-  bool success = dir != NULL && dir_remove (dir, name);
+  if (!strcmp(name, "/"))
+    return false;
+  // struct dir *root = thread_current()->dir;
+  // if (!root)
+  //   root = thread_current()->dir = dir_open_root();
+  struct dir* root;
+  if(name[0] == '/' || !thread_current()->dir)
+    root = dir_open_root();
+  else
+    root = dir_reopen(thread_current()->dir);
+  //////////////////////////////////////////////////
+  struct inode *inode;
+  struct dir *dir;
+  char target[NAME_MAX + 1];
+  if(!filesys_dir_lookup(root, name, &inode, &dir, target)){
+    return false;
+  }
+  // if (dir != NULL)
+  //   dir_lookup(dir, target, &inode);
+
+  bool success = dir != NULL && dir_remove (dir, target);
+  ///////////////
   dir_close (dir); 
+  ///////////////
 
   return success;
 }
+
+bool filesys_chdir(const char *name) {
+  struct dir* root;
+  if(name[0] == '/' || !thread_current()->dir)
+    root = dir_open_root();
+  else
+    root = dir_reopen(thread_current()->dir);
+  //////////////////////////////////////////////////
+  struct inode *inode;
+  struct dir *dir;
+  char target[NAME_MAX + 1];
+  if(!filesys_dir_lookup(root, name, &inode, &dir, target)){
+    return false;
+  }
+
+  if(!strcmp(target, "..")){
+    inode = dir_parent_inode(dir);
+    if (!inode)
+      return false;
+  } else if (!strcmp(target, ".") || (strlen(target)==0 && dir_is_root(dir))) {
+    thread_current()->dir = dir;
+    return true;
+  } else
+    dir_lookup(dir, target, &inode);
+
+  dir_close(dir);
+  dir = dir_open(inode);
+  if (!dir)
+    return false;
+  else{
+    dir_close(thread_current()->dir);
+    thread_current()->dir = dir;
+    return true;
+  }
+}
+
 
 /* Formats the file system. */
 static void
@@ -225,7 +322,8 @@ do_format (void)
 {
   printf ("Formatting file system...");
   free_map_create ();
-  if (!dir_create (ROOT_DIR_SECTOR, 16))
+  // if (!dir_create (ROOT_DIR_SECTOR, 16))
+  if (!dir_create (ROOT_DIR_SECTOR, 50))
     PANIC ("root directory creation failed");
   free_map_close ();
   printf ("done.\n");

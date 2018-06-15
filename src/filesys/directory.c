@@ -34,7 +34,7 @@ struct dir_entry
 bool
 dir_create (block_sector_t sector, size_t entry_cnt)
 {
-  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true);
+  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), 1);
 }
 
 /* Opens and returns the directory for the given INODE, of which
@@ -107,7 +107,7 @@ lookup (const struct dir *dir, const char *name,
   ASSERT (name != NULL);
 
   for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
-       ofs += sizeof e) 
+       ofs += sizeof e)
     if (e.in_use && !strcmp (name, e.name)) 
       {
         if (ep != NULL)
@@ -158,10 +158,14 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
 
   /* Check NAME for validity. */
   if (*name == '\0' || strlen (name) > NAME_MAX)
-    return false;
+    goto done;
 
   /* Check that NAME is not in use. */
   if (lookup (dir, name, NULL, NULL))
+    goto done;
+
+  // For Proj.#4
+  if (!inode_set_parent(inode_get_inumber(dir_get_inode(dir)), inode_sector))
     goto done;
 
   /* Set OFS to offset of free slot.
@@ -201,12 +205,19 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (name != NULL);
 
   /* Find directory entry. */
-  if (!lookup (dir, name, &e, &ofs))
+  if (!lookup (dir, name, &e, &ofs)){
     goto done;
+  }
 
   /* Open inode. */
   inode = inode_open (e.inode_sector);
   if (inode == NULL)
+    goto done;
+
+  // For Proj.#4
+  if (inode_is_dir(inode) && inode_get_open_cnt(inode) > 1)
+    goto done;
+  if (inode_is_dir(inode) && !dir_is_empty(inode))
     goto done;
 
   /* Erase directory entry. */
@@ -241,4 +252,30 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
         } 
     }
   return false;
+}
+
+bool dir_is_empty (struct inode *inode) {
+  struct dir_entry e;
+  off_t pos = 0;
+
+  while (inode_read_at (inode, &e, sizeof e, pos) == sizeof e) {
+    pos += sizeof e;
+    if (e.in_use)
+      return false;
+  }
+  return true;
+}
+
+bool dir_is_root(struct dir* dir) {
+  if (dir != NULL && inode_get_inumber(dir_get_inode(dir)) == ROOT_DIR_SECTOR)
+    return true;
+  else
+    return false;
+} 
+
+struct inode* dir_parent_inode(struct dir* dir) {
+  if(dir == NULL)
+    return NULL;
+  block_sector_t sector = inode_get_parent(dir_get_inode(dir));
+  return inode_open(sector);
 }

@@ -33,7 +33,8 @@ struct inode_disk
     uint32_t direct_index;
     uint32_t indirect_index;
     uint32_t d_indirect_index;
-    uint32_t unused[110];               /* Not used. */   // TODO 111? no 110?
+    uint32_t unused[109];               /* Not used. */   // TODO 111? no 110?
+    block_sector_t parent;
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
@@ -82,6 +83,7 @@ struct inode
     uint32_t d_indirect_index;
     struct lock i_lock;
     int isdir;
+    block_sector_t parent;
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
@@ -196,6 +198,7 @@ inode_create (block_sector_t sector, off_t length, int isdir)
       }
       disk_inode->magic = INODE_MAGIC;
       disk_inode->isdir = isdir;
+      disk_inode->parent = ROOT_DIR_SECTOR;
       if(check_alloc(disk_inode)){
         write_cache(fs_device, sector, disk_inode);
         success = true;
@@ -264,6 +267,7 @@ inode_open (block_sector_t sector)
   inode->length = inode_disk.length;
   inode->read_length = inode_disk.length;
   inode->isdir = inode_disk.isdir;
+  inode->parent = inode_disk.parent;
   memcpy(&inode->blocks, &inode_disk.blocks, sizeof(block_sector_t)*BLOCK_NUMBER);
   return inode;
 }
@@ -282,6 +286,25 @@ block_sector_t
 inode_get_inumber (const struct inode *inode)
 {
   return inode->sector;
+}
+
+// For Proj.#4
+int inode_get_open_cnt (const struct inode *inode) {
+  return inode->open_cnt;
+}
+
+block_sector_t inode_get_parent (const struct inode *inode) {
+  return inode->parent;
+}
+
+bool inode_set_parent (block_sector_t parent, block_sector_t child) {
+  struct inode* inode = inode_open(child);
+  if (!inode)
+    return false;
+
+  inode->parent = parent;
+  inode_close(inode);
+  return true;
 }
 
 /* Closes INODE and writes it to disk.
@@ -312,6 +335,7 @@ inode_close (struct inode *inode)
       disk_inode.length = inode->length;
       disk_inode.magic = INODE_MAGIC;
       disk_inode.isdir = inode->isdir;
+      disk_inode.parent = inode->parent;
       memcpy(&disk_inode.blocks, &inode->blocks, BLOCK_NUMBER*sizeof(block_sector_t));
       write_cache(fs_device, inode->sector, &disk_inode);
     }

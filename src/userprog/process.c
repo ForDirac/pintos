@@ -292,8 +292,9 @@ process_exit (void)
       free(fd);
     }
     else{
-      if (inode_is_dir(file_get_inode(fd->file_p)))
-        dir_close((struct dir *)fd->file_p);
+      if (inode_is_dir(file_get_inode(fd->file_p))){
+        // dir_close((struct dir *)fd->file_p);
+      }
       else
         file_close(fd->file_p);
       free(fd);
