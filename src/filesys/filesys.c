@@ -60,6 +60,7 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
   int depth = 0;
   int depth_index = 0;
   struct inode *inode;
+  static char prev[NAME_MAX + 1];
 
   for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
     if (strlen(d) > 14)
@@ -73,12 +74,20 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
       exists = true;
       break;
     }
+    if (!strcmp(d, "."))
+      continue;
+    if (!strcmp(d, "..")) {
+      if (prev[0] == '\0')
+        break;
+      strlcpy(d, prev, NAME_MAX + 1);
+    }
     if (!dir_lookup(dir, d, &inode)){
       break;
     }
     if (depth_index != 1)
       dir_close(dir);
     dir = dir_open(inode);
+    strlcpy(prev, d, NAME_MAX + 1);
   }
   if(!exists){
     dir = NULL;
@@ -114,7 +123,7 @@ filesys_create (const char *name, off_t initial_size, bool is_file)
 
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
-                  && (is_file? inode_create(inode_sector, initial_size) : dir_create(inode_sector, 1))
+                  && (is_file? inode_create(inode_sector, initial_size, false) : dir_create(inode_sector, 1))
                   // && dir_add (dir, name, inode_sector));
                   && dir_add (dir, target, inode_sector));
 //
@@ -149,7 +158,11 @@ filesys_open (const char *name)
     dir_lookup (dir, target, &inode);
     // dir_lookup (dir, name, &inode);
   }
+  if (!inode)
+    return NULL;
   // dir_close (dir);
+  if (inode_is_dir(inode))
+    return (struct file *)dir_open(inode);
 
   return file_open (inode);
 }
@@ -177,7 +190,7 @@ struct dir *filesys_dir_open(const char *name) {
 bool
 filesys_remove (const char *name) 
 {
-
+  // TODO
   struct dir *dir = dir_open_root ();
   bool success = dir != NULL && dir_remove (dir, name);
   dir_close (dir); 
