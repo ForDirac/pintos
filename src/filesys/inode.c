@@ -29,10 +29,11 @@ struct inode_disk
     // block_sector_t start;               /* First data sector. */
     off_t length;                       /* File size in bytes. */
     unsigned magic;                     /* Magic number. */
+    int isdir;
     uint32_t direct_index;
     uint32_t indirect_index;
     uint32_t d_indirect_index;
-    uint32_t unused[111];               /* Not used. */
+    uint32_t unused[110];               /* Not used. */   // TODO 111? no 110?
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
@@ -80,6 +81,7 @@ struct inode
     uint32_t indirect_index;
     uint32_t d_indirect_index;
     struct lock i_lock;
+    int isdir;
     block_sector_t blocks[BLOCK_NUMBER];
   };
 
@@ -162,13 +164,18 @@ inode_init (void)
   list_init (&open_inodes);
 }
 
+// For Proj.#4
+bool inode_is_dir(struct inode *inode) {
+  return inode->isdir;
+}
+
 /* Initializes an inode with LENGTH bytes of data and
    writes the new inode to sector SECTOR on the file system
    device.
    Returns true if successful.
    Returns false if memory or disk allocation fails. */
 bool
-inode_create (block_sector_t sector, off_t length)
+inode_create (block_sector_t sector, off_t length, int isdir)
 {
   struct inode_disk *disk_inode = NULL;
   bool success = false;
@@ -188,6 +195,7 @@ inode_create (block_sector_t sector, off_t length)
         disk_inode->length = MAX_SIZE;
       }
       disk_inode->magic = INODE_MAGIC;
+      disk_inode->isdir = isdir;
       if(check_alloc(disk_inode)){
         write_cache(fs_device, sector, disk_inode);
         success = true;
@@ -255,6 +263,7 @@ inode_open (block_sector_t sector)
   inode->d_indirect_index = inode_disk.d_indirect_index;
   inode->length = inode_disk.length;
   inode->read_length = inode_disk.length;
+  inode->isdir = inode_disk.isdir;
   memcpy(&inode->blocks, &inode_disk.blocks, sizeof(block_sector_t)*BLOCK_NUMBER);
   return inode;
 }
@@ -302,6 +311,7 @@ inode_close (struct inode *inode)
       disk_inode.d_indirect_index = inode->d_indirect_index;
       disk_inode.length = inode->length;
       disk_inode.magic = INODE_MAGIC;
+      disk_inode.isdir = inode->isdir;
       memcpy(&disk_inode.blocks, &inode->blocks, BLOCK_NUMBER*sizeof(block_sector_t));
       write_cache(fs_device, inode->sector, &disk_inode);
     }
@@ -767,7 +777,7 @@ size_t add_ddindirect_block(struct inode *inode, size_t n_sectors, struct indire
     free_map_allocate(1, &d_block.blocks[inode->d_indirect_index]);
     write_cache(fs_device, d_block.blocks[inode->d_indirect_index], zeros);
     inode->d_indirect_index ++;
-    n_sectors --;
+    n_sectors--;
     if (n_sectors == 0)
       break;
   }

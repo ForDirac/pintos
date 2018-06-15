@@ -11,6 +11,7 @@
 #include "filesys/directory.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
+#include "filesys/inode.h"
 #include "threads/flags.h"
 #include "threads/init.h"
 #include "threads/interrupt.h"
@@ -287,7 +288,10 @@ process_exit (void)
       free(fd);
     }
     else{
-      file_close(fd->file_p);
+      if (inode_is_dir(file_get_inode(fd->file_p)))
+        dir_close((struct dir *)fd->file_p);
+      else
+        file_close(fd->file_p);
       free(fd);
     }
   }

@@ -6,6 +6,7 @@
 #include "threads/thread.h"
 #include "filesys/filesys.h"
 #include "filesys/directory.h"
+#include "filesys/inode.h"
 #include "devices/shutdown.h"
 #include "userprog/process.h"
 #include "lib/string.h"
@@ -298,7 +299,10 @@ syscall_handler (struct intr_frame *f UNUSED)
         if(_fd->fd == fd){
           valid_fd = 1;
           lock_acquire(&filesys_lock);
-          file_close(_fd->file_p);
+          if (inode_is_dir(file_get_inode(_fd->file_p)))
+            dir_close((struct dir *)_fd->file_p);
+          else
+            file_close(_fd->file_p);
           lock_release(&filesys_lock);
 
           list_remove(e);
@@ -467,7 +471,8 @@ int syscall_open(const char *file){
   
   struct list_elem *e;
   int i = 0;
-  struct file* file_p = filesys_open(file);
+  struct file *file_p = filesys_open(file);
+
 
   if(file_p == NULL){
     lock_release(&t->file_list_lock);
@@ -560,6 +565,8 @@ int syscall_read(int fd, void *buffer, unsigned size) {
   if(!find){
     return -2;
   }
+  if (inode_is_dir(file_get_inode(_fd->file_p)))
+    return -1;
 
   lock_acquire(&filesys_lock);
   int bytes_read = (int)file_read(_fd->file_p, buffer, (off_t)size);
@@ -594,6 +601,8 @@ int syscall_write(int fd, void *buffer, unsigned size) {
   if(!find){
     return -1;
   }
+  if (inode_is_dir(file_get_inode(_fd->file_p)))
+    return -1;
 
   lock_acquire(&filesys_lock);
   int bytes_write = (int)file_write(_fd->file_p, buffer, (off_t)size);
