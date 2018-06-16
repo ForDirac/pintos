@@ -46,9 +46,9 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
-  free_map_close ();
   // for Proj.#4
   cache_flush();
+  free_map_close ();
 }
 
 static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode **target_inode, struct dir **target_dir, char *target_name) {
@@ -61,18 +61,7 @@ static bool filesys_dir_lookup(struct dir *dir, const char *name, struct inode *
   int depth_index = 0;
   struct inode *inode;
   static char prev[NAME_MAX + 1];
-
-  // if(dirname[0] == '/' || !thread_current()->dir){
-  //   dir = dir_open_root();
-  //   free(dirname);
-  //   *target_dir = dir;
-  //   *target_inode = file_get_inode((struct file *)dir);
-  //   return dir != NULL;
-  // }
-  // else{
-  //   printf("else!!!!!!\n");
-  //   dir = dir_reopen(thread_current()->dir);
-  // }
+  
   for (d = strtok_r(dirname, delimiter, &save_ptr); d != NULL; d = strtok_r(NULL, delimiter, &save_ptr)) {
     if (strlen(d) > 14)
       return false;

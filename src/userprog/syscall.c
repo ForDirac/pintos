@@ -212,7 +212,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 
     case SYS_READ:
     {
-      // printf("syscall_read\n");
       int fd = ((int *)f->esp)[1];
 
       if(!check_right_uvaddr((void *)(((int*)f->esp)[2]))){
@@ -581,6 +580,8 @@ int syscall_open(const char *file){
 
 
 int syscall_read(int fd, void *buffer, unsigned size) {
+  timer_sleep(10);
+  // printf("syscall_read(): tid(%d), fd(%d), buffer(%s), size(%d)\n", thread_current()->tid, fd, (char *)buffer, size);
   struct list_elem *e;
   struct fd *_fd = NULL;
   struct thread *t = thread_current();

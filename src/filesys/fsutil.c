@@ -101,7 +101,7 @@ fsutil_extract (char **argv UNUSED)
 
       /* Read and parse ustar header. */
       // block_read (src, sector++, header);
-      read_cache(src, sector++, header);
+      block_read(src, sector++, header);
       error = ustar_parse_header (header, &file_name, &type, &size);
       if (error != NULL)
         PANIC ("bad ustar header in sector %"PRDSNu" (%s)", sector - 1, error);
@@ -134,7 +134,7 @@ fsutil_extract (char **argv UNUSED)
                                 ? BLOCK_SECTOR_SIZE
                                 : size);
               // block_read (src, sector++, data);
-              read_cache(src, sector++, data);
+              block_read(src, sector++, data);
               if (file_write (dst, data, chunk_size) != chunk_size)
                 PANIC ("%s: write failed with %d bytes unwritten",
                        file_name, size);
@@ -153,9 +153,9 @@ fsutil_extract (char **argv UNUSED)
   printf ("Erasing ustar archive...\n");
   memset (header, 0, BLOCK_SECTOR_SIZE);
   // block_write (src, 0, header);
-  write_cache(src, 0, header);
+  block_write(src, 0, header);
   // block_write (src, 1, header);
-  write_cache(src, 1, header);
+  block_write(src, 1, header);
 
   free (data);
   free (header);
@@ -202,7 +202,7 @@ fsutil_append (char **argv)
   if (!ustar_make_header (file_name, USTAR_REGULAR, size, buffer))
     PANIC ("%s: name too long for ustar format", file_name);
   // block_write (dst, sector++, buffer);
-  write_cache(dst, sector++, buffer);
+  block_write(dst, sector++, buffer);
 
   /* Do copy. */
   while (size > 0) 
@@ -214,7 +214,7 @@ fsutil_append (char **argv)
         PANIC ("%s: read failed with %"PROTd" bytes unread", file_name, size);
       memset (buffer + chunk_size, 0, BLOCK_SECTOR_SIZE - chunk_size);
       // block_write (dst, sector++, buffer);
-      write_cache(dst, sector++, buffer);
+      block_write(dst, sector++, buffer);
       size -= chunk_size;
     }
 
@@ -223,9 +223,9 @@ fsutil_append (char **argv)
      them, though, in case we have more files to append. */
   memset (buffer, 0, BLOCK_SECTOR_SIZE);
   // block_write (dst, sector, buffer);
-  write_cache(dst, sector, buffer);
+  block_write(dst, sector, buffer);
   // block_write (dst, sector, buffer + 1);
-  write_cache(dst, sector, buffer + 1);
+  block_write(dst, sector, buffer + 1);
 
   /* Finish up. */
   file_close (src);
